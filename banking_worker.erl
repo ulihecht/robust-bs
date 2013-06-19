@@ -42,10 +42,11 @@ daten_schreiben(Konto) ->
 
 konten_init('$end_of_table') ->
 	dets:insert(konten, {0, 0});
+	
 konten_init(_) -> .
 
-	Kontonr = dets:first(konten),
-	get_next_konto(Kontonr, 0)
+%	Kontonr = dets:first(konten),
+%	get_next_konto(Kontonr, 0)
 	
 get_next_konto('$end_of_table', Letzte_kontonr) ->
 	
