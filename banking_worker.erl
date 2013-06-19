@@ -1,6 +1,6 @@
 -module(banking_worker).
 
--export([konto_anlegen/1, kontostand_abfragen/2]).
+-export([konto_anlegen/1, kontostand_abfragen/2, geld_einzahlen/3]).
 
 
 error_handling({error, Reason}) ->
@@ -37,16 +37,12 @@ daten_lesen(Kontonr) ->
 daten_schreiben(konto_anlegen) -> 
 	{Response, Reason} = dets:open_file(konten, [{file, "db_konten"}, {type, set}]),
 	Kontonr_temp = dets:first(konten),
-	io:format("vor case~n"),
 	case Kontonr_temp of 		%%Konteninit
 		'$end_of_table' -> dets:insert(konten, {0, 0});
 		_ -> ignoreit
 	end,
-	io:format("nach case~n"),
 	[{0, HoechsteKontonr}] = dets:lookup(konten, 0),
 	NeueKontonr = HoechsteKontonr + 1,
-	io:format("vor insert~n"),
-	io:format("neuekontonr: ~p ~n", [NeueKontonr]),
 	dets:insert(konten, {NeueKontonr, 
 								{sperrvermerk, false},
 								{vermoegen, 0},
@@ -55,7 +51,6 @@ daten_schreiben(konto_anlegen) ->
 								{transaktionsliste, []}}),
 	dets:insert(konten, {0, NeueKontonr}),
 	dets:close(konten),
-	io:format("nach close~n"),
 	NeueKontonr;
 daten_schreiben(Konto) -> 
 	dets:open_file(konten, [{file, "db_konten"}, {type, set}]),
@@ -72,7 +67,42 @@ kontoinfo(Feld, Konto) ->
 		transaktionsliste -> Ruekgabe = Transaktionsliste
 	end,	
 	Ruekgabe.
-	
+kontochange(Feld, Wert, Konto) ->
+	[{Kontonr ,{sperrvermerk, Sperrvermerk},{vermoegen, Kontostand},{maxDispo, MaxDispo} ,{dispoZins, DispoZins},{transaktionsliste, Transaktionsliste}}] = Konto,
+	case Feld of
+		sperrvermerk -> Sperrvermerk_neu = Wert,
+						Kontostand_neu = Kontostand,
+						MaxDispo_neu = MaxDispo,
+						DispoZins_neu = DispoZins,
+						Transaktionsliste_neu = Transaktionsliste;
+		vermoegen -> 	Sperrvermerk_neu = Sperrvermerk,
+						Kontostand_neu = Wert,
+						MaxDispo_neu = MaxDispo,
+						DispoZins_neu = DispoZins,
+						Transaktionsliste_neu = Transaktionsliste;
+		maxDispo -> 	Sperrvermerk_neu = Sperrvermerk,
+						Kontostand_neu = Kontostand,
+						MaxDispo_neu = Wert,
+						DispoZins_neu = DispoZins,
+						Transaktionsliste_neu = Transaktionsliste;
+		dispoZins -> 	Sperrvermerk_neu = Sperrvermerk,
+						Kontostand_neu = Kontostand,
+						MaxDispo_neu = MaxDispo,
+						DispoZins_neu = Wert,
+						Transaktionsliste_neu = Transaktionsliste;
+		transaktionsliste -> 	Sperrvermerk_neu = Sperrvermerk,
+								Kontostand_neu = Kontostand,
+								MaxDispo_neu = MaxDispo,
+								DispoZins_neu = DispoZins,
+								Transaktionsliste_neu = [Wert|Transaktionsliste]
+	end,
+	AktualisiertesKonto = [{Kontonr ,{sperrvermerk, Sperrvermerk_neu},{vermoegen, Kontostand_neu},{maxDispo, MaxDispo_neu} ,{dispoZins, DispoZins_neu},{transaktionsliste, Transaktionsliste_neu}}],
+	daten_schreiben(AktualisiertesKonto),
+	AktualisiertesKonto
+	.
+
+kontolog(Operation, {Notizen, Wer, Betrag}, Konto) ->
+	kontochange(transaktionsliste, {Operation, {zeit, date(), time()}, {notizen, Notizen}, {wer, Wer}, {wert, Betrag}}, Konto).
 	
 konto_anlegen(PID) ->
 	Neue_kontonr = daten_schreiben(konto_anlegen),
@@ -82,5 +112,16 @@ kontostand_abfragen(PID, Kontonr) ->
 	Konto = daten_lesen(Kontonr),
 	Kontostand = kontoinfo(vermoegen, Konto),
 	PID ! {ok, Kontostand}.
+	
+geld_einzahlen(PID, Kontonr, Betrag) ->
+	Konto = daten_lesen(Kontonr),
+	Kontostand = kontoinfo(vermoegen, Konto),
+	NeuerKontostand = Kontostand + Betrag,
+	AktKonto_1 = kontochange(vermoegen, NeuerKontostand, Konto),
+	%TransaktionsID noch nicht in der TranListe!!!! ? evtl als Übergabeparameter
+	AktKonto_2 = kontolog(einzahlung, {"", Kontonr, Betrag}, AktKonto_1),
+	Kontotemp = daten_lesen(Kontonr),
+	io:format("Konto daten nach einzahlen: ~n~p~n", [Kontotemp]),
+	kontoinfo(vermoegen, Kontotemp).
    
   
