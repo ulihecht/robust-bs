@@ -2,10 +2,12 @@ Um den Server zu benutzen, müsst ihr euren Node von der Erlang Shell auf bs@loc
 
 Rechtsklick auf die Verknüpfung und dann auf "Eigenschaften" -> "Ziel" hier müsst ihr "erl -sname bs@localhost" anhängen ( sollte nachher etwa so aussehen: "C:\Program Files\erl5.10.1\bin\werl.exe" erl -sname bs@localhost )
 
-Den Client könnt ihr dann in einer neuen Shell starten
+Den Client könntet ihr in einer neuen Shell starten, die muss jedoch auch irgendwas@localhost heißen, also zum Beispiel bc@localhost. 
+Am besten ist es wohl zwei Verknüpfungen zu machen eine für den Server und eine für den Client.
 
-Starten des Servers in der Server Shell: bs:start().
-Starten des Clients: bc:start(c).
-Danach könnt ihr beliebige Befehle senden: c ! konto_anlegen.
-                                           c ! {kontostand_abfragen, 1}.
-                                           ...
+Starten des Servers in der Server Shell:                          bs:start().
+
+Starten des Clients in der Server Shell oder einer Client Shell:  bc:start(c).
+Danach könnt ihr beliebige Befehle senden:                        c ! konto_anlegen.
+                                                                  c ! {kontostand_abfragen, 1}.
+                                                                  ...
