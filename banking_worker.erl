@@ -1,13 +1,15 @@
 -module(banking_worker).
 
--export([konto_anlegen/1]).
+-export([konto_anlegen/1, kontostand_abfragen/2]).
 
 
 error_handling({error, Reason}) ->
 	io:format("Error: ~p ~n", [Reason]),
 	dets:close(konten),
 	exit(Reason)
-	.
+	;
+error_handling({ok, konten}) ->
+	ok.
 
 	
 
@@ -23,11 +25,12 @@ daten_lesen(Kontonr) ->
 	{Response, Reason} = dets:open_file(konten, [{file, "db_konten"}, {type, set}]),
 	error_handling({Response, Reason}),
 	Konto = dets:lookup(konten, Kontonr),
-	case Konto = {error, Reason} of
-		true -> 
-				error_handling(Konto)
+	case Konto of
+		[] -> 	error_handling({error, "Konto nicht gefunden"});
+		[_] -> ignoreit
 	end,
-	dets:close(konten)
+	dets:close(konten),
+	Konto
 	.
 	
 
@@ -59,8 +62,25 @@ daten_schreiben(Konto) ->
 	dets:insert(konten, Konto),
 	dets:close(konten).	
 
+kontoinfo(Feld, Konto) ->
+	[{Kontonr ,{sperrvermerk, Sperrvermerk},{vermoegen, Kontostand},{maxDispo, MaxDispo} ,{dispoZins, DispoZins},{transaktionsliste, Transaktionsliste}}] = Konto,
+	case Feld of
+		sperrvermerk -> Ruekgabe = Sperrvermerk;
+		vermoegen -> Ruekgabe = Kontostand;
+		maxDispo -> Ruekgabe = MaxDispo;
+		dispoZins -> Ruekgabe = DispoZins;
+		transaktionsliste -> Ruekgabe = Transaktionsliste
+	end,	
+	Ruekgabe.
+	
+	
 konto_anlegen(PID) ->
 	Neue_kontonr = daten_schreiben(konto_anlegen),
     PID ! {ok, Neue_kontonr}.
+	
+kontostand_abfragen(PID, Kontonr) ->
+	Konto = daten_lesen(Kontonr),
+	Kontostand = kontoinfo(vermoegen, Konto),
+	PID ! {ok, Kontostand}.
    
   
