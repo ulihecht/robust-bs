@@ -1,6 +1,6 @@
 -module(banking_worker).
 
--export([konto_anlegen/1, kontostand_abfragen/2, geld_einzahlen/3]).
+-export([konto_anlegen/1, kontostand_abfragen/2, geld_einzahlen/3, geld_abheben/3, geld_ueberweisen/4]).
 
 
 error_handling({error, Reason}) ->
@@ -33,7 +33,6 @@ daten_lesen(Kontonr) ->
 	Konto
 	.
 	
-
 daten_schreiben(konto_anlegen) -> 
 	{Response, Reason} = dets:open_file(konten, [{file, "db_konten"}, {type, set}]),
 	Kontonr_temp = dets:first(konten),
@@ -103,14 +102,22 @@ kontochange(Feld, Wert, Konto) ->
 
 kontolog(Operation, {Notizen, Wer, Betrag}, Konto) ->
 	kontochange(transaktionsliste, {Operation, {zeit, date(), time()}, {notizen, Notizen}, {wer, Wer}, {wert, Betrag}}, Konto).
+
+
+
 	
 konto_anlegen(PID) ->
-	Neue_kontonr = daten_schreiben(konto_anlegen),
-    PID ! {ok, Neue_kontonr}.
+	Kontonr = daten_schreiben(konto_anlegen),
+	Konto = daten_lesen(Kontonr),
+	kontolog(konto_angelegt, {"Konto wurde erstellt", Kontonr, 0}, Konto),
+    PID ! {ok, Kontonr}.
 	
 kontostand_abfragen(PID, Kontonr) ->
 	Konto = daten_lesen(Kontonr),
 	Kontostand = kontoinfo(vermoegen, Konto),
+	kontolog(kontostand_abfragen, {"Kontostand wurde abgefragt", Kontonr, 0}, Konto),
+	Kontotemp = daten_lesen(Kontonr),
+	io:format("Konto daten nach einzahlen: ~n~p~n", [Kontotemp]),
 	PID ! {ok, Kontostand}.
 	
 geld_einzahlen(PID, Kontonr, Betrag) ->
@@ -119,9 +126,74 @@ geld_einzahlen(PID, Kontonr, Betrag) ->
 	NeuerKontostand = Kontostand + Betrag,
 	AktKonto_1 = kontochange(vermoegen, NeuerKontostand, Konto),
 	%TransaktionsID noch nicht in der TranListe!!!! ? evtl als Übergabeparameter
-	AktKonto_2 = kontolog(einzahlung, {"", Kontonr, Betrag}, AktKonto_1),
+	kontolog(einzahlung, {"", Kontonr, Betrag}, AktKonto_1),
 	Kontotemp = daten_lesen(Kontonr),
-	io:format("Konto daten nach einzahlen: ~n~p~n", [Kontotemp]),
-	kontoinfo(vermoegen, Kontotemp).
+	Vermoegen = kontoinfo(vermoegen, Kontotemp),
+    PID ! {ok, Vermoegen}.
+geld_einzahlen(PID, Kontonr, Ursprung, Betrag) ->
+	Konto = daten_lesen(Kontonr),
+	Kontostand = kontoinfo(vermoegen, Konto),
+	NeuerKontostand = Kontostand + Betrag,
+	AktKonto_1 = kontochange(vermoegen, NeuerKontostand, Konto),
+	%TransaktionsID noch nicht in der TranListe!!!! ? evtl als Übergabeparameter
+	kontolog(einzahlung, {"", Ursprung, Betrag}, AktKonto_1),
+	Kontotemp = daten_lesen(Kontonr),
+	Vermoegen = kontoinfo(vermoegen, Kontotemp),
+    PID ! {ok, Vermoegen}.
    
-  
+ konto_loeschen(PID, Kontonr) ->
+	dets:open_file(konten, [{file, "db_konten"}, {type, set}]),
+	dets:delete(konten, Kontonr),
+	dets:close(konten),
+	PID ! {ok, Kontonr}.
+	
+geld_abheben(PID, Kontonr, Betrag) ->
+	Konto = daten_lesen(Kontonr),
+	Kontostand = kontoinfo(vermoegen, Konto),
+	DispoBetrag = kontoinfo(maxDispo, Konto),
+	NeuerKontostand = Kontostand - Betrag,
+	case NeuerKontostand < 0 - DispoBetrag of
+		true -> PID ! {false, "Nicht genug Geld"};%error_handling({error, "Nicht genügend Geld"});
+		false -> AktKonto_1 = kontochange(vermoegen, NeuerKontostand, Konto),
+				%TransaktionsID noch nicht in der TranListe!!!! ? evtl als Übergabeparameter
+				AktKonto_2 = kontolog(auszahlung, {"", Kontonr, Betrag}, AktKonto_1),
+				Kontotemp = daten_lesen(Kontonr),
+				Vermoegen = kontoinfo(vermoegen, Kontotemp),
+				PID ! {ok, Vermoegen}
+	end
+	.
+	
+geld_ueberweisen(PID, ZielKontonr, Kontonr, Betrag) ->
+	geld_abheben(self(), Kontonr, Betrag),
+	receive 
+		{false, Message} -> PID ! {false, Message}, 
+							exit({false, Message});
+		{ok, Message} -> ignoreit
+	end,
+	geld_einzahlen(self(), ZielKontonr, Kontonr, Betrag),
+	receive 
+		{false, Message2} -> PID ! {false, Message2}, 
+							exit({false, Message2});
+		{ok, Message2} -> ignoreit
+	end,
+	PID ! {ok}.
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
