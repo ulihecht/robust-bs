@@ -1,0 +1,7 @@
+
+# build erlang files
+*.beam
+
+*.log
+
+.DS_Store

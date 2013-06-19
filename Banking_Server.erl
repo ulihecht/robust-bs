@@ -19,8 +19,6 @@ kontostand_abfragen(ClientPID, Kontonr) -> gen_server:call(?MODULE, {kontostand_
 dispokredite_beantragen(ClientPID, Kontonr) -> gen_server:call(?MODULE, {dispokredite_beantragen, ClientPID, Kontonr}).
 
 
-%lookup(Book) -> gen_server:call(?MODULE, {lookup, Book}).
-%return(Book) -> gen_server:call(?MODULE, {return, Book}).
 
 % This is called when a connection is made to the server
 init([]) ->
