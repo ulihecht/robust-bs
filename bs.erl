@@ -1,22 +1,21 @@
 -module(bs).
 -behaviour(gen_server).
 
--export([init/1, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
-
--export([start/0, stop/0, konto_anlegen/1]).
+-export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
+-export([start/0, stop/0]).
 
 % These are all wrappers for calls to the server
-start() -> gen_server:start_link({local, ?MODULE}, ?MODULE, [], []), loop().
+start() -> gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 stop() -> gen_server:cast(?MODULE, stop).
-konto_anlegen(ClientPID) -> io:format("blubba~n"), gen_server:call(bs, {konto_anlegen, ClientPID}).
 
 % This is called when a connection is made to the server
 init([]) ->
-   process_flag(trap_exit, true),
 	dets:open_file(transaction, [{file, "db"}, {type, set}]),
    {ok, 0}.
- 
-
+handle_call({Action, Pid, Dats}, _From, LoopData) ->
+	io:format("handle call"),
+	{noreply, LoopData}.
+   
 handle_cast(stop, LoopData) ->
    dets:close(transaction),
    {stop, normal, LoopData};
@@ -46,39 +45,46 @@ handle_cast({geld_ueberweisen, ClientPId, ZielKontonr, KontoNr, Betrag}, LoopDat
    {noreply, LoopData}.
  
 create_transaction(Action, Arg) ->
-   TId = spawn(bw, init, []), % spawn_link ?
+   process_flag(trap_exit, true),
+   TId = spawn_link(bw, init, []),
    dets:insert(transaction, {TId, {Action, Arg}}),
    TId ! [Action|Arg].
    
-loop() ->
-   receive
-    %  {konto_anlegen, ClientPID} -> io:format("blubba ~s ~n", [?MODULE]), gen_server:call(?MODULE, {konto_anlegen, ClientPID}), loop;
-   %   {konto_loeschen, ClientPID, Kontonr} -> gen_server:call(?MODULE, {konto_loeschen, ClientPID, Kontonr}), loop;
-      {konto_sperren, ClientPID, Kontonr} -> gen_server:call(?MODULE, {konto_sperren, ClientPID, Kontonr}), loop;
-      {konto_entsperren, ClientPID, Kontonr} -> gen_server:call(?MODULE, {konto_entsperren, ClientPID, Kontonr}), loop;
-  %    {geld_einzahlen, ClientPID, Kontonr, Betrag} -> gen_server:call(?MODULE, {geld_einzahlen, ClientPID, Kontonr}), loop;
-  %    {geld_ueberweisen, ClientPID, Ziel_Kontonr, Client_Kontonr, Betrag} -> gen_server:call(?MODULE, {geld_ueberweisen, ClientPID, Ziel_Kontonr, Client_Kontonr, Betrag}), loop;
-  %    {geld_abheben, ClientPID, Kontonr, Betrag} -> gen_server:call(?MODULE, {geld_abheben, ClientPID, Kontonr, Betrag}), loop;
-   %   {kontostand_abfragen, ClientPID, Kontonr} -> gen_server:call(?MODULE, {kontostand_abfragen, ClientPID, Kontonr}), loop;
-      {dispokredite_beantragen, ClientPID, Kontonr} -> gen_server:call(?MODULE, {dispokredite_beantragen, ClientPID, Kontonr}), loop;
-      {'EXIT', PId, Reason} ->
-         io:format("Exit ~p (~p)", [Reason, PId]),
-         case dets:lookup(transaction, PId) of
-            [{transaction, {Action, Arg}}] ->
-               % TODO: Prüfen ob Transaktion schon ausgeführt wurde
-               dets:delete(transaction, PId),
-               create_transaction(Action, Arg)
-         end,
-         loop();
-      A -> A % io:format("~s~n", 
-   end.
+% loop() ->
+   % receive
+      % {konto_sperren, ClientPID, Kontonr} -> gen_server:call(?MODULE, {konto_sperren, ClientPID, Kontonr}), loop;
+      % {konto_entsperren, ClientPID, Kontonr} -> gen_server:call(?MODULE, {konto_entsperren, ClientPID, Kontonr}), loop;
+      % {dispokredite_beantragen, ClientPID, Kontonr} -> gen_server:call(?MODULE, {dispokredite_beantragen, ClientPID, Kontonr}), loop;
+      % {'EXIT', PId, Reason} ->
+         % io:format("Exit ~p (~p)", [Reason, PId]),
+         % case dets:lookup(transaction, PId) of
+            % [{transaction, {Action, Arg}}] ->
+              % TODO: Prüfen ob Transaktion schon ausgeführt wurde
+               % dets:delete(transaction, PId),
+               % create_transaction(Action, Arg)
+         % end,
+         % loop();
+      % _ -> io:format("Resceive BS") % io:format("~s~n", 
+   % end.
    
-   
-% Unklar:
-handle_info(_Message, Library) -> {noreply, Library}.
+
+handle_info({'EXIT', PId, Reason}, LoopData) -> 
+   io:format("Worker Exit: ~p (~p)~n", [Reason, PId]),
+   FoundTransaction = dets:lookup(transaction, PId),
+    case FoundTransaction of
+        [] -> io:format("Nothing to repeat!~n");
+        [{PId, {Action, Arg}}] ->
+            dets:delete(transaction, PId),
+            %TODO: Checken ob die Transaktion schoneinmal ausgeführt wurde mit PId als ID. Fall ja hier abbrechen, da sonst Transaktionen doppelt ausgeführt werden!
+            create_transaction(Action, Arg);
+        _Else -> 
+            io:format("Something wrong here??? ~p~n", [FoundTransaction])
+    end,
+   {noreply, LoopData}.
 
 % Unklar:
-terminate(_Reason, _Library) ->
+terminate(Reason, LoopData) ->
    dets:close(transaction),
-   terminate_aufgerufen.
-code_change(_OldVersion, Library, _Extra) -> {ok, Library}.
+  io:format("terminate: ~p~n", [Reason]).
+  
+code_change(_OldVersion, LoopData, _Extra) -> {ok, LoopData}.

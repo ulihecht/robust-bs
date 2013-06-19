@@ -181,13 +181,12 @@ geld_ueberweisen(PID, ZielKontonr, Kontonr, Betrag) ->
  init() -> 
  io:format("init bw~n"),
  receive
-      [konto_anlegen, ClientPId] -> konto_anlegen(ClientPId);
+      [konto_anlegen, ClientPId] -> konto_anlegen(ClientPId), init();
       [konto_loeschen, ClientPId, Kontonr] -> konto_loeschen(ClientPId, Kontonr);
       [kontostand_abfragen, ClientPId, Kontonr] -> kontostand_abfragen(ClientPId, Kontonr);
       [geld_einzahlen, ClientPId, Kontonr, Ursprung, Betrag] -> geld_einzahlen(ClientPId, Kontonr, Ursprung, Betrag);
       [geld_auszahlen, ClientPId, Kontonr, Betrag] -> geld_abheben(ClientPId, Kontonr, Betrag);
       [geld_ueberweisen, ClientPId, ZielKontonr, KontoNr, Betrag] -> geld_ueberweisen(ClientPId, ZielKontonr, KontoNr, Betrag)
-      
-   end.
+ end.
    
   
