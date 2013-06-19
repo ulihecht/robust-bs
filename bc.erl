@@ -14,6 +14,18 @@ loop() ->
       {kontostand_abfragen, KontoNr} ->
          gen_server:cast({bs, 'bs@localhost'}, {kontostand_abfragen, self(), KontoNr}),
          loop();
+      {konto_loeschen, KontoNr} ->
+         gen_server:cast({bs, 'bs@localhost'}, {konto_loeschen, self(), KontoNr}),
+         loop();
+      {geld_einzahlen, Kontonr, Ursprung, Betrag} ->
+         gen_server:cast({bs, 'bs@localhost'}, {geld_einzahlen, self(), Kontonr, Ursprung, Betrag}),
+         loop();
+      {geld_auszahlen, KontoNr, Betrag} ->
+         gen_server:cast({bs, 'bs@localhost'}, {geld_auszahlen, self(), KontoNr, Betrag}),
+         loop();
+      {geld_ueberweisen, ZielKontonr, KontoNr, Betrag} ->
+         gen_server:cast({bs, 'bs@localhost'}, {geld_ueberweisen, self(), ZielKontonr, KontoNr, Betrag}),
+         loop();
       stop ->
          true,
          io:format("banking_client closed~n");
@@ -22,7 +34,8 @@ loop() ->
          loop();
       {nok, Message} ->
          io:format("NOK: ~p~n", [Message]),
-         loop()
+         loop();
+       _ -> io:format("Unbekanntes Kommando: ")
    end.
 %, receive  {ok, Nummer} -> {reply, Nummer, blubb} end.
 

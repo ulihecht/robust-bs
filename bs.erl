@@ -24,11 +24,26 @@ handle_cast(stop, LoopData) ->
 handle_cast({konto_anlegen, ClientPId}, LoopData) ->
    create_transaction(konto_anlegen, [ClientPId]),
    {noreply, LoopData};
+    
+handle_cast({konto_loeschen, ClientPId, Kontonr}, LoopData) ->
+   create_transaction(konto_loeschen, [ClientPId, Kontonr]),
+   {noreply, LoopData};
+       
+handle_cast({kontostand_abfragen, ClientPId, Kontonr}, LoopData) ->
+   create_transaction(kontostand_abfragen, [ClientPId, Kontonr]),
+   {noreply, LoopData};
+          
+handle_cast({geld_einzahlen, ClientPId, Kontonr, Ursprung, Betrag}, LoopData) ->
+   create_transaction(geld_einzahlen, [ClientPId, Kontonr, Ursprung, Betrag]),
+   {noreply, LoopData};
    
-handle_cast({kontostand_abfragen, ClientPId, KontoNr}, LoopData) ->
-   create_transaction(kontostand_abfragen, [ClientPId, KontoNr]),
+handle_cast({geld_auszahlen, ClientPId, KontoNr, Betrag}, LoopData) ->
+   create_transaction(geld_auszahlen, [ClientPId, KontoNr, Betrag]),
+   {noreply, LoopData};
+   
+handle_cast({geld_ueberweisen, ClientPId, ZielKontonr, KontoNr, Betrag}, LoopData) ->
+   create_transaction(geld_ueberweisen, [ClientPId, ZielKontonr, KontoNr, Betrag]),
    {noreply, LoopData}.
- 
  
 create_transaction(Action, Arg) ->
    TId = spawn(bw, init, []), % spawn_link ?
@@ -37,14 +52,14 @@ create_transaction(Action, Arg) ->
    
 loop() ->
    receive
-      {konto_anlegen, ClientPID} -> io:format("blubba ~s ~n", [?MODULE]), gen_server:call(?MODULE, {konto_anlegen, ClientPID}), loop;
-      {konto_loeschen, ClientPID, Kontonr} -> gen_server:call(?MODULE, {konto_loeschen, ClientPID, Kontonr}), loop;
+    %  {konto_anlegen, ClientPID} -> io:format("blubba ~s ~n", [?MODULE]), gen_server:call(?MODULE, {konto_anlegen, ClientPID}), loop;
+   %   {konto_loeschen, ClientPID, Kontonr} -> gen_server:call(?MODULE, {konto_loeschen, ClientPID, Kontonr}), loop;
       {konto_sperren, ClientPID, Kontonr} -> gen_server:call(?MODULE, {konto_sperren, ClientPID, Kontonr}), loop;
       {konto_entsperren, ClientPID, Kontonr} -> gen_server:call(?MODULE, {konto_entsperren, ClientPID, Kontonr}), loop;
-      {geld_einzahlen, ClientPID, Kontonr, Betrag} -> gen_server:call(?MODULE, {geld_einzahlen, ClientPID, Kontonr}), loop;
-      {geld_ueberweisen, ClientPID, Ziel_Kontonr, Client_Kontonr, Betrag} -> gen_server:call(?MODULE, {geld_ueberweisen, ClientPID, Ziel_Kontonr, Client_Kontonr, Betrag}), loop;
-      {geld_abheben, ClientPID, Kontonr, Betrag} -> gen_server:call(?MODULE, {geld_abheben, ClientPID, Kontonr, Betrag}), loop;
-      {kontostand_abfragen, ClientPID, Kontonr} -> gen_server:call(?MODULE, {kontostand_abfragen, ClientPID, Kontonr}), loop;
+  %    {geld_einzahlen, ClientPID, Kontonr, Betrag} -> gen_server:call(?MODULE, {geld_einzahlen, ClientPID, Kontonr}), loop;
+  %    {geld_ueberweisen, ClientPID, Ziel_Kontonr, Client_Kontonr, Betrag} -> gen_server:call(?MODULE, {geld_ueberweisen, ClientPID, Ziel_Kontonr, Client_Kontonr, Betrag}), loop;
+  %    {geld_abheben, ClientPID, Kontonr, Betrag} -> gen_server:call(?MODULE, {geld_abheben, ClientPID, Kontonr, Betrag}), loop;
+   %   {kontostand_abfragen, ClientPID, Kontonr} -> gen_server:call(?MODULE, {kontostand_abfragen, ClientPID, Kontonr}), loop;
       {dispokredite_beantragen, ClientPID, Kontonr} -> gen_server:call(?MODULE, {dispokredite_beantragen, ClientPID, Kontonr}), loop;
       {'EXIT', PId, Reason} ->
          io:format("Exit ~p (~p)", [Reason, PId]),
