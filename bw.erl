@@ -5,7 +5,7 @@
 error_handling({error, Reason}) ->
 	io:format("Error: ~p ~n", [Reason]),
 	dets:close(konten),
-	exit(Reason)
+	exit(normal)
 	;
 error_handling({ok, konten}) ->
 	ok.
@@ -226,7 +226,6 @@ dispokredit_beantragen(PID, Kontonr) ->
 	end
 	.
 
-dispokredit_neu_berechnen(
 
  init() -> 
  io:format("init bw~n"),
