@@ -26,6 +26,15 @@ loop() ->
       {geld_ueberweisen, ZielKontonr, KontoNr, Betrag} ->
          gen_server:cast({bs, 'bs@localhost'}, {geld_ueberweisen, self(), ZielKontonr, KontoNr, Betrag}),
          loop();
+      {dispokredit_beantragen, KontoNr} ->
+         gen_server:cast({bs, 'bs@localhost'}, {dispokredit_beantragen, self(), KontoNr}),
+         loop();
+      {konto_sperren, KontoNr} ->
+         gen_server:cast({bs, 'bs@localhost'}, {konto_sperren, self(), KontoNr}),
+         loop();
+      {konto_entsperren, KontoNr} ->
+         gen_server:cast({bs, 'bs@localhost'}, {konto_entsperren, self(), KontoNr}),
+         loop();
       stop ->
          true,
          io:format("banking_client closed~n");
@@ -35,7 +44,7 @@ loop() ->
       {nok, Message} ->
          io:format("NOK: ~p~n", [Message]),
          loop();
-       _ -> io:format("Unbekanntes Kommando: ")
+       _ -> io:format("Unbekanntes Kommando~n")
    end.
 %, receive  {ok, Nummer} -> {reply, Nummer, blubb} end.
 
