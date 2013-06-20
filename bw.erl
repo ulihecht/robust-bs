@@ -1,5 +1,5 @@
 -module(bw).
--export([init/0]).
+-export([konto_anlegen/1,print/1, kontostand_abfragen/2, geld_einzahlen/3, geld_abheben/3, geld_ueberweisen/4, init/0, konto_sperren/2, konto_entsperren/2, dispokredit_beantragen/2]).
 
 
 error_handling({error, Reason}) ->
@@ -116,67 +116,117 @@ kontostand_abfragen(PID, Kontonr) ->
 	Kontostand = kontoinfo(vermoegen, Konto),
 	kontolog(kontostand_abfragen, {"Kontostand wurde abgefragt", Kontonr, 0}, Konto),
 	Kontotemp = daten_lesen(Kontonr),
-	io:format("Konto daten nach einzahlen: ~n~p~n", [Kontotemp]),
+	%io:format("Konto daten nach einzahlen: ~n~p~n", [Kontotemp]),
 	PID ! {ok, Kontostand}.
-	
-geld_einzahlen(PID, Kontonr, Betrag) ->
+
+   
+konto_sperren(PID, Kontonr) ->
 	Konto = daten_lesen(Kontonr),
-	Kontostand = kontoinfo(vermoegen, Konto),
-	NeuerKontostand = Kontostand + Betrag,
-	AktKonto_1 = kontochange(vermoegen, NeuerKontostand, Konto),
-	%TransaktionsID noch nicht in der TranListe!!!! ? evtl als Übergabeparameter
-	kontolog(einzahlung, {"", Kontonr, Betrag}, AktKonto_1),
-	Kontotemp = daten_lesen(Kontonr),
-	Vermoegen = kontoinfo(vermoegen, Kontotemp),
-    PID ! {ok, Vermoegen}.
+	kontochange(sperrvermerk, true, Konto),
+	Konto2 = daten_lesen(Kontonr),
+	kontolog(sperren, {"Konto gesperrt", Kontonr, 0}, Konto2),
+	PID ! {ok}.
+	
+	
+konto_entsperren(PID, Kontonr) ->
+	Konto = daten_lesen(Kontonr),
+	kontochange(sperrvermerk, false, Konto),
+	Konto2 = daten_lesen(Kontonr),
+	kontolog(entsperren, {"Konto entsperrt", Kontonr, 0}, Konto2),
+	PID ! {ok}.
+	
+geld_einzahlen(PID, Kontonr, Betrag) ->	
+	geld_einzahlen(PID, Kontonr, Kontonr, Betrag)
+	.
+	
+print(Kontonr) ->
+	io:format("~p~n", [daten_lesen(Kontonr)]).
+	
+%Nur für interne Verwendung für die Überweißunga
 geld_einzahlen(PID, Kontonr, Ursprung, Betrag) ->
 	Konto = daten_lesen(Kontonr),
-	Kontostand = kontoinfo(vermoegen, Konto),
-	NeuerKontostand = Kontostand + Betrag,
-	AktKonto_1 = kontochange(vermoegen, NeuerKontostand, Konto),
-	%TransaktionsID noch nicht in der TranListe!!!! ? evtl als Übergabeparameter
-	kontolog(einzahlung, {"", Ursprung, Betrag}, AktKonto_1),
-	Kontotemp = daten_lesen(Kontonr),
-	Vermoegen = kontoinfo(vermoegen, Kontotemp),
-    PID ! {ok, Vermoegen}.
-   
- konto_loeschen(PID, Kontonr) ->
-	dets:open_file(konten, [{file, "db_konten"}, {type, set}]),
-	dets:delete(konten, Kontonr),
-	dets:close(konten),
-	PID ! {ok, Kontonr}.
-	
-geld_abheben(PID, Kontonr, Betrag) ->
-	Konto = daten_lesen(Kontonr),
-	Kontostand = kontoinfo(vermoegen, Konto),
-	DispoBetrag = kontoinfo(maxDispo, Konto),
-	NeuerKontostand = Kontostand - Betrag,
-	case NeuerKontostand < 0 - DispoBetrag of
-		true -> PID ! {false, "Nicht genug Geld"};%error_handling({error, "Nicht genügend Geld"});
-		false -> AktKonto_1 = kontochange(vermoegen, NeuerKontostand, Konto),
+	case kontoinfo(sperrvermerk, Konto) of
+		true -> PID ! {error, "Konto gesperrt"},
+				kontolog(einzahlung, {"Konto gesperrt", Kontonr, 0}, Konto);
+		false ->Kontostand = kontoinfo(vermoegen, Konto),
+				NeuerKontostand = Kontostand + Betrag,
+				AktKonto_1 = kontochange(vermoegen, NeuerKontostand, Konto),
 				%TransaktionsID noch nicht in der TranListe!!!! ? evtl als Übergabeparameter
-				AktKonto_2 = kontolog(auszahlung, {"", Kontonr, Betrag}, AktKonto_1),
+				kontolog(einzahlung, {"", Ursprung, Betrag}, AktKonto_1),
 				Kontotemp = daten_lesen(Kontonr),
 				Vermoegen = kontoinfo(vermoegen, Kontotemp),
 				PID ! {ok, Vermoegen}
+	end			
+	.
+   
+ konto_loeschen(PID, Kontonr) ->
+	case kontoinfo(sperrvermerk, daten_lesen(Kontonr)) of
+		true -> PID ! {error, "Konto gesperrt"},
+				kontolog(loeschung, {"Konto gesperrt", Kontonr, 0}, daten_lesen(Kontonr));
+		false ->dets:open_file(konten, [{file, "db_konten"}, {type, set}]),
+				dets:delete(konten, Kontonr),
+				dets:close(konten),
+				PID ! {ok, Kontonr}
+	end			
+	.
+	
+geld_abheben(PID, Kontonr, Betrag) ->
+	Konto = daten_lesen(Kontonr),
+	case kontoinfo(sperrvermerk, Konto) of
+		true -> PID ! {error, "Konto gesperrt"},
+				kontolog(auszahlung, {"Konto gesperrt", Kontonr, 0}, Konto);
+		false ->Kontostand = kontoinfo(vermoegen, Konto),
+				DispoBetrag = kontoinfo(maxDispo, Konto),
+				NeuerKontostand = Kontostand - Betrag,
+				case NeuerKontostand < 0 - DispoBetrag of
+					true -> PID ! {error, "Nicht genug Geld"},
+							kontolog(auszahlung, {"Auszahlung nicht möglich", Kontonr, 0}, daten_lesen(Kontonr));%error_handling({error, "Nicht genügend Geld"});
+					false -> AktKonto_1 = kontochange(vermoegen, NeuerKontostand, Konto),
+							%TransaktionsID noch nicht in der TranListe!!!! ? evtl als Übergabeparameter
+							AktKonto_2 = kontolog(auszahlung, {"", Kontonr, Betrag}, AktKonto_1),
+							Kontotemp = daten_lesen(Kontonr),
+							Vermoegen = kontoinfo(vermoegen, Kontotemp),
+							PID ! {ok, Vermoegen}
+				end
 	end
 	.
 	
 geld_ueberweisen(PID, ZielKontonr, Kontonr, Betrag) ->
-	geld_abheben(self(), Kontonr, Betrag),
-	receive 
-		{false, Message} -> PID ! {false, Message}, 
-							exit({false, Message});
-		{ok, Message} -> ignoreit
-	end,
-	geld_einzahlen(self(), ZielKontonr, Kontonr, Betrag),
-	receive 
-		{false, Message2} -> PID ! {false, Message2}, 
-							exit({false, Message2});
-		{ok, Message2} -> ignoreit
-	end,
-	PID ! {ok}.
-   
+	case kontoinfo(sperrvermerk, daten_lesen(Kontonr)) or kontoinfo(sperrvermerk, daten_lesen(Kontonr)) of
+		true -> PID ! {error, "Eins der Konten ist gesperrt"},
+				kontolog(ueberweisung, {"Eins der Konten ist gesperrt", Kontonr, 0}, daten_lesen(Kontonr));
+		false ->geld_abheben(self(), Kontonr, Betrag),
+				receive 
+					{error, Message} -> PID ! {error, Message}, 
+										exit({error, Message});
+					{ok, Message} -> ignoreit
+				end,
+				geld_einzahlen(self(), ZielKontonr, Kontonr, Betrag),
+				receive 
+					{error, Message2} -> PID ! {error, Message2}, 
+										exit({error, Message2});
+					{ok, Message2} -> ignoreit
+				end,
+				PID ! {ok}		
+	end
+	.
+
+dispokredit_beantragen(PID, Kontonr) ->
+	Konto = daten_lesen(Kontonr),
+	case kontoinfo(sperrvermerk, Konto) of
+		true -> PID ! {error, "Konto gesperrt"},
+				kontolog(dispobeantragung, {"Konto gesperrt", Kontonr, 0}, daten_lesen(Kontonr));
+		false -> 
+				Vermoegen = kontoinfo(vermoegen, daten_lesen(Kontonr)),
+				Dispo = Vermoegen * 0.1,
+				kontochange(maxDispo, Dispo, daten_lesen(Kontonr)),
+				kontochange(dispoZins, 12, daten_lesen(Kontonr)),
+				kontolog(dispobeantragung, {"Dispokredit mit 12 Prozent", Kontonr, Dispo}, daten_lesen(Kontonr)),
+				PID ! {ok, Dispo}
+	end
+	.
+
+dispokredit_neu_berechnen(
 
  init() -> 
  io:format("init bw~n"),
