@@ -10,10 +10,9 @@ stop() -> gen_server:cast(?MODULE, stop).
 
 % This is called when a connection is made to the server
 init([]) ->
-	dets:open_file(transaction, [{file, "db"}, {type, set}]),
+	dets:open_file(transaction, [{file, "db_transaction"}, {type, set}]),
    {ok, 0}.
-handle_call({Action, Pid, Dats}, _From, LoopData) ->
-	io:format("handle call"),
+handle_call(_Action, _From, LoopData) ->
 	{noreply, LoopData}.
    
 handle_cast(stop, LoopData) ->
@@ -83,7 +82,7 @@ handle_info({'EXIT', PId, Reason}, LoopData) ->
    {noreply, LoopData}.
 
 % Unklar:
-terminate(Reason, LoopData) ->
+terminate(Reason, _LoopData) ->
    dets:close(transaction),
   io:format("terminate: ~p~n", [Reason]).
   
