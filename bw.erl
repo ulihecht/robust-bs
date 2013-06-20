@@ -1,6 +1,42 @@
 -module(bw).
 -export([konto_anlegen/1,print/1, kontostand_abfragen/2, geld_einzahlen/3, geld_abheben/3, geld_ueberweisen/4, init/0, konto_sperren/2, konto_entsperren/2, dispokredit_beantragen/2]).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Transaktionslistenatome
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% erstellung
+% erfragung
+% sperrung
+% entsperrung
+% einzahlung
+% loeschung
+% auszahlung
+% ueberweisung
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%WARUM ZUM GEIER BRAUCHEN WIR EINE INIT??? DIE FUNKTIONEN 
+%KÖNNEN AUCH DIREKT AUFGERUFEN WERDEN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+init() -> 
+io:format("init bw~n"),
+receive
+     [konto_anlegen, ClientPId] -> konto_anlegen(ClientPId), init();
+     [konto_loeschen, ClientPId, Kontonr] -> konto_loeschen(ClientPId, Kontonr);
+     [kontostand_abfragen, ClientPId, Kontonr] -> kontostand_abfragen(ClientPId, Kontonr);
+     [geld_einzahlen, ClientPId, Kontonr, Ursprung, Betrag] -> geld_einzahlen(ClientPId, Kontonr, Ursprung, Betrag);
+     [geld_auszahlen, ClientPId, Kontonr, Betrag] -> geld_abheben(ClientPId, Kontonr, Betrag);
+     [geld_ueberweisen, ClientPId, ZielKontonr, KontoNr, Betrag] -> geld_ueberweisen(ClientPId, ZielKontonr, KontoNr, Betrag)
+end.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Interne Funktionen die uns das Leben leichter machen
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 error_handling({error, Reason}) ->
 	io:format("Error: ~p ~n", [Reason]),
@@ -9,17 +45,7 @@ error_handling({error, Reason}) ->
 	;
 error_handling({ok, konten}) ->
 	ok.
-
 	
-
-		
-get_next_konto('$end_of_table', Letzte_kontonr) ->
-	Letzte_kontonr;
-get_next_konto(AlteKontonr, _) -> 
-	NeueKontonr = dets:next(konten, AlteKontonr),
-	get_next_konto(NeueKontonr, AlteKontonr).
-	
-
 daten_lesen(Kontonr) ->
 	{Response, Reason} = dets:open_file(konten, [{file, "db_konten"}, {type, set}]),
 	error_handling({Response, Reason}),
@@ -33,7 +59,7 @@ daten_lesen(Kontonr) ->
 	.
 	
 daten_schreiben(konto_anlegen) -> 
-	{Response, Reason} = dets:open_file(konten, [{file, "db_konten"}, {type, set}]),
+	dets:open_file(konten, [{file, "db_konten"}, {type, set}]),
 	Kontonr_temp = dets:first(konten),
 	case Kontonr_temp of 		%%Konteninit
 		'$end_of_table' -> dets:insert(konten, {0, 0});
@@ -50,13 +76,14 @@ daten_schreiben(konto_anlegen) ->
 	dets:insert(konten, {0, NeueKontonr}),
 	dets:close(konten),
 	NeueKontonr;
+	
 daten_schreiben(Konto) -> 
 	dets:open_file(konten, [{file, "db_konten"}, {type, set}]),
 	dets:insert(konten, Konto),
 	dets:close(konten).	
 
 kontoinfo(Feld, Konto) ->
-	[{Kontonr ,{sperrvermerk, Sperrvermerk},{vermoegen, Kontostand},{maxDispo, MaxDispo} ,{dispoZins, DispoZins},{transaktionsliste, Transaktionsliste}}] = Konto,
+	[{_ ,{sperrvermerk, Sperrvermerk},{vermoegen, Kontostand},{maxDispo, MaxDispo} ,{dispoZins, DispoZins},{transaktionsliste, Transaktionsliste}}] = Konto,
 	case Feld of
 		sperrvermerk -> Ruekgabe = Sperrvermerk;
 		vermoegen -> Ruekgabe = Kontostand;
@@ -65,6 +92,7 @@ kontoinfo(Feld, Konto) ->
 		transaktionsliste -> Ruekgabe = Transaktionsliste
 	end,	
 	Ruekgabe.
+	
 kontochange(Feld, Wert, Konto) ->
 	[{Kontonr ,{sperrvermerk, Sperrvermerk},{vermoegen, Kontostand},{maxDispo, MaxDispo} ,{dispoZins, DispoZins},{transaktionsliste, Transaktionsliste}}] = Konto,
 	case Feld of
@@ -102,21 +130,25 @@ kontochange(Feld, Wert, Konto) ->
 kontolog(Operation, {Notizen, Wer, Betrag}, Konto) ->
 	kontochange(transaktionsliste, {Operation, {zeit, date(), time()}, {notizen, Notizen}, {wer, Wer}, {wert, Betrag}}, Konto).
 
-
+print(Kontonr) ->
+	io:format("~p~n", [daten_lesen(Kontonr)]).
 
 	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Funktionen für die Anwendung des Workers
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 konto_anlegen(PID) ->
 	Kontonr = daten_schreiben(konto_anlegen),
 	Konto = daten_lesen(Kontonr),
-	kontolog(konto_angelegt, {"Konto wurde erstellt", Kontonr, 0}, Konto),
+	kontolog(erstellung, {"Konto wurde erstellt", Kontonr, 0}, Konto),
     PID ! {ok, Kontonr}.
 	
 kontostand_abfragen(PID, Kontonr) ->
 	Konto = daten_lesen(Kontonr),
 	Kontostand = kontoinfo(vermoegen, Konto),
-	kontolog(kontostand_abfragen, {"Kontostand wurde abgefragt", Kontonr, 0}, Konto),
-	Kontotemp = daten_lesen(Kontonr),
-	%io:format("Konto daten nach einzahlen: ~n~p~n", [Kontotemp]),
+	kontolog(erfragung, {"Kontostand wurde abgefragt", Kontonr, 0}, Konto),
 	PID ! {ok, Kontostand}.
 
    
@@ -124,7 +156,7 @@ konto_sperren(PID, Kontonr) ->
 	Konto = daten_lesen(Kontonr),
 	kontochange(sperrvermerk, true, Konto),
 	Konto2 = daten_lesen(Kontonr),
-	kontolog(sperren, {"Konto gesperrt", Kontonr, 0}, Konto2),
+	kontolog(sperrung, {"Konto gesperrt", Kontonr, 0}, Konto2),
 	PID ! {ok}.
 	
 	
@@ -132,15 +164,13 @@ konto_entsperren(PID, Kontonr) ->
 	Konto = daten_lesen(Kontonr),
 	kontochange(sperrvermerk, false, Konto),
 	Konto2 = daten_lesen(Kontonr),
-	kontolog(entsperren, {"Konto entsperrt", Kontonr, 0}, Konto2),
+	kontolog(entsperrung, {"Konto entsperrt", Kontonr, 0}, Konto2),
 	PID ! {ok}.
 	
 geld_einzahlen(PID, Kontonr, Betrag) ->	
 	geld_einzahlen(PID, Kontonr, Kontonr, Betrag)
 	.
-	
-print(Kontonr) ->
-	io:format("~p~n", [daten_lesen(Kontonr)]).
+
 	
 %Nur für interne Verwendung für die Überweißunga
 geld_einzahlen(PID, Kontonr, Ursprung, Betrag) ->
@@ -183,7 +213,7 @@ geld_abheben(PID, Kontonr, Betrag) ->
 							kontolog(auszahlung, {"Auszahlung nicht möglich", Kontonr, 0}, daten_lesen(Kontonr));%error_handling({error, "Nicht genügend Geld"});
 					false -> AktKonto_1 = kontochange(vermoegen, NeuerKontostand, Konto),
 							%TransaktionsID noch nicht in der TranListe!!!! ? evtl als Übergabeparameter
-							AktKonto_2 = kontolog(auszahlung, {"", Kontonr, Betrag}, AktKonto_1),
+							kontolog(auszahlung, {"", Kontonr, Betrag}, AktKonto_1),
 							Kontotemp = daten_lesen(Kontonr),
 							Vermoegen = kontoinfo(vermoegen, Kontotemp),
 							PID ! {ok, Vermoegen}
@@ -199,13 +229,13 @@ geld_ueberweisen(PID, ZielKontonr, Kontonr, Betrag) ->
 				receive 
 					{error, Message} -> PID ! {error, Message}, 
 										exit({error, Message});
-					{ok, Message} -> ignoreit
+					{ok, _} -> ignoreit
 				end,
 				geld_einzahlen(self(), ZielKontonr, Kontonr, Betrag),
 				receive 
 					{error, Message2} -> PID ! {error, Message2}, 
 										exit({error, Message2});
-					{ok, Message2} -> ignoreit
+					{ok, _} -> ignoreit
 				end,
 				PID ! {ok}		
 	end
@@ -227,15 +257,5 @@ dispokredit_beantragen(PID, Kontonr) ->
 	.
 
 
- init() -> 
- io:format("init bw~n"),
- receive
-      [konto_anlegen, ClientPId] -> konto_anlegen(ClientPId), init();
-      [konto_loeschen, ClientPId, Kontonr] -> konto_loeschen(ClientPId, Kontonr);
-      [kontostand_abfragen, ClientPId, Kontonr] -> kontostand_abfragen(ClientPId, Kontonr);
-      [geld_einzahlen, ClientPId, Kontonr, Ursprung, Betrag] -> geld_einzahlen(ClientPId, Kontonr, Ursprung, Betrag);
-      [geld_auszahlen, ClientPId, Kontonr, Betrag] -> geld_abheben(ClientPId, Kontonr, Betrag);
-      [geld_ueberweisen, ClientPId, ZielKontonr, KontoNr, Betrag] -> geld_ueberweisen(ClientPId, ZielKontonr, KontoNr, Betrag)
- end.
    
   
