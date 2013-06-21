@@ -57,23 +57,18 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-deleteTransaction() ->
-   dets:open_file(transaction, [{file, "db_transaction"}, {type, set}]),
-	dets:delete(transaction, self()),
-	dets:close(transaction).	
-   
 init() -> 
 io:format("init bw~n"),
 receive
-     [konto_anlegen, ClientPId] -> konto_anlegen(ClientPId), deleteTransaction();
-     [konto_loeschen, ClientPId, Kontonr] -> konto_loeschen(ClientPId, Kontonr), deleteTransaction();
-     [kontostand_abfragen, ClientPId, Kontonr] -> kontostand_abfragen(ClientPId, Kontonr), deleteTransaction();
-     [geld_einzahlen, ClientPId, Kontonr, Ursprung, Betrag] -> geld_einzahlen(ClientPId, Kontonr, Ursprung, Betrag), deleteTransaction();
-     [geld_auszahlen, ClientPId, Kontonr, Betrag] -> geld_abheben(ClientPId, Kontonr, Betrag), deleteTransaction();
-     [geld_ueberweisen, ClientPId, ZielKontonr, KontoNr, Betrag] -> geld_ueberweisen(ClientPId, ZielKontonr, KontoNr, Betrag), deleteTransaction();
-     [dispokredit_beantragen, ClientPId, KontoNr] -> dispokredit_beantragen(ClientPId, KontoNr), deleteTransaction();
-     [konto_sperren, ClientPId, KontoNr] -> konto_sperren(ClientPId, KontoNr), deleteTransaction();
-     [konto_entsperren, ClientPId, KontoNr] -> konto_entsperren(ClientPId, KontoNr), deleteTransaction()
+     [konto_anlegen, ClientPId] -> konto_anlegen(ClientPId);
+     [konto_loeschen, ClientPId, Kontonr] -> konto_loeschen(ClientPId, Kontonr);
+     [kontostand_abfragen, ClientPId, Kontonr] -> kontostand_abfragen(ClientPId, Kontonr);
+     [geld_einzahlen, ClientPId, Kontonr, Ursprung, Betrag] -> geld_einzahlen(ClientPId, Kontonr, Ursprung, Betrag);
+     [geld_auszahlen, ClientPId, Kontonr, Betrag] -> geld_abheben(ClientPId, Kontonr, Betrag);
+     [geld_ueberweisen, ClientPId, ZielKontonr, KontoNr, Betrag] -> geld_ueberweisen(ClientPId, ZielKontonr, KontoNr, Betrag);
+     [dispokredit_beantragen, ClientPId, KontoNr] -> dispokredit_beantragen(ClientPId, KontoNr);
+     [konto_sperren, ClientPId, KontoNr] -> konto_sperren(ClientPId, KontoNr);
+     [konto_entsperren, ClientPId, KontoNr] -> konto_entsperren(ClientPId, KontoNr)
 end.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -184,9 +179,12 @@ konto_entsperren(PID, Kontonr) ->
 	Konto2 = daten_lesen(PID, Kontonr),
 	kontolog(entsperrung, {"Konto entsperrt", Kontonr, 0}, Konto2),
 	PID ! {ok, 'Konto wurde entsperrt'}.
-	
+
+geld_einzahlen(PID, Kontonr, Verwendungszweck, Betrag) ->	
+geld_einzahlen(PID, Kontonr, Kontonr, Verwendungszweck, Betrag);
+
 %Nur für interne Verwendung für die Überweisungen
-geld_einzahlen(PID, Kontonr, Ursprung, Betrag) ->
+geld_einzahlen(PID, Kontonr, Ursprung, Verwendungszweck, Betrag) ->
 	Konto = daten_lesen(PID, Kontonr),
 	case kontoinfo(sperrvermerk, Konto) of
 		true -> PID ! {nok, "Konto gesperrt"},
@@ -195,7 +193,7 @@ geld_einzahlen(PID, Kontonr, Ursprung, Betrag) ->
 				NeuerKontostand = Kontostand + Betrag,
 				AktKonto_1 = kontochange(vermoegen, NeuerKontostand, Konto),
 				%TransaktionsID noch nicht in der TranListe!!!! ? evtl als Übergabeparameter
-				kontolog(einzahlung, {"", Ursprung, Betrag}, AktKonto_1),
+				kontolog(einzahlung, {Verwendungszweck, Ursprung, Betrag}, AktKonto_1),
 				Kontotemp = daten_lesen(PID, Kontonr),
 				Vermoegen = kontoinfo(vermoegen, Kontotemp),
 				PID ! {ok, Vermoegen}

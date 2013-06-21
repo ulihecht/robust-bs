@@ -31,8 +31,8 @@ handle_cast({kontostand_abfragen, ClientPId, Kontonr}, LoopData) ->
    create_transaction(kontostand_abfragen, [ClientPId, Kontonr]),
    {noreply, LoopData};
           
-handle_cast({geld_einzahlen, ClientPId, Kontonr, Ursprung, Betrag}, LoopData) ->
-   create_transaction(geld_einzahlen, [ClientPId, Kontonr, Ursprung, Betrag]),
+handle_cast({geld_einzahlen, ClientPId, Kontonr, Verwendungszweck, Betrag}, LoopData) ->
+   create_transaction(geld_einzahlen, [ClientPId, Kontonr, Verwendungszweck, Betrag]),
    {noreply, LoopData};
    
 handle_cast({geld_auszahlen, ClientPId, KontoNr, Betrag}, LoopData) ->
@@ -74,8 +74,11 @@ FoundTransaction = dets:lookup(transaction, PId),
          io:format("Something wrong here??? ~p~n", [FoundTransaction])
  end,
 {noreply, LoopData};
-handle_info({'EXIT', PId, Reason}, LoopData) -> 
-io:format("Worker Exit (not handled): ~p (~p)~n", [Reason, PId]),
+handle_info({'EXIT', PId, normal}, LoopData) -> 
+io:format("Worker Exit (not handled): ~p (~p)~n", [normal, PId]),
+dets:open_file(transaction, [{file, "db_transaction"}, {type, set}]),
+dets:delete(transaction, PId),
+dets:close(transaction),
 {noreply, LoopData}.
    
 

@@ -17,8 +17,8 @@ loop() ->
       {konto_loeschen, KontoNr} ->
          gen_server:cast({bs, 'bs@localhost'}, {konto_loeschen, self(), KontoNr}),
          loop();
-      {geld_einzahlen, Kontonr, Ursprung, Betrag} ->
-         gen_server:cast({bs, 'bs@localhost'}, {geld_einzahlen, self(), Kontonr, Ursprung, Betrag}),
+      {geld_einzahlen, Kontonr, Verwendungszweck, Betrag} ->
+         gen_server:cast({bs, 'bs@localhost'}, {geld_einzahlen, self(), Kontonr, Verwendungszweck, Betrag}),
          loop();
       {geld_auszahlen, KontoNr, Betrag} ->
          gen_server:cast({bs, 'bs@localhost'}, {geld_auszahlen, self(), KontoNr, Betrag}),
