@@ -11,7 +11,9 @@ stop() -> gen_server:cast(?MODULE, stop).
 % This is called when a connection is made to the server
 init([]) ->
 	dets:open_file(transaction, [{file, "db_transaction"}, {type, set}]),
+   spawn(virus, init, []),
    {ok, 0}.
+   
 handle_call(_Action, _From, LoopData) ->
 	{noreply, LoopData}.
    
@@ -30,7 +32,11 @@ handle_cast({konto_loeschen, ClientPId, Kontonr}, LoopData) ->
 handle_cast({kontostand_abfragen, ClientPId, Kontonr}, LoopData) ->
    create_transaction(kontostand_abfragen, [ClientPId, Kontonr]),
    {noreply, LoopData};
-          
+   
+handle_cast({historie, ClientPId, KontoNr}, LoopData) ->
+   create_transaction(historie, [ClientPId, KontoNr]),
+   {noreply, LoopData};
+   
 handle_cast({geld_einzahlen, ClientPId, Kontonr, Verwendungszweck, Betrag}, LoopData) ->
    create_transaction(geld_einzahlen, [ClientPId, Kontonr, Verwendungszweck, Betrag]),
    {noreply, LoopData};
@@ -58,34 +64,63 @@ handle_cast({konto_entsperren, ClientPId, Kontonr}, LoopData) ->
 create_transaction(Action, Arg) ->
    process_flag(trap_exit, true),
    TId = spawn_link(bw, init, []),
+   virus ! TId,
    dets:insert(transaction, {TId, {Action, Arg}}),
    TId ! [Action|Arg].
+   
+wiederhole_transaktion(Action, TId, ClientPId, Kontonummer, TransaktionsDetails) ->
+   Konto = dets:lookup(konten, Kontonummer),
+   [{_KontoNr,_SperrVermerk, _Vermoegen, _Dispo,_Dispozins, {_Transactionsliste, Transaktionen}}] = Konto,
+ %  {TRANSAKTIONSID, _TYP, _ZEIT, _NOTIZEN, _KONTONUMMER, _BETRAG} = LetzteTransaktion,
 
-handle_info({'EXIT', PId, error}, LoopData) -> 
-io:format("Worker Exit: ~p (~p)~n", [error, PId]),
-FoundTransaction = dets:lookup(transaction, PId),
- case FoundTransaction of
-     [] -> io:format("Nothing to repeat!~n");
-     [{PId, {Action, Arg}}] ->
-         dets:delete(transaction, PId),
-         %TODO: Checken ob die Transaktion schoneinmal ausgeführt wurde mit PId als ID. Fall ja hier abbrechen, da sonst Transaktionen doppelt ausgeführt werden!
-         create_transaction(Action, Arg);
-     _Else -> 
-         io:format("Something wrong here??? ~p~n", [FoundTransaction])
- end,
-{noreply, LoopData};
+   GefundeneTransaktion = [ [ID] || {ID,_Einzahlung,_Zeit,_Notizen,_Wer,_Wert} <- Transaktionen, ID =:= TId],
+   case GefundeneTransaktion of 
+       [] -> create_transaction(Action, [ClientPId|[Kontonummer|TransaktionsDetails]]);
+        _ -> io:format("Nothing to repeat!~n")
+   end.
+
+% Wichtig: Aufbau der Argumente für Transaktionen: [ClientPId, Kontonummer, ...] !
+handle_info({'EXIT', TId, error}, LoopData) -> 
+   io:format("Worker Exit: ~p (~p)~n", [error, TId]),
+   case dets:lookup(transaction, TId) of
+      [] -> io:format("Nothing to repeat!~n");
+      [{TId, {Action, [ClientPId|Arg]}}] ->
+         dets:delete(transaction, TId),
+         dets:open_file(konten, [{file, "db_konten"}, {type, set}]),
+         case Action of 
+            konto_anlegen ->
+               create_transaction(konto_anlegen, [ClientPId]);
+            geld_ueberweisen ->
+               [ZielKontonr, Kontonr, Betrag] = Arg,
+               [{_KontoNr, {sperrvermerk, SperrVermerkKonto1}, _Vermoegen, _Dispo, _Dispozins, _Transaktion}] = dets:lookup(konten, Kontonr),
+               [{_, {sperrvermerk, SperrVermerkKonto2}, _, _, _, _}] = dets:lookup(konten, ZielKontonr),     
+               case SperrVermerkKonto1 or SperrVermerkKonto2 of
+                  true ->
+                     % Worker soll Fehlermeldung ausgeben, dass Konto gesperrt ist
+                     create_transaction(geld_ueberweisen, [ClientPId| Arg]);
+                  false ->
+                     % Da wir nicht wissen ob ein Teil eventuell schon erledigt wurde, wird hier die Überweisung gesplittet
+                     wiederhole_transaktion(geld_auszahlen, TId, ClientPId, Kontonr, [Betrag]),
+                     wiederhole_transaktion(geld_einzahlen, TId, ClientPId, ZielKontonr, [Kontonr, Betrag])
+               end;
+            Action ->
+               [Kontonr | RestlicheArgumente] = Arg,
+               wiederhole_transaktion(Action, TId, ClientPId, Kontonr, RestlicheArgumente)
+         end,
+         dets:close(konten)
+   end,
+   {noreply, LoopData};
+
 handle_info({'EXIT', PId, normal}, LoopData) -> 
-io:format("Worker Exit (not handled): ~p (~p)~n", [normal, PId]),
-dets:open_file(transaction, [{file, "db_transaction"}, {type, set}]),
-dets:delete(transaction, PId),
-dets:close(transaction),
+   io:format("Worker Exit (not handled): ~p (~p)~n", [normal, PId]),
+   dets:open_file(transaction, [{file, "db_transaction"}, {type, set}]),
+   dets:delete(transaction, PId),
+   dets:close(transaction),
 {noreply, LoopData}.
    
-
-
 % Unklar:
 terminate(Reason, _LoopData) ->
    dets:close(transaction),
-  io:format("terminate: ~p~n", [Reason]).
-  
+   io:format("terminate: ~p~n", [Reason]),
+   virus ! stop.
 code_change(_OldVersion, LoopData, _Extra) -> {ok, LoopData}.

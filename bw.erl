@@ -63,6 +63,7 @@ receive
      [konto_anlegen, ClientPId] -> konto_anlegen(ClientPId);
      [konto_loeschen, ClientPId, Kontonr] -> konto_loeschen(ClientPId, Kontonr);
      [kontostand_abfragen, ClientPId, Kontonr] -> kontostand_abfragen(ClientPId, Kontonr);
+     [historie, ClientPId, Kontonr] -> historie(ClientPId, Kontonr);
      [geld_einzahlen, ClientPId, Kontonr, Ursprung, Betrag] -> geld_einzahlen(ClientPId, Kontonr, Ursprung, Betrag);
      [geld_auszahlen, ClientPId, Kontonr, Betrag] -> geld_abheben(ClientPId, Kontonr, Betrag);
      [geld_ueberweisen, ClientPId, ZielKontonr, KontoNr, Betrag] -> geld_ueberweisen(ClientPId, ZielKontonr, KontoNr, Betrag);
@@ -113,20 +114,21 @@ kontoinfo(Feld, Konto) ->
 	end.
 	
 kontochange(Feld, Wert, Konto) ->
-	[{self(), Kontonr ,{sperrvermerk, Sperrvermerk},{vermoegen, Kontostand},{maxDispo, MaxDispo} ,{dispoZins, DispoZins},{transaktionsliste, Transaktionsliste}}] = Konto,
+
+	[{Kontonr ,{sperrvermerk, Sperrvermerk},{vermoegen, Kontostand},{maxDispo, MaxDispo} ,{dispoZins, DispoZins},{transaktionsliste, Transaktionsliste}}] = Konto,
 case Feld of
-		sperrvermerk -> AktualisiertesKonto = [{self(), Kontonr ,{sperrvermerk, Wert},{vermoegen, Kontostand},{maxDispo, MaxDispo} ,{dispoZins, DispoZins},{transaktionsliste, Transaktionsliste}}];
-		vermoegen ->    AktualisiertesKonto = [{self(), Kontonr ,{sperrvermerk, Sperrvermerk},{vermoegen, Wert},{maxDispo, MaxDispo} ,{dispoZins, DispoZins},{transaktionsliste, Transaktionsliste}}];
-		maxDispo -> 	 AktualisiertesKonto = [{self(), Kontonr ,{sperrvermerk, Sperrvermerk},{vermoegen, Kontostand},{maxDispo, Wert} ,{dispoZins, DispoZins},{transaktionsliste, Transaktionsliste}}];
-		dispoZins -> 	 AktualisiertesKonto = [{self(), Kontonr ,{sperrvermerk, Sperrvermerk},{vermoegen, Kontostand},{maxDispo, MaxDispo} ,{dispoZins, Wert},{transaktionsliste, Transaktionsliste}}];
-		transaktionsliste ->  AktualisiertesKonto = [{self(), Kontonr ,{sperrvermerk, Sperrvermerk},{vermoegen, Kontostand},{maxDispo, MaxDispo} ,{dispoZins, DispoZins},{transaktionsliste, [Wert|Transaktionsliste]}}]
+		sperrvermerk -> AktualisiertesKonto = [{Kontonr ,{sperrvermerk, Wert},{vermoegen, Kontostand},{maxDispo, MaxDispo} ,{dispoZins, DispoZins},{transaktionsliste, Transaktionsliste}}];
+		vermoegen ->    AktualisiertesKonto = [{Kontonr ,{sperrvermerk, Sperrvermerk},{vermoegen, Wert},{maxDispo, MaxDispo} ,{dispoZins, DispoZins},{transaktionsliste, Transaktionsliste}}];
+		maxDispo -> 	 AktualisiertesKonto = [{Kontonr ,{sperrvermerk, Sperrvermerk},{vermoegen, Kontostand},{maxDispo, Wert} ,{dispoZins, DispoZins},{transaktionsliste, Transaktionsliste}}];
+		dispoZins -> 	 AktualisiertesKonto = [{Kontonr ,{sperrvermerk, Sperrvermerk},{vermoegen, Kontostand},{maxDispo, MaxDispo} ,{dispoZins, Wert},{transaktionsliste, Transaktionsliste}}];
+		transaktionsliste ->  AktualisiertesKonto = [{Kontonr ,{sperrvermerk, Sperrvermerk},{vermoegen, Kontostand},{maxDispo, MaxDispo} ,{dispoZins, DispoZins},{transaktionsliste, [Wert|Transaktionsliste]}}]
 	end,
 	daten_schreiben(AktualisiertesKonto),
    AktualisiertesKonto.
 
 
 kontolog(Operation, {Notizen, Wer, Betrag}, Konto) ->
-	kontochange(transaktionsliste, {Operation, {zeit, date(), time()}, {notizen, Notizen}, {wer, Wer}, {wert, Betrag}}, Konto).
+	kontochange(transaktionsliste, {self(), Operation, {zeit, date(), time()}, {notizen, Notizen}, {wer, Wer}, {wert, Betrag}}, Konto).
 
 
 	
@@ -163,6 +165,11 @@ kontostand_abfragen(PID, Kontonr) ->
 	kontolog(erfragung, {"Kontostand wurde abgefragt", Kontonr, 0}, Konto),
 	PID ! {ok, Kontostand}.
 
+historie(PID, Kontonr) ->
+   Konto = daten_lesen(PID, Kontonr),
+   [{_ ,_Sperrvermerk, Kontostand, _MaxDispo ,_DispoZins ,Transaktionsliste}] = Konto,
+   PID ! {ok, [Transaktionsliste, Kontostand]}.
+
    
 konto_sperren(PID, Kontonr) ->
 	Konto = daten_lesen(PID, Kontonr),
@@ -180,7 +187,7 @@ konto_entsperren(PID, Kontonr) ->
 	PID ! {ok, 'Konto wurde entsperrt'}.
 
 geld_einzahlen(PID, Kontonr, Verwendungszweck, Betrag) ->	
-geld_einzahlen(PID, Kontonr, Kontonr, Verwendungszweck, Betrag);
+geld_einzahlen(PID, Kontonr, Kontonr, Verwendungszweck, Betrag).
 
 %Nur für interne Verwendung für die Überweisungen
 geld_einzahlen(PID, Kontonr, Ursprung, Verwendungszweck, Betrag) ->
@@ -199,7 +206,7 @@ geld_einzahlen(PID, Kontonr, Ursprung, Verwendungszweck, Betrag) ->
 	end			
 	.
    
- konto_loeschen(PID, Kontonr) ->
+konto_loeschen(PID, Kontonr) ->
 	case kontoinfo(sperrvermerk, daten_lesen(PID, Kontonr)) of
 		true -> PID ! {nok, "Konto gesperrt"},
 				kontolog(loeschung, {"Konto gesperrt", Kontonr, 0}, daten_lesen(PID, Kontonr));
@@ -245,8 +252,7 @@ geld_ueberweisen(PID, ZielKontonr, Kontonr, Betrag) ->
                               {ok, _} -> PID ! {ok, 'Geld wurde ueberwiesen'}		
                            end
 				end
-	end
-	.
+	end.
 
 dispokredit_beantragen(PID, Kontonr) ->
 	Konto = daten_lesen(PID, Kontonr),

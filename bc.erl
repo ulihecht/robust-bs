@@ -14,6 +14,9 @@ loop() ->
       {kontostand_abfragen, KontoNr} ->
          gen_server:cast({bs, 'bs@localhost'}, {kontostand_abfragen, self(), KontoNr}),
          loop();
+      {historie, KontoNr} ->
+         gen_server:cast({bs, 'bs@localhost'}, {historie, self(), KontoNr}),
+         loop();
       {konto_loeschen, KontoNr} ->
          gen_server:cast({bs, 'bs@localhost'}, {konto_loeschen, self(), KontoNr}),
          loop();
@@ -44,7 +47,8 @@ loop() ->
       {nok, Message} ->
          io:format("NOK: ~p~n", [Message]),
          loop();
-       _ -> io:format("Unbekanntes Kommando~n")
+       _ -> io:format("Unbekanntes Kommando~n"),
+         loop()
    end.
 %, receive  {ok, Nummer} -> {reply, Nummer, blubb} end.
 
