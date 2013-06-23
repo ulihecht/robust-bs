@@ -1,12 +1,4 @@
 \BOOKMARK [1][-]{section.1}{Vorwort}{}% 1
 \BOOKMARK [1][-]{section.2}{Teamorganisation}{}% 2
-\BOOKMARK [1][-]{section.3}{Konzept}{}% 3
-\BOOKMARK [2][-]{subsection.3.1}{Client}{section.3}% 4
-\BOOKMARK [2][-]{subsection.3.2}{Server}{section.3}% 5
-\BOOKMARK [2][-]{subsection.3.3}{Worker}{section.3}% 6
-\BOOKMARK [1][-]{section.4}{Realisierung}{}% 7
-\BOOKMARK [2][-]{subsection.4.1}{Client}{section.4}% 8
-\BOOKMARK [2][-]{subsection.4.2}{Server}{section.4}% 9
-\BOOKMARK [2][-]{subsection.4.3}{Worker}{section.4}% 10
-\BOOKMARK [1][-]{section.5}{Profiling}{}% 11
-\BOOKMARK [1][-]{section.6}{Fazit}{}% 12
+\BOOKMARK [1][-]{section.3}{Profiling}{}% 3
+\BOOKMARK [1][-]{section.4}{Fazit}{}% 4
