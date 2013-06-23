@@ -4,8 +4,7 @@
 % Um mehrere Clients erstellen zu können
 start(RegisterName) ->
   register(RegisterName, spawn(bc, loop, [])),
-    io:format("banking_client started~n").
-  
+    io:format("Banking Client wurde gestartet~n").
 loop() ->
    receive
       konto_anlegen ->
@@ -40,18 +39,13 @@ loop() ->
          loop();
       stop ->
          true,
-         io:format("banking_client closed~n");
+         io:format("Banking Client wurde beendet~n");
       {ok, Message} ->
          io:format("OK: ~p~n", [Message]),
          loop();
       {nok, Message} ->
-         io:format("NOK: ~p~n", [Message]),
+         io:format("Fehler: ~p~n", [Message]),
          loop();
        _ -> io:format("Unbekanntes Kommando~n"),
          loop()
    end.
-%, receive  {ok, Nummer} -> {reply, Nummer, blubb} end.
-
-%c(banking_server), c(banking_worker), {ok, PID} = banking_server:start(), banking_server:konto_anlegen(PID).
-
- 

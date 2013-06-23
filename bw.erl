@@ -67,6 +67,7 @@ receive
      [geld_einzahlen, ClientPId, Kontonr, Ursprung, Betrag] -> geld_einzahlen(ClientPId, Kontonr, Ursprung, Betrag);
      [geld_auszahlen, ClientPId, Kontonr, Betrag] -> geld_abheben(ClientPId, Kontonr, Betrag);
      [geld_ueberweisen, ClientPId, ZielKontonr, KontoNr, Betrag] -> geld_ueberweisen(ClientPId, ZielKontonr, KontoNr, Betrag);
+     [geld_ueberweisen_einzahlen, ClientPId, ZielKontonr, KontoNr, Betrag] -> geld_ueberweisen_einzahlen(ClientPId, ZielKontonr, KontoNr, Betrag);
      [dispokredit_beantragen, ClientPId, KontoNr] -> dispokredit_beantragen(ClientPId, KontoNr);
      [konto_sperren, ClientPId, KontoNr] -> konto_sperren(ClientPId, KontoNr);
      [konto_entsperren, ClientPId, KontoNr] -> konto_entsperren(ClientPId, KontoNr)
@@ -245,15 +246,17 @@ geld_ueberweisen(PID, ZielKontonr, Kontonr, Betrag) ->
 		false ->geld_abheben(self(), Kontonr, Betrag),
 				receive 
 					{nok, Message} -> PID ! {nok, Message};
-					{ok, _} -> 
-                           geld_einzahlen(self(), ZielKontonr, Kontonr, Betrag),
-                           receive 
-                              {nok, Message2} -> PID ! {nok, Message2};
-                              {ok, _} -> PID ! {ok, 'Geld wurde ueberwiesen'}		
-                           end
+					{ok, _} -> geld_ueberweisen_einzahlen(PID, ZielKontonr, Kontonr, Betrag) 
 				end
 	end.
 
+geld_ueberweisen_einzahlen(PID, ZielKontonr, Kontonr, Betrag) ->
+   geld_einzahlen(self(), ZielKontonr, Kontonr, Betrag),
+   receive 
+      {nok, Message2} -> PID ! {nok, Message2};
+      {ok, _} -> PID ! {ok, 'Geld wurde ueberwiesen'}		
+   end.
+   
 dispokredit_beantragen(PID, Kontonr) ->
 	Konto = daten_lesen(PID, Kontonr),
 	case kontoinfo(sperrvermerk, Konto) of

@@ -91,17 +91,21 @@ handle_info({'EXIT', TId, error}, LoopData) ->
             konto_anlegen ->
                create_transaction(konto_anlegen, [ClientPId]);
             geld_ueberweisen ->
-               [ZielKontonr, Kontonr, Betrag] = Arg,
-               [{_KontoNr, {sperrvermerk, SperrVermerkKonto1}, _Vermoegen, _Dispo, _Dispozins, _Transaktion}] = dets:lookup(konten, Kontonr),
-               [{_, {sperrvermerk, SperrVermerkKonto2}, _, _, _, _}] = dets:lookup(konten, ZielKontonr),     
-               case SperrVermerkKonto1 or SperrVermerkKonto2 of
-                  true ->
-                     % Worker soll Fehlermeldung ausgeben, dass Konto gesperrt ist
-                     create_transaction(geld_ueberweisen, [ClientPId| Arg]);
-                  false ->
-                     % Da wir nicht wissen ob ein Teil eventuell schon erledigt wurde, wird hier die Überweisung gesplittet
-                     wiederhole_transaktion(geld_auszahlen, TId, ClientPId, Kontonr, [Betrag]),
-                     wiederhole_transaktion(geld_einzahlen, TId, ClientPId, ZielKontonr, [Kontonr, Betrag])
+               [ZielKontonr, UrsprungKontonr, _Betrag] = Arg,
+                UrsprungKonto = dets:lookup(konten, UrsprungKontonr),
+               [{_KontoNrU,_SperrVermerkU, _VermoegenU, _DispoU,_DispozinsU, {_TransactionslisteU, TransaktionenUrsprung}}] = UrsprungKonto,
+               
+               GefundeneTransaktion = [ [ID] || {ID, _Einzahlung, _Zeit, _Notizen, _Wer, _Wert} <- TransaktionenUrsprung, ID =:= TId],
+               case GefundeneTransaktion of 
+               [] -> create_transaction(Action, [ClientPId|Arg]);
+               _ ->
+                     ZielKonto = dets:lookup(konten, ZielKontonr),
+                     [{_KontoNrZ,_SperrVermerkZ, _VermoegenZ, _DispoZ,_DispozinsZ, {_TransactionslisteZ, TransaktionenZiel}}] = ZielKonto,
+                     GefundeneTransaktionZiel = [ [ID_Z] || {ID_Z, _EinzahlungZ, _ZeitZ, _NotizenZ, _WerZ, _WertZ} <- TransaktionenZiel, ID_Z =:= TId],
+                     case GefundeneTransaktionZiel of 
+                        [] -> create_transaction(geld_ueberweisen_einzahlen, [ClientPId|Arg]);
+                        _ -> io:format("Nothing to repeat!~n")
+                     end
                end;
             Action ->
                [Kontonr | RestlicheArgumente] = Arg,
