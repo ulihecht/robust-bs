@@ -1,1 +1,61 @@
+\newpage
 \subsection{Client}
+Das Client Modul ist die eigentliche Schnittstelle der Applikation für den Benutzer. Mittels des Moduls kann ein Nutzer möglichst komfortabel Anfragen an den Banking Server schicken, ohne sich dabei Gedanken machen zu müssen, wie der Server an sich aufgebaut ist und angesprochen werden müsste.\\
+Um einen Client zu starten, wird die Funktion \textit{start} aufgerufen, welche als einzigen Parameter den Namen, auf den der Client registriert werden soll entgegennimmt. Alle weiteren Aktionen erfolgen ausschließlich über Nachrichten, die an den registrierten Client geschickt werden. Dies hat den Vorteil, das innerhalb einer Shell mehrere Clients gleichzeitig benutzt werden können.\\
+Die Funktion des Clients soll folgender Aufruf aus der Shell verdeutlichen:
+\begin{lstlisting} 
+ (bc@localhost)1> bc:start(client1).
+ Banking Client wurde gestartet
+ ok
+ (bc@localhost)2> client1 ! konto_anlegen.
+ konto_anlegen
+ OK: 6
+\end{lstlisting}
+Im ersten Schritt, wird ein neuer Client mit dem Namen ''\textit{client1}'' erzeugt. Danach ist es möglich, über den Client Aufträge an den Server zu schicken.\\ 
+So wird in Schritt drei mittels des Befehls ''\textit{konto\_anlegen}'' ein neues Konto angelegt. Als Antwort für die Anfrage bekommt der Client ''\textit{OK: 6}'' zurück. Dies bedeutet, das die Anfrage korrekt ausgeführt wurde, und ein neues Konto mit der Kontonummer \textit{6} angelegt wurde.\\
+Die verschiedenen Befehle, die der Client ausführen kann und deren Syntax sind in der nachfolgenden Tabelle aufgelistet.\\
+\begin{table}[H]
+\caption{Client Funktionen}
+\begin{center}
+\begin{tabular}[t]{l|l}
+\textbf{Funktion} 	& \textbf{Syntax} \\
+Konto anlegen 			& client ! \textit{konto\_anlegen}\\
+Konto löschen 			& client ! \{\textit{konto\_loeschen}, Kontonummer\}\\
+Kontostand abfragen 	& client ! \{\textit{kontostand\_abfragen}, Kontonummer\}\\
+Historie ausgeben 		& client ! \{\textit{historie}, Kontonummer\}\\
+Geld einzahlen			& client ! \{\textit{geld\_einzahlen}, Kontonummer, Betrag, Verwendungszweck\}\\
+Geld auszahlen 			& client ! \{\textit{geld\_auszahlen}, Kontonummer, Betrag\}\\
+Geld überweisen 		& client ! \{\textit{geld\_ueberweisen}, ZielKontonummer, UrsprungsKontonummer, Betrag\}\\
+Dispokredit beantragen 	& client ! \{\textit{dispokredit\_beantragen}, Kontonummer\}\\
+Konto sperren 			& client ! \{\textit{konto\_sperren}, Kontonummer\}\\
+Konto entsperren 		& client ! \{\textit{konto\_entsperren}, Kontonummer\}\\
+Client beenden 			& client ! \textit{stop}
+\end{tabular}
+\end{center}
+\end{table}
+Es ist zu beachten, dass die Nachrichten stets an den registrierten Client-Namen geschickt werden müssen. Der in der Tabelle verwendete Client-Name (\textit{client}) dient lediglich der Veranschaulichung.\\
+Funktionen, die Übergabeparameter enthalten, müssen grundsätzlich als Tupel geschickt werden und zwingend alle Argumente enthalten. Wird dem Client eine Nachricht geschickt, deren Kommando er nicht kennt, oder deren Argumente unvollständig sind, quittiert er diese mit \textit{''Unbekanntes Kommando''}.\\
+Die Rückgabe des Clients ist entweder positiv oder negativ. Konnte die Anfrage erfolgreich bearbeitet werden, gibt der Client ''\textit{OK: }'' mit den abgehangenen Rückgabewerten des Worker-Prozesses zurück. Im negativ Fall gibt der Client ''\textit{Fehler: }'' mit den angehangenen Fehlerinformation des Workers-Prozesses zurück.\\
+Als nicht erfolgreich werden lediglich fehlerhafte Anfragen gewertet, beispielsweise die Anfrage des Kontoguthabens zu einem nicht existierendem Konto. Fehlerhaftes Verhalten eines Worker-Prozesses, welches dazu führt, das für eine Anfrage ein Worker neu gestartet werden muss, bleibt für den Client verborgen.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
