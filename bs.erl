@@ -8,8 +8,8 @@
 start() -> gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 stop() -> gen_server:cast(?MODULE, stop).
 
-% This is called when a connection is made to the server
 init([]) ->
+   process_flag(trap_exit, true),
 	dets:open_file(transaction, [{file, "db_transaction"}, {type, set}]),
    spawn(virus, init, []),
    {ok, 0}.
@@ -22,47 +22,46 @@ handle_cast(stop, LoopData) ->
    {stop, normal, LoopData};
    
 handle_cast({konto_anlegen, ClientPId}, LoopData) ->
-   create_transaction(konto_anlegen, [ClientPId]),
+   erzeuge_transaktion(konto_anlegen, [ClientPId]),
    {noreply, LoopData};
     
 handle_cast({konto_loeschen, ClientPId, Kontonr}, LoopData) ->
-   create_transaction(konto_loeschen, [ClientPId, Kontonr]),
+   erzeuge_transaktion(konto_loeschen, [ClientPId, Kontonr]),
    {noreply, LoopData};
        
 handle_cast({kontostand_abfragen, ClientPId, Kontonr}, LoopData) ->
-   create_transaction(kontostand_abfragen, [ClientPId, Kontonr]),
+   erzeuge_transaktion(kontostand_abfragen, [ClientPId, Kontonr]),
    {noreply, LoopData};
    
 handle_cast({historie, ClientPId, KontoNr}, LoopData) ->
-   create_transaction(historie, [ClientPId, KontoNr]),
+   erzeuge_transaktion(historie, [ClientPId, KontoNr]),
    {noreply, LoopData};
    
 handle_cast({geld_einzahlen, ClientPId, Kontonr, Verwendungszweck, Betrag}, LoopData) ->
-   create_transaction(geld_einzahlen, [ClientPId, Kontonr, Verwendungszweck, Betrag]),
+   erzeuge_transaktion(geld_einzahlen, [ClientPId, Kontonr, Verwendungszweck, Betrag]),
    {noreply, LoopData};
    
 handle_cast({geld_auszahlen, ClientPId, KontoNr, Betrag}, LoopData) ->
-   create_transaction(geld_auszahlen, [ClientPId, KontoNr, Betrag]),
+   erzeuge_transaktion(geld_auszahlen, [ClientPId, KontoNr, Betrag]),
    {noreply, LoopData};
    
 handle_cast({geld_ueberweisen, ClientPId, ZielKontonr, KontoNr, Betrag}, LoopData) ->
-   create_transaction(geld_ueberweisen, [ClientPId, ZielKontonr, KontoNr, Betrag]),
+   erzeuge_transaktion(geld_ueberweisen, [ClientPId, ZielKontonr, KontoNr, Betrag]),
    {noreply, LoopData};
    
 handle_cast({dispokredit_beantragen, ClientPId, Kontonr}, LoopData) ->
-   create_transaction(dispokredit_beantragen, [ClientPId, Kontonr]),
+   erzeuge_transaktion(dispokredit_beantragen, [ClientPId, Kontonr]),
    {noreply, LoopData};
    
 handle_cast({konto_sperren, ClientPId, Kontonr}, LoopData) ->
-   create_transaction(konto_sperren, [ClientPId, Kontonr]),
+   erzeuge_transaktion(konto_sperren, [ClientPId, Kontonr]),
    {noreply, LoopData};
 
 handle_cast({konto_entsperren, ClientPId, Kontonr}, LoopData) ->
-   create_transaction(konto_entsperren, [ClientPId, Kontonr]),
+   erzeuge_transaktion(konto_entsperren, [ClientPId, Kontonr]),
    {noreply, LoopData}.
  
-create_transaction(Action, Arg) ->
-   process_flag(trap_exit, true),
+erzeuge_transaktion(Action, Arg) ->
    TId = spawn_link(bw, init, []),
    virus ! TId,
    dets:insert(transaction, {TId, {Action, Arg}}),
@@ -75,7 +74,7 @@ wiederhole_transaktion(Action, TId, ClientPId, Kontonummer, TransaktionsDetails)
 
    GefundeneTransaktion = [ [ID] || {ID,_Einzahlung,_Zeit,_Notizen,_Wer,_Wert} <- Transaktionen, ID =:= TId],
    case GefundeneTransaktion of 
-       [] -> create_transaction(Action, [ClientPId|[Kontonummer|TransaktionsDetails]]);
+       [] -> erzeuge_transaktion(Action, [ClientPId|[Kontonummer|TransaktionsDetails]]);
         _ -> io:format("Nothing to repeat!~n")
    end.
 
@@ -89,7 +88,7 @@ handle_info({'EXIT', TId, error}, LoopData) ->
          dets:open_file(konten, [{file, "db_konten"}, {type, set}]),
          case Action of 
             konto_anlegen ->
-               create_transaction(konto_anlegen, [ClientPId]);
+               erzeuge_transaktion(konto_anlegen, [ClientPId]);
             geld_ueberweisen ->
                [ZielKontonr, UrsprungKontonr, _Betrag] = Arg,
                 UrsprungKonto = dets:lookup(konten, UrsprungKontonr),
@@ -97,13 +96,13 @@ handle_info({'EXIT', TId, error}, LoopData) ->
                
                GefundeneTransaktion = [ [ID] || {ID, _Einzahlung, _Zeit, _Notizen, _Wer, _Wert} <- TransaktionenUrsprung, ID =:= TId],
                case GefundeneTransaktion of 
-               [] -> create_transaction(Action, [ClientPId|Arg]);
+               [] -> erzeuge_transaktion(Action, [ClientPId|Arg]);
                _ ->
                      ZielKonto = dets:lookup(konten, ZielKontonr),
                      [{_KontoNrZ,_SperrVermerkZ, _VermoegenZ, _DispoZ,_DispozinsZ, {_TransactionslisteZ, TransaktionenZiel}}] = ZielKonto,
                      GefundeneTransaktionZiel = [ [ID_Z] || {ID_Z, _EinzahlungZ, _ZeitZ, _NotizenZ, _WerZ, _WertZ} <- TransaktionenZiel, ID_Z =:= TId],
                      case GefundeneTransaktionZiel of 
-                        [] -> create_transaction(geld_ueberweisen_einzahlen, [ClientPId|Arg]);
+                        [] -> erzeuge_transaktion(geld_ueberweisen_einzahlen, [ClientPId|Arg]);
                         _ -> io:format("Nothing to repeat!~n")
                      end
                end;
