@@ -20,7 +20,8 @@ start() ->
    loop_receive(),
    receive
       stop -> stop();
-      PID -> exit(PID,error)
+      PID -> timer:sleep(500),
+             exit(PID,error)             
    end,
    start().
 			

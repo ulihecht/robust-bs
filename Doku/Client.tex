@@ -47,28 +47,6 @@ loop() ->
          gen_server:cast({bs, 'bs@localhost'}, {kontostand_abfragen, self(), KontoNr}),
          loop();
 		...
- end.
+end.
 \end{lstlisting}
 Da es sich bei dem Server um einen generischen Server handelt, erfolgt der Aufruf mittels ''\textit{gen\_server(Name, Nachricht)}''. Der Server läuft auf einem anderem Node als der Client. Deshalb ist es notwendig, als Namen nicht nur den registrierten Namen des Servers anzugeben, sondern auch den Namen des Nodes ('bs@localhost'), auf dem dieser ausgeführt wird. Als Nachricht werden neben der Aktion die durchgeführt werden soll und die dazu nötigen Argumente auch die eigene Prozess Id übergeben, damit der Worker Prozess später an den Client eine Antwort schicken kann.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

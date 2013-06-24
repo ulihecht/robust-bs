@@ -162,6 +162,7 @@ konto_anlegen(PID) ->
 	
 kontostand_abfragen(PID, Kontonr) ->
 	Konto = daten_lesen(PID, Kontonr),
+   timer:sleep(1000),
 	Kontostand = kontoinfo(vermoegen, Konto),
 	kontolog(erfragung, {"Kontostand wurde abgefragt", Kontonr, 0}, Konto),
 	PID ! {ok, Kontostand}.
@@ -169,11 +170,13 @@ kontostand_abfragen(PID, Kontonr) ->
 historie(PID, Kontonr) ->
    Konto = daten_lesen(PID, Kontonr),
    [{_ ,_Sperrvermerk, Kontostand, _MaxDispo ,_DispoZins ,Transaktionsliste}] = Konto,
+   timer:sleep(1000),
    PID ! {ok, [Transaktionsliste, Kontostand]}.
 
    
 konto_sperren(PID, Kontonr) ->
 	Konto = daten_lesen(PID, Kontonr),
+   timer:sleep(1000),
 	kontochange(sperrvermerk, true, Konto),
 	Konto2 = daten_lesen(PID, Kontonr),
 	kontolog(sperrung, {"Konto gesperrt", Kontonr, 0}, Konto2),
@@ -183,6 +186,7 @@ konto_sperren(PID, Kontonr) ->
 konto_entsperren(PID, Kontonr) ->
 	Konto = daten_lesen(PID, Kontonr),
 	kontochange(sperrvermerk, false, Konto),
+   timer:sleep(1000),
 	Konto2 = daten_lesen(PID, Kontonr),
 	kontolog(entsperrung, {"Konto entsperrt", Kontonr, 0}, Konto2),
 	PID ! {ok, 'Konto wurde entsperrt'}.
@@ -193,7 +197,9 @@ geld_einzahlen(PID, Kontonr, Kontonr, Verwendungszweck, Betrag).
 %Nur für interne Verwendung für die Überweisungen
 geld_einzahlen(PID, Kontonr, Ursprung, Verwendungszweck, Betrag) ->
 	Konto = daten_lesen(PID, Kontonr),
+   timer:sleep(1000),
 	case kontoinfo(sperrvermerk, Konto) of
+
 		true -> PID ! {nok, "Konto gesperrt"},
 				kontolog(einzahlung, {"Konto gesperrt", Kontonr, 0}, Konto);
 		false ->Kontostand = kontoinfo(vermoegen, Konto),
@@ -234,7 +240,7 @@ geld_abheben(PID, Kontonr, Betrag) ->
 							kontolog(auszahlung, {"", Kontonr, Betrag}, AktKonto_1),
 							Kontotemp = daten_lesen(PID, Kontonr),
 							Vermoegen = kontoinfo(vermoegen, Kontotemp),
-							PID ! {ok, Vermoegen}
+                     PID ! {ok, Vermoegen}
 				end
 	end
 	.
@@ -246,7 +252,8 @@ geld_ueberweisen(PID, ZielKontonr, Kontonr, Betrag) ->
 		false ->geld_abheben(self(), Kontonr, Betrag),
 				receive 
 					{nok, Message} -> PID ! {nok, Message};
-					{ok, _} -> geld_ueberweisen_einzahlen(PID, ZielKontonr, Kontonr, Betrag) 
+					{ok, _} ->  timer:sleep(1000),
+               geld_ueberweisen_einzahlen(PID, ZielKontonr, Kontonr, Betrag) 
 				end
 	end.
 
