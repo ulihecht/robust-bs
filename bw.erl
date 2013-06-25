@@ -18,7 +18,7 @@
 % konto_entsperren(PID, Kontonr)
 % geld_einzahlen(PID, Kontonr, Betrag)
 % konto_loeschen(PID, Kontonr)
-% geld_abheben(PID, Kontonr, Betrag)
+% geld_auszahlen(PID, Kontonr, Betrag)
 % geld_ueberweisen(PID, ZielKontonr, Kontonr, Betrag)
 % dispokredit_beantragen(PID, Kontonr)
 % 
@@ -58,14 +58,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 init() -> 
-io:format("init bw~n"),
 receive
      [konto_anlegen, ClientPId] -> konto_anlegen(ClientPId);
      [konto_loeschen, ClientPId, Kontonr] -> konto_loeschen(ClientPId, Kontonr);
      [kontostand_abfragen, ClientPId, Kontonr] -> kontostand_abfragen(ClientPId, Kontonr);
      [historie, ClientPId, Kontonr] -> historie(ClientPId, Kontonr);
      [geld_einzahlen, ClientPId, Kontonr, Ursprung, Betrag] -> geld_einzahlen(ClientPId, Kontonr, Ursprung, Betrag);
-     [geld_auszahlen, ClientPId, Kontonr, Betrag] -> geld_abheben(ClientPId, Kontonr, Betrag);
+     [geld_auszahlen, ClientPId, Kontonr, Betrag] -> geld_auszahlen(ClientPId, Kontonr, Betrag);
      [geld_ueberweisen, ClientPId, ZielKontonr, KontoNr, Betrag] -> geld_ueberweisen(ClientPId, ZielKontonr, KontoNr, Betrag);
      [geld_ueberweisen_einzahlen, ClientPId, ZielKontonr, KontoNr, Betrag] -> geld_ueberweisen_einzahlen(ClientPId, ZielKontonr, KontoNr, Betrag);
      [dispokredit_beantragen, ClientPId, KontoNr] -> dispokredit_beantragen(ClientPId, KontoNr);
@@ -224,7 +223,7 @@ konto_loeschen(PID, Kontonr) ->
 	end			
 	.
 	
-geld_abheben(PID, Kontonr, Betrag) ->
+geld_auszahlen(PID, Kontonr, Betrag) ->
 	Konto = daten_lesen(PID, Kontonr),
 	case kontoinfo(sperrvermerk, Konto) of
 		true -> PID ! {nok, "Konto gesperrt"},
@@ -249,7 +248,7 @@ geld_ueberweisen(PID, ZielKontonr, Kontonr, Betrag) ->
 	case kontoinfo(sperrvermerk, daten_lesen(PID, ZielKontonr)) or kontoinfo(sperrvermerk, daten_lesen(PID, Kontonr)) of
 		true -> PID ! {nok, "Eins der Konten ist gesperrt"},
 				kontolog(ueberweisung, {"Eins der Konten ist gesperrt", Kontonr, 0}, daten_lesen(PID, Kontonr));
-		false ->geld_abheben(self(), Kontonr, Betrag),
+		false ->geld_auszahlen(self(), Kontonr, Betrag),
 				receive 
 					{nok, Message} -> PID ! {nok, Message};
 					{ok, _} ->  timer:sleep(1000),

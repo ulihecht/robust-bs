@@ -64,12 +64,14 @@ erzeuge_transaktion(Action, Arg) ->
    % Worker starten und seine PID ermitteln, die als Transaktions-ID verwendet wird
    TId = spawn_link(bw, init, []),
    virus ! TId,
-   % Transaktion zur Transaktionsliste hinzufÃ¼gen
+   % Transaktion zur Transaktionsliste hinzufügen
    dets:insert(transaction, {TId, {Action, Arg}}),
+   [ClientPId|_] = Arg,
+   io:format("Starte Transaktion: ~p von Client: ~p mit Worker: ~p~n", [Action, ClientPId, TId]),
    % Transaktionsauftrag an Worker senden
    TId ! [Action|Arg].
    
-% Wird aufgerufen, falls der fÃ¼r die Transaktion zustÃ¤ndige Worker abgestÃ¼rzt ist
+% Wird aufgerufen, falls der für die Transaktion zuständige Worker abgestürzt ist
 wiederhole_transaktion(Action, TId, ClientPId, Kontonummer, TransaktionsDetails) ->
    Konto = dets:lookup(konten, Kontonummer),
    [{_KontoNr,_SperrVermerk, _Vermoegen, _Dispo,_Dispozins, {_Transactionsliste, Transaktionen}}] = Konto,
@@ -82,16 +84,16 @@ wiederhole_transaktion(Action, TId, ClientPId, Kontonummer, TransaktionsDetails)
          % Nicht gefunden => Transaktion muss wiederholt werden
          erzeuge_transaktion(Action, [ClientPId|[Kontonummer|TransaktionsDetails]]);
       _ ->
-         % Gefunden = Worker ist nach erfolgreicher DurchfÃ¼hrung der Transaktion abgestÃ¼rzt
-         io:format("Nothing to repeat!~n")
+         % Gefunden = Worker ist nach erfolgreicher Durchführung der Transaktion abgestürzt
+         io:format("Transaktion bereits erfolgreich durchlaufen!~n")
    end.
 
-% Wichtig: Aufbau der Argumente fÃ¼r Transaktionen: [ClientPId, Kontonummer, ...] !
+% Wichtig: Aufbau der Argumente für Transaktionen: [ClientPId, Kontonummer, ...] !
 handle_info({'EXIT', TId, error}, LoopData) -> 
    fprof:trace(start),
-   io:format("Worker Exit: ~p (~p)~n", [error, TId]),
+   io:format("Worker abgestuerzt: ~p (~p)~n", [error, TId]),
    case dets:lookup(transaction, TId) of
-      [] -> io:format("Nothing to repeat!~n");
+      [] -> io:format("Transaktion bereits erfolgreich durchlaufen!~n");
       [{TId, {Action, [ClientPId|Arg]}}] ->
          dets:delete(transaction, TId),
          dets:open_file(konten, [{file, "db_konten"}, {type, set}]),
@@ -109,7 +111,7 @@ handle_info({'EXIT', TId, error}, LoopData) ->
                      % keine Transaktion gefunden => Transaktion muss wiederholt werden
                      erzeuge_transaktion(Action, [ClientPId|Arg]);
                   _ ->
-                     % Transaktion gefunden; wurde sie auch auf dem Zielkonto durchgefÃ¼hrt?
+                     % Transaktion gefunden; wurde sie auch auf dem Zielkonto durchgeführt?
                      ZielKonto = dets:lookup(konten, ZielKontonr),
                      [{_KontoNrZ,_SperrVermerkZ, _VermoegenZ, _DispoZ,_DispozinsZ, {_TransactionslisteZ, TransaktionenZiel}}] = ZielKonto,
                      GefundeneTransaktionZiel = [ [ID_Z] || {ID_Z, _EinzahlungZ, _ZeitZ, _NotizenZ, _WerZ, _WertZ} <- TransaktionenZiel, ID_Z =:= TId],
@@ -118,7 +120,7 @@ handle_info({'EXIT', TId, error}, LoopData) ->
                            % nein => Nur am Zielkonto wiederholen
                            erzeuge_transaktion(geld_ueberweisen_einzahlen, [ClientPId|Arg]);
                         _ ->
-                           io:format("Nothing to repeat!~n")
+                           io:format("Transaktion bereits erfolgreich durchlaufen!~n")
                      end
                end;
             Action ->
@@ -131,7 +133,7 @@ handle_info({'EXIT', TId, error}, LoopData) ->
    {noreply, LoopData};
 
 handle_info(prof_start, LoopData) -> 
-   io:format("profiling started~n"),
+   io:format("Profiling gestartet~n"),
    fprof:trace(start),
    cprof:start(),
    {noreply, LoopData};
@@ -141,18 +143,18 @@ handle_info(prof_stop, LoopData) ->
    fprof:trace(stop),
    fprof:profile(),
    fprof:analyse([{dest, []}]),
-   io:format("profiling stopped~n"),
+   io:format("Profiling gestoppt~n"),
    {noreply, LoopData};
    % Wird aufgerufen, falls der Worker erfolgreich beendet wurde
    handle_info({'EXIT', PId, normal}, LoopData) -> 
-      io:format("Worker Exit (not handled): ~p (~p)~n", [normal, PId]),
+      io:format("Transaktion beendet (Worker: ~p)~n", [PId]),
       % Transaktion
       dets:delete(transaction, PId),
 {noreply, LoopData}.
-   
-% Unklar:
+
+
 terminate(Reason, _LoopData) ->
    dets:close(transaction),
-   io:format("terminate: ~p~n", [Reason]),
+   io:format("BEENDET: ~p~n", [Reason]),
    virus ! stop.
 code_change(_OldVersion, LoopData, _Extra) -> {ok, LoopData}.
