@@ -130,11 +130,24 @@ handle_info({'EXIT', TId, error}, LoopData) ->
    fprof:trace(stop),
    {noreply, LoopData};
 
-% Wird aufgerufen, falls der Worker erfolgreich beendet wurde
-handle_info({'EXIT', PId, normal}, LoopData) -> 
-   io:format("Worker Exit (not handled): ~p (~p)~n", [normal, PId]),
-   % Transaktion
-   dets:delete(transaction, PId),
+handle_info(prof_start, LoopData) -> 
+   io:format("profiling started~n"),
+   fprof:trace(start),
+   cprof:start(),
+   {noreply, LoopData};
+
+handle_info(prof_stop, LoopData) -> 
+   cprof:pause(),
+   fprof:trace(stop),
+   fprof:profile(),
+   fprof:analyse([{dest, []}]),
+   io:format("profiling stopped~n"),
+   {noreply, LoopData};
+   % Wird aufgerufen, falls der Worker erfolgreich beendet wurde
+   handle_info({'EXIT', PId, normal}, LoopData) -> 
+      io:format("Worker Exit (not handled): ~p (~p)~n", [normal, PId]),
+      % Transaktion
+      dets:delete(transaction, PId),
 {noreply, LoopData}.
    
 % Unklar:

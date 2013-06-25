@@ -197,7 +197,7 @@ geld_einzahlen(PID, Kontonr, Kontonr, Verwendungszweck, Betrag).
 %Nur für interne Verwendung für die Überweisungen
 geld_einzahlen(PID, Kontonr, Ursprung, Verwendungszweck, Betrag) ->
 	Konto = daten_lesen(PID, Kontonr),
-   timer:sleep(1000),
+   %timer:sleep(1000),
 	case kontoinfo(sperrvermerk, Konto) of
 
 		true -> PID ! {nok, "Konto gesperrt"},
