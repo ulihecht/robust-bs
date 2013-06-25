@@ -1,0 +1,155 @@
+\subsection{worker}
+Im Folgenden wird genauer auf die Implementierung des Worker-Prozesses eingegangen. Es wird die Strukturierung des Kontos erklärt, sowie der Aufbau einer Transaktionsliste und welche Transaktionen existieren. Weiterhin wird Beispielhaft auf externe und interne Funktionen des Workers eingegangen.
+\subsubsection{Allgemeines}
+Das Worker Modul ist ein Prozess in dem die Anfrage des Clients verarbeitet wird. Es wird vom Server für jede Benutzereingabe des Clients aufgerufen. Das Modul wird durch den Server mithilfe der \textit{init()} - Funktion aufgerufen. Um dem Worker anschließend mitteilen zu können, welche Funktion er ausführen soll, bleibt dieser in einem \textit{receive} State in welchem er den Befehl plus Übergabeparameter auf interne Funktionen mappt. Dies ist anhand von folgendem Codebeispiel nachvollziehbar.
+\begin{lstlisting}
+ init() -> 
+ 	receive
+ 	     [konto_anlegen, ClientPId] -> konto_anlegen(ClientPId);
+ 	     [konto_loeschen, ClientPId, Kontonr] -> konto_loeschen(ClientPId, Kontonr);
+ 	     [kontostand_abfragen, ClientPId, Kontonr] -> kontostand_abfragen(ClientPId, Kontonr);
+ 	     ...
+ 	end.
+\end{lstlisting}
+\subsubsection{Das Konto}
+Das Konto ist das Herzstück des Servers und stellt das Konto des Benutzers dar. Es kann mithilfe des Aufrufs \textit{konto\_anlegen} angelegt und mit diversen weiteren Funktionen kann es editiert werden. So kann ein Sperrvermerk auf das Konto gelegt werden, als auch natürlich Geld eingezahlt und abgehoben werden. Das Konto enthält Informationen über das Vermögen des Besitzers, wie hoch der Dispokredit ist, wie stark dieser verzinst wird, ein Sperrvermerk und weiterhin noch eine Transaktionsliste. In dem Workermodul ist dies folgendermaßen realisiert worden:
+\begin{lstlisting}
+ {KONTONUMMER, 
+	{sperrvermerk, false/true},
+ 	{vermoegen, VERMÖGEN},
+	{maxDispo, DISPOHÖHE},
+	{dispoZins, DISPOZINS},
+	{transaktionsliste, TRANSAKTIONSLISTE}
+ }
+\end{lstlisting}
+Folgende Tabelle zeigt alle Funktionen, mit denen das Konto manipuliert werden kann.\\
+\begin{center}
+\begin{tabular}{p{5 cm}|p{9 cm}}
+Item & Funktion \\
+				\hline\hline
+Kontonummer & konto\_anlegen \\
+& konto\_loeschen \\
+				\hline
+Sperrvermerk & konto\_sperren \\
+& konto\_entsperren \\
+				\hline
+Vermögen & geld\_einzahlen \\
+& geld\_abheben \\
+& geld\_ueberweisen\\
+				\hline
+DispoZins und MaxDispo & dispokredit\_beantragen \\
+				\hline
+Transaktionsliste & Auf die Transaktionsliste kann nicht von außen zugegriffen werden, da diese bei jeder Manipulation des Kontos automatisch aktualisiert wird .
+\end{tabular}\\
+\end{center}
+Um das aktuelle Vermögen eines Kundenkontos zu bekommen kann die Funktion \textit{kontostand\_abfragen} aufgerufen werden. 
+\subsubsection{Die Transaktionsliste}
+Die \textit{Transaktionsliste} dokumentiert alle Zugriffe, welche mit dem Konto stattfinden. Sei dies nun Vermögen transferieren, oder dass eine Überweißung getätigt wird. Sie ist dem in der realen Welt vorhanden Kontoauszug nachempfunden und hat deswegen auch einige fest definierte Atome für die Typifizierung der einzelnen Einträge.
+\begin{itemize}
+\item \textit{erstellung}
+\item \textit{erfragung}
+\item \textit{sperrung}
+\item \textit{entsperrung}
+\item \textit{einzahlung}
+\item \textit{loeschung}
+\item \textit{auszahlung}
+\item \textit{ueberweisung}
+\end{itemize}
+Diese Atome stehen an zweiter Stelle, direkt nach der \textit{Transaktions-ID}. Die \textit{Transaktions-ID} ist in allen Konten einmalig und wird vom Server verwendet um zu überprüfen ob die Transaktion nach einem Fehler erneut ausgeführt werden muss (Siehe: Server). Weiterhin sind in der \textit{Transaktions-ID} Felder vorgesehen, wie das Datum und die Uhrzeit zu der auf das Konto zugegriffen wurde, zusätzliche Notizen, die Person, welche auf das Konto zugegriffen hat und außerdem noch der Betrag um den sich ein Feld änderte. 
+\subsubsection{Worker-Funktionen}
+Im Client wird zwischen 2 verschiedenen Arten von Funktionen unterschieden. Es gibt "Externe Funktionen" und "Interne Funktionen". Die externen Funktionen werden vom Server initialisiert und haben schlagenden Charakter. Interne Funktionen hingegen existieren um Übersichtlichkeit und Struktur in das Programm zu bringen, als auch damit Funktionen nicht mehrfach implementiert werden müssen, wie z. B.: Schreib-/ Lesezugriffe auf die Datenbank.
+
+\paragraph{Interne Funktionen}
+Die internen Funktionen sind Methoden, welche von den externen Funktionen benötigt werden. Sie werden von allen externen Funktionen benutzt und können in drei Bereiche unterteilt werden.
+\subparagraph{Error Handling}
+ kann nur von der internen Funktion \textit{daten\_lesen} aufgerufen werden, da ein kritischer Fehler, welcher nicht durch den Server abgefangen werden kann, nur dann entsteht wenn die Datenbank nicht geöffnet oder erstellt werden kann.
+\subparagraph{Datenbankinteraktionen} wurden um sicher zu gehen mit dem Modul \textit{dets} realisiert. Es garantiert, dass mehrere Prozesse gleichzeitig aus der Datenbank lesen und schreiben können. Alle externen Funktionen, welche ein Konto manipulieren, rufen in ihrem Quellcode, vielleicht auch über weitere interne Funktionen, die Methoden \textit{daten\_lesen} und \textit{daten\_schreiben} auf. In folgenden Beispielcode wird die Funktion \textit{daten\_lesen} beschrieben.
+\begin{lstlisting}
+ daten_schreiben(Konto) -> 
+ 	dets:open_file(konten, [{file, "db_konten"}, {type, set}]),
+ 	dets:insert(konten, Konto),
+ 	dets:close(konten).	
+\end{lstlisting}
+\subparagraph{Kontoänderungen} geschehen über \textit{kontoinfo} oder \textit{kontolog}. Ist eine bestimmte Information des Kontos gesucht, kann diese mithilfe der Funktion \textit{kontoinfo} abgefragt werden.
+\\
+\begin{center}
+\begin{tabular}{p{3 cm}|p{3 cm}|p{3 cm}|p{5 cm}}
+Funktion & Übergabeparameter & Rückgabewert & Kurzbeschreibung \\
+				\hline
+				\hline
+kontoinfo & 
+Feld; Konto & 
+Inhalt des Feldes & 
+extrahiert den Wert des gesuchten Feldes und gibt diesen zurück.\\ \hline
+
+kontolog & 
+Operation; {Notizen, Kontonummer, Betrag}; Konto & 
+Aktualisiertes Konto & 
+schreibt Typifizierung (Siehe Transaktionsliste) zusammen mit den weiteren Parametern in das Konto.\\ \hline
+
+kontochange & 
+Feld; Wert; Konto & 
+Aktualisiertes Konto & 
+schreibt in das entsprechende Feld im Konto den übergebenen Wert.\\ \hline
+\end{tabular}\\
+\end{center}
+\paragraph{Externe Funktionen}
+Die externen Funktionen zeichnen sich dadurch aus, dass diese von dem Server aus aufgerufen werden können. Sie spiegeln die Interaktionsmöglichkeit zwischen Client und dem Server wieder. Folgende Tabelle zeigt übersichtlich, welche Funktionen bereits existieren, zusätzlich werden noch Übergabeparameter, Rückgabewerte und eine Kurzbeschreibung angezeigt.
+\\
+\begin{center}
+\begin{tabular}{p{3 cm}|p{3 cm}|p{3 cm}|p{5 cm}}
+Funktion & Übergabeparameter & Rückgabewert & Kurzbeschreibung \\
+				\hline
+				\hline
+konto\_anlegen & 
+PID des Clients & 
+\{ok, Kontonummer\} & 
+legt ein neues Konto in der Datenbank an. Existiert die Datenbank nicht, wird eine neue angelegt.\\ \hline
+
+kontostand\_abfragen & 
+PID des Clients; Kontonummer & 
+\{ok, Kontostand\} & 
+liest das aktuelle Vermögen mithilfe der Kontonummer aus dem angegebenen Konto.\\ \hline
+
+history & 
+PID des Clients; Kontonummer & 
+\{ok, [Transaktionsliste, Kontostand\} & 
+gibt alle Zugriffe, welche mit dem Konto durchgeführt wurden, zusammen mit dem aktuellen Kontostand zurück.\\ \hline
+
+konto\_sperren & 
+PID des Clients; Kontonummer & 
+\{ok, 'Konto wurde gesperrt'\} & 
+setzt den Sperrvermerk im Konto auf \textit{true}\\ \hline
+
+konto\_entsperren & 
+PID des Clients; Kontonummer & 
+\{ok, 'Konto wurde entsperrt'\} & 
+setzt den Sperrvermerk im Konto auf \textit{false}\\ \hline
+
+geld\_einzahlen & 
+PID des Clients; Kontonummer; Verwendungszweck; Betrag & 
+\{ok, Vermoegen\}; \{nok, 'Konto gesperrt'\} & 
+zahlt auf das in der Kontonummer angegebene Konto den Betrag ein, und fügt in der Transaktionsliste als Notiz den Verwendungszweck hinzu.\\ \hline
+
+konto\_loeschen & 
+PID des Clients; Kontonummer & 
+\{ok, Kontonummer\}; \{nok, 'Konto gesperrt'\} & 
+Wenn das Konto nicht gesperrt ist, wird es gelöscht.\\ \hline
+
+geld\_abheben & 
+PID des Clients; Kontonummer; Betrag & 
+\{ok, Vermoegen\}; \{nok, 'Konto gesperrt'\}; \{nok, 'Nicht genug Geld'\} & 
+Wenn genug Geld auf dem Konto ist kann eine Auszahlung stattfinden, dies schließt den Dispokredit mit ein.\\ \hline
+
+geld\_ueberweisen & 
+PID des Clients; Ziel-Kontonummer; Kontonummer; Betrag & 
+\{ok, 'Geld wurde ueberwiesen'\}; \{nok, 'Eins der Konten ist gesperrt'\}; \{nok, 'Nicht genug Geld'\} & 
+Hier wird von Kontonummer zu Ziel-Kontonummer der Betrag überwiesen.\\ \hline
+
+dispokredit\_beantragen & 
+PID des Clients; Kontonummer & 
+\{ok, 'Dispokredit'\}; \{nok, 'Konto gesperrt'\} & 
+Es wird ein Dispokredit von 10\% des Vermögens gewährt und ein DispoZins auf 12\% gesetzt.\\
+
+\end{tabular}\\
+\end{center}
