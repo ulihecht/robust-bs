@@ -1,0 +1,80 @@
+Server:  erl -name bs@188.104.34.6 -setcookie robust
+Client:  erl -name xy@localhost -setcookie robust -kernel
+
+Client starten -> bc:start(c, 'bs@188.104.34.6').
+
+//Grundlegende Funktionen
+c ! konto_anlegen.
+c ! {kontostand_abfragen, KontoNr}.
+c ! {geld_einzahlen, KontoNr, Verwendung, Betrag}.
+c ! {kontostand_abfragen, KontoNr}.
+c ! {geld_ueberweisen, Ziel, Ursprung, Betrag}.
+c ! {kontostand_abfragen, KontoNr}.
+c ! {geld_auszahlen, KontoNr, Betrag}.
+
+//Dispofunktion
+c ! {kontostand_abfragen, KontoNr}.
+c ! {geld_auszahlen, KontoNr, Betrag}.
+c ! {dispokredit_beantragen, KontoNr}.
+c ! {geld_auszahlen, KontoNr, Betrag}.
+c ! {kontostand_abfragen, KontoNr}.
+
+
+
+//Konto sperren entsperren
+c ! {konto_sperren, KontoNr}.
+c ! {geld_auszahlen, KontoNr, Betrag}.
+c ! {konto_entsperren, KontoNr}.
+c ! {geld_auszahlen, KontoNr, Betrag}.
+
+//Restliche Funktionen
+c ! {historie, KontoNr}.
+c ! {konto_loeschen, KontoNr}.
+
+
+/*++++++++++++++++++++++
+Profiling
+++++++++++++++++++++++++*/
+c ! {geld_auszahlen, KontoNr, Betrag}.
+
+//starten
+bs ! prof_start.
+
+//beenden
+
+bs ! prof_stop.
+
+//analyse
+
+cprof:analyse(bs).
+cprof:analyse(bw).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Übers Internet:
+Server:  erl -name bs@188.104.34.6 -setcookie robust -kernel inet_dist_listen_min 3456 inet_dist_listen_max 3456
+Client:  erl -name xy -setcookie
