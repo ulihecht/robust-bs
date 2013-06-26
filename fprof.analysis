@@ -6,164 +6,732 @@
   {details, true}]}.
 
 %                                               CNT       ACC       OWN        
-[{ totals,                                      925,15953.096,    1.541}].  %%%
+[{ totals,                                      721,37172.023,    1.192}].  %%%
 
 
 %                                               CNT       ACC       OWN        
-[{ "<0.168.0>",                                 247,undefined,    0.389}].   %%
+[{ "<0.1042.0>",                                227,undefined,    0.386},    %%
+ { spawned_by, "<0.39.0>"},
+ { spawned_as, {bw,init,[]}},
+ { initial_calls, [{bw,init,0},{bw,init,0}]}].
 
-{[{{proc_lib,init_p_do_apply,3},                  0,15953.069,    0.001},      
-  {undefined,                                     0,    0.011,    0.000},      
-  {{gen_server,dispatch,3},                       3,    0.000,    0.009}],     
- { {bs,handle_info,2},                            3,15953.080,    0.010},     %
- [{{gen_server,handle_common_reply,6},            1,15953.068,    0.001},      
-  {{io,format,2},                                 3,    0.068,    0.006},      
-  {{dets,delete,2},                               3,    0.042,    0.006},      
-  {{fprof,just_call,2},                           0,    0.011,    0.001}]}.    
+{[{undefined,                                     1,   47.125,    0.003},      
+  {{bw,init,0},                                   1,    0.000,    0.001}],     
+ { {bw,init,0},                                   2,   47.125,    0.004},     %
+ [{{bw,geld_auszahlen,3},                         1,   47.073,    0.009},      
+  {suspend,                                       2,    0.048,    0.000},      
+  {{bw,init,0},                                   1,    0.000,    0.001}]}.    
 
-{[{undefined,                                     0,15953.069,    0.000}],     
- { {proc_lib,init_p_do_apply,3},                  0,15953.069,    0.000},     %
- [{{bs,handle_info,2},                            0,15953.069,    0.001}]}.    
+{[{{bw,init,0},                                   1,   47.073,    0.009}],     
+ { {bw,geld_auszahlen,3},                         1,   47.073,    0.009},     %
+ [{{bw,kontolog,3},                               1,   16.024,    0.003},      
+  {{bw,kontochange,3},                            1,   15.993,    0.002},      
+  {{bw,daten_lesen,2},                            2,   15.043,    0.010},      
+  {{bw,kontoinfo,2},                              4,    0.004,    0.004}]}.    
 
-{[{{bs,handle_info,2},                            1,15953.068,    0.001},      
-  {{gen_server,handle_msg,5},                     7,    0.000,    0.007}],     
- { {gen_server,handle_common_reply,6},            8,15953.068,    0.008},     %
- [{{gen_server,loop,6},                           7,15953.067,    0.014},      
-  {{gen_server,terminate,6},                      1,    0.050,    0.002}]}.    
-
-{[{{gen_server,handle_common_reply,6},            7,15953.067,    0.014}],     
- { {gen_server,loop,6},                           7,15953.067,    0.014},     %
- [{suspend,                                       7,15937.700,    0.000},      
-  {{gen_server,decode_msg,8},                     7, 5546.081,    0.007}]}.    
-
-{[{{gen_server,loop,6},                           7,15937.700,    0.000},      
-  {{dets,req,2},                                  6,   14.994,    0.000},      
-  {{io,wait_io_mon_reply,2},                      7,    0.007,    0.000},      
-  {{gen,do_call,4},                               2,    0.004,    0.000},      
-  {{erlang,trace_pattern,3},                      1,    0.001,    0.000}],     
- { suspend,                                      23,15952.706,    0.000},     %
+{[{{gen,do_call,4},                               8,   30.764,    0.000},      
+  {{dets,req,2},                                  4,   15.927,    0.000},      
+  {{bw,init,0},                                   2,    0.048,    0.000}],     
+ { suspend,                                      14,   46.739,    0.000},     %
  [ ]}.
 
-{[{{gen_server,loop,6},                           7, 5546.081,    0.007}],     
- { {gen_server,decode_msg,8},                     7, 5546.081,    0.007},     %
- [{{gen_server,handle_msg,5},                     7, 5546.080,    0.014}]}.    
+{[{{bw,kontolog,3},                               1,   16.019,    0.002},      
+  {{bw,geld_auszahlen,3},                         1,   15.993,    0.002}],     
+ { {bw,kontochange,3},                            2,   32.012,    0.004},     %
+ [{{bw,daten_schreiben,1},                        2,   32.008,    0.006}]}.    
 
-{[{{gen_server,decode_msg,8},                     7, 5546.080,    0.014}],     
- { {gen_server,handle_msg,5},                     7, 5546.080,    0.014},     %
- [{{gen_server,dispatch,3},                       7,   15.275,    0.007},      
-  {{gen_server,handle_common_reply,6},            7,    0.000,    0.007}]}.    
+{[{{bw,kontochange,3},                            2,   32.008,    0.006}],     
+ { {bw,daten_schreiben,1},                        2,   32.008,    0.006},     %
+ [{{dets,insert,2},                               2,   15.951,    0.004},      
+  {{dets,close,1},                                2,   15.945,    0.004},      
+  {{dets,open_file,2},                            2,    0.106,    0.006}]}.    
 
-{[{{gen_server,handle_msg,5},                     7,   15.275,    0.007}],     
- { {gen_server,dispatch,3},                       7,   15.275,    0.007},     %
- [{{bs,handle_cast,2},                            4,   15.149,    0.008},      
-  {{bs,handle_info,2},                            3,    0.000,    0.009}]}.    
+{[{{dets_server,close,1},                         4,   30.828,    0.008},      
+  {{dets_server,open_file,2},                     4,    0.080,    0.008}],     
+ { {dets_server,call,1},                          8,   30.908,    0.016},     %
+ [{{gen_server,call,3},                           8,   30.868,    0.016},      
+  {{dets_server,ensure_started,0},                8,    0.024,    0.016}]}.    
 
-{[{{gen_server,dispatch,3},                       4,   15.149,    0.008}],     
- { {bs,handle_cast,2},                            4,   15.149,    0.008},     %
- [{{bs,erzeuge_transaktion,2},                    3,   15.117,    0.012},      
-  {{dets,close,1},                                1,    0.024,    0.002}]}.    
+{[{{dets_server,call,1},                          8,   30.868,    0.016}],     
+ { {gen_server,call,3},                           8,   30.868,    0.016},     %
+ [{{gen,call,4},                                  8,   30.852,    0.016}]}.    
 
-{[{{bs,handle_cast,2},                            3,   15.117,    0.012}],     
- { {bs,erzeuge_transaktion,2},                    3,   15.117,    0.012},     %
- [{{dets,insert,2},                               3,   15.030,    0.006},      
+{[{{gen_server,call,3},                           8,   30.852,    0.016}],     
+ { {gen,call,4},                                  8,   30.852,    0.016},     %
+ [{{gen,do_call,4},                               8,   30.828,    0.040},      
+  {{erlang,whereis,1},                            8,    0.008,    0.008}]}.    
+
+{[{{bw,daten_schreiben,1},                        2,   15.945,    0.004},      
+  {{bw,daten_lesen,2},                            2,   14.895,    0.004}],     
+ { {dets,close,1},                                4,   30.840,    0.008},     %
+ [{{dets_server,close,1},                         4,   30.832,    0.004}]}.    
+
+{[{{dets,close,1},                                4,   30.832,    0.004}],     
+ { {dets_server,close,1},                         4,   30.832,    0.004},     %
+ [{{dets_server,call,1},                          4,   30.828,    0.008}]}.    
+
+{[{{gen,call,4},                                  8,   30.828,    0.040}],     
+ { {gen,do_call,4},                               8,   30.828,    0.040},     %
+ [{suspend,                                       8,   30.764,    0.000},      
+  {{erlang,send,3},                               8,    0.008,    0.008},      
+  {{erlang,monitor,2},                            8,    0.008,    0.008},      
+  {{erlang,demonitor,2},                          8,    0.008,    0.008}]}.    
+
+{[{{bw,geld_auszahlen,3},                         1,   16.024,    0.003}],     
+ { {bw,kontolog,3},                               1,   16.024,    0.003},     %
+ [{{bw,kontochange,3},                            1,   16.019,    0.002},      
+  {{erlang,time,0},                               1,    0.001,    0.001},      
+  {{erlang,date,0},                               1,    0.001,    0.001}]}.    
+
+{[{{dets,insert,2},                               2,   15.947,    0.004},      
+  {{dets,lookup,2},                               2,    0.028,    0.004}],     
+ { {dets,treq,2},                                 4,   15.975,    0.008},     %
+ [{{dets,req,2},                                  4,   15.955,    0.018},      
+  {{dets_server,get_pid,1},                       4,    0.012,    0.008}]}.    
+
+{[{{dets,treq,2},                                 4,   15.955,    0.018}],     
+ { {dets,req,2},                                  4,   15.955,    0.018},     %
+ [{suspend,                                       4,   15.927,    0.000},      
+  {{erlang,monitor,2},                            4,    0.004,    0.004},      
+  {{erlang,demonitor,1},                          4,    0.004,    0.004},      
+  {garbage_collect,                               2,    0.002,    0.002}]}.    
+
+{[{{bw,daten_schreiben,1},                        2,   15.951,    0.004}],     
+ { {dets,insert,2},                               2,   15.951,    0.004},     %
+ [{{dets,treq,2},                                 2,   15.947,    0.004}]}.    
+
+{[{{bw,geld_auszahlen,3},                         2,   15.043,    0.010}],     
+ { {bw,daten_lesen,2},                            2,   15.043,    0.010},     %
+ [{{dets,close,1},                                2,   14.895,    0.004},      
+  {{dets,open_file,2},                            2,    0.104,    0.006},      
+  {{dets,lookup,2},                               2,    0.032,    0.004},      
+  {{bw,error_handling,1},                         2,    0.002,    0.002}]}.    
+
+{[{{bw,daten_schreiben,1},                        2,    0.106,    0.006},      
+  {{bw,daten_lesen,2},                            2,    0.104,    0.006}],     
+ { {dets,open_file,2},                            4,    0.210,    0.012},     %
+ [{{dets,defaults,2},                             4,    0.114,    0.016},      
+  {{dets_server,open_file,2},                     4,    0.084,    0.004}]}.    
+
+{[{{dets,open_file,2},                            4,    0.114,    0.016}],     
+ { {dets,defaults,2},                             4,    0.114,    0.016},     %
+ [{{lists,foldl,3},                               4,    0.076,    0.008},      
+  {{dets,to_list,1},                              4,    0.014,    0.009},      
+  {{timer,minutes,1},                             4,    0.004,    0.004},      
+  {{dets,is_comp_min_max,1},                      4,    0.004,    0.004}]}.    
+
+{[{{dets,open_file,2},                            4,    0.084,    0.004}],     
+ { {dets_server,open_file,2},                     4,    0.084,    0.004},     %
+ [{{dets_server,call,1},                          4,    0.080,    0.008}]}.    
+
+{[{{dets,defaults,2},                             4,    0.076,    0.008},      
+  {{lists,foldl,3},                               8,    0.000,    0.012}],     
+ { {lists,foldl,3},                              12,    0.076,    0.020},     %
+ [{{dets,'-defaults/2-fun-0-',2},                 8,    0.056,    0.008},      
+  {{lists,foldl,3},                               8,    0.000,    0.012}]}.    
+
+{[{{lists,foldl,3},                               8,    0.056,    0.008}],     
+ { {dets,'-defaults/2-fun-0-',2},                 8,    0.056,    0.008},     %
+ [{{dets,repl,2},                                 8,    0.048,    0.024}]}.    
+
+{[{{dets,'-defaults/2-fun-0-',2},                 8,    0.048,    0.024}],     
+ { {dets,repl,2},                                 8,    0.048,    0.024},     %
+ [{{dets,mem,2},                                  4,    0.012,    0.008},      
+  {{erlang,setelement,3},                         8,    0.008,    0.008},      
+  {{dets,to_list,1},                              4,    0.004,    0.004}]}.    
+
+{[{{bw,daten_lesen,2},                            2,    0.032,    0.004}],     
+ { {dets,lookup,2},                               2,    0.032,    0.004},     %
+ [{{dets,treq,2},                                 2,    0.028,    0.004}]}.    
+
+{[{{dets_server,call,1},                          8,    0.024,    0.016}],     
+ { {dets_server,ensure_started,0},                8,    0.024,    0.016},     %
+ [{{erlang,whereis,1},                            8,    0.008,    0.008}]}.    
+
+{[{{dets,defaults,2},                             4,    0.014,    0.009},      
+  {{dets,repl,2},                                 4,    0.004,    0.004}],     
+ { {dets,to_list,1},                              8,    0.018,    0.013},     %
+ [{{erlang,atom_to_list,1},                       4,    0.004,    0.004},      
+  {garbage_collect,                               1,    0.001,    0.001}]}.    
+
+{[{{gen,call,4},                                  8,    0.008,    0.008},      
+  {{dets_server,ensure_started,0},                8,    0.008,    0.008}],     
+ { {erlang,whereis,1},                           16,    0.016,    0.016},     %
+ [ ]}.
+
+{[{{gen,do_call,4},                               8,    0.008,    0.008},      
+  {{dets,req,2},                                  4,    0.004,    0.004}],     
+ { {erlang,monitor,2},                           12,    0.012,    0.012},     %
+ [ ]}.
+
+{[{{dets,treq,2},                                 4,    0.012,    0.008}],     
+ { {dets_server,get_pid,1},                       4,    0.012,    0.008},     %
+ [{{ets,lookup_element,3},                        4,    0.004,    0.004}]}.    
+
+{[{{dets,repl,2},                                 4,    0.012,    0.008}],     
+ { {dets,mem,2},                                  4,    0.012,    0.008},     %
+ [{{lists,member,2},                              4,    0.004,    0.004}]}.    
+
+{[{{dets,repl,2},                                 8,    0.008,    0.008}],     
+ { {erlang,setelement,3},                         8,    0.008,    0.008},     %
+ [ ]}.
+
+{[{{gen,do_call,4},                               8,    0.008,    0.008}],     
+ { {erlang,send,3},                               8,    0.008,    0.008},     %
+ [ ]}.
+
+{[{{gen,do_call,4},                               8,    0.008,    0.008}],     
+ { {erlang,demonitor,2},                          8,    0.008,    0.008},     %
+ [ ]}.
+
+{[{{dets,defaults,2},                             4,    0.004,    0.004}],     
+ { {timer,minutes,1},                             4,    0.004,    0.004},     %
+ [ ]}.
+
+{[{{dets,mem,2},                                  4,    0.004,    0.004}],     
+ { {lists,member,2},                              4,    0.004,    0.004},     %
+ [ ]}.
+
+{[{{dets_server,get_pid,1},                       4,    0.004,    0.004}],     
+ { {ets,lookup_element,3},                        4,    0.004,    0.004},     %
+ [ ]}.
+
+{[{{dets,req,2},                                  4,    0.004,    0.004}],     
+ { {erlang,demonitor,1},                          4,    0.004,    0.004},     %
+ [ ]}.
+
+{[{{dets,to_list,1},                              4,    0.004,    0.004}],     
+ { {erlang,atom_to_list,1},                       4,    0.004,    0.004},     %
+ [ ]}.
+
+{[{{dets,defaults,2},                             4,    0.004,    0.004}],     
+ { {dets,is_comp_min_max,1},                      4,    0.004,    0.004},     %
+ [ ]}.
+
+{[{{bw,geld_auszahlen,3},                         4,    0.004,    0.004}],     
+ { {bw,kontoinfo,2},                              4,    0.004,    0.004},     %
+ [ ]}.
+
+{[{{dets,req,2},                                  2,    0.002,    0.002},      
+  {{dets,to_list,1},                              1,    0.001,    0.001}],     
+ { garbage_collect,                               3,    0.003,    0.003},     %
+ [ ]}.
+
+{[{{bw,daten_lesen,2},                            2,    0.002,    0.002}],     
+ { {bw,error_handling,1},                         2,    0.002,    0.002},     %
+ [ ]}.
+
+{[{{bw,kontolog,3},                               1,    0.001,    0.001}],     
+ { {erlang,time,0},                               1,    0.001,    0.001},     %
+ [ ]}.
+
+{[{{bw,kontolog,3},                               1,    0.001,    0.001}],     
+ { {erlang,date,0},                               1,    0.001,    0.001},     %
+ [ ]}.
+
+{[ ],
+ { undefined,                                     0,    0.000,    0.000},     %
+ [{{bw,init,0},                                   1,   47.125,    0.003}]}.    
+
+
+%                                               CNT       ACC       OWN        
+[{ "<0.1025.0>",                                227,undefined,    0.386},    %%
+ { spawned_by, "<0.39.0>"},
+ { spawned_as, {bw,init,[]}},
+ { initial_calls, [{bw,init,0},{bw,init,0}]}].
+
+{[{undefined,                                     1,   47.100,    0.003},      
+  {{bw,init,0},                                   1,    0.000,    0.001}],     
+ { {bw,init,0},                                   2,   47.100,    0.004},     %
+ [{{bw,geld_auszahlen,3},                         1,   47.048,    0.009},      
+  {suspend,                                       2,    0.048,    0.000},      
+  {{bw,init,0},                                   1,    0.000,    0.001}]}.    
+
+{[{{bw,init,0},                                   1,   47.048,    0.009}],     
+ { {bw,geld_auszahlen,3},                         1,   47.048,    0.009},     %
+ [{{bw,kontolog,3},                               1,   30.999,    0.003},      
+  {{bw,kontochange,3},                            1,   15.842,    0.002},      
+  {{bw,daten_lesen,2},                            2,    0.194,    0.010},      
+  {{bw,kontoinfo,2},                              4,    0.004,    0.004}]}.    
+
+{[{{bw,kontolog,3},                               1,   30.994,    0.002},      
+  {{bw,geld_auszahlen,3},                         1,   15.842,    0.002}],     
+ { {bw,kontochange,3},                            2,   46.836,    0.004},     %
+ [{{bw,daten_schreiben,1},                        2,   46.832,    0.006}]}.    
+
+{[{{bw,kontochange,3},                            2,   46.832,    0.006}],     
+ { {bw,daten_schreiben,1},                        2,   46.832,    0.006},     %
+ [{{dets,close,1},                                2,   31.769,    0.004},      
+  {{dets,insert,2},                               2,   14.951,    0.004},      
+  {{dets,open_file,2},                            2,    0.106,    0.006}]}.    
+
+{[{{gen,do_call,4},                               8,   31.739,    0.000},      
+  {{dets,req,2},                                  4,   14.927,    0.000},      
+  {{bw,init,0},                                   2,    0.048,    0.000}],     
+ { suspend,                                      14,   46.714,    0.000},     %
+ [ ]}.
+
+{[{{dets_server,close,1},                         4,   31.803,    0.008},      
+  {{dets_server,open_file,2},                     4,    0.080,    0.008}],     
+ { {dets_server,call,1},                          8,   31.883,    0.016},     %
+ [{{gen_server,call,3},                           8,   31.843,    0.016},      
+  {{dets_server,ensure_started,0},                8,    0.024,    0.016}]}.    
+
+{[{{dets_server,call,1},                          8,   31.843,    0.016}],     
+ { {gen_server,call,3},                           8,   31.843,    0.016},     %
+ [{{gen,call,4},                                  8,   31.827,    0.016}]}.    
+
+{[{{gen_server,call,3},                           8,   31.827,    0.016}],     
+ { {gen,call,4},                                  8,   31.827,    0.016},     %
+ [{{gen,do_call,4},                               8,   31.803,    0.040},      
+  {{erlang,whereis,1},                            8,    0.008,    0.008}]}.    
+
+{[{{bw,daten_schreiben,1},                        2,   31.769,    0.004},      
+  {{bw,daten_lesen,2},                            2,    0.046,    0.004}],     
+ { {dets,close,1},                                4,   31.815,    0.008},     %
+ [{{dets_server,close,1},                         4,   31.807,    0.004}]}.    
+
+{[{{dets,close,1},                                4,   31.807,    0.004}],     
+ { {dets_server,close,1},                         4,   31.807,    0.004},     %
+ [{{dets_server,call,1},                          4,   31.803,    0.008}]}.    
+
+{[{{gen,call,4},                                  8,   31.803,    0.040}],     
+ { {gen,do_call,4},                               8,   31.803,    0.040},     %
+ [{suspend,                                       8,   31.739,    0.000},      
+  {{erlang,send,3},                               8,    0.008,    0.008},      
+  {{erlang,monitor,2},                            8,    0.008,    0.008},      
+  {{erlang,demonitor,2},                          8,    0.008,    0.008}]}.    
+
+{[{{bw,geld_auszahlen,3},                         1,   30.999,    0.003}],     
+ { {bw,kontolog,3},                               1,   30.999,    0.003},     %
+ [{{bw,kontochange,3},                            1,   30.994,    0.002},      
+  {{erlang,time,0},                               1,    0.001,    0.001},      
+  {{erlang,date,0},                               1,    0.001,    0.001}]}.    
+
+{[{{dets,insert,2},                               2,   14.947,    0.004},      
+  {{dets,lookup,2},                               2,    0.028,    0.004}],     
+ { {dets,treq,2},                                 4,   14.975,    0.008},     %
+ [{{dets,req,2},                                  4,   14.955,    0.018},      
+  {{dets_server,get_pid,1},                       4,    0.012,    0.008}]}.    
+
+{[{{dets,treq,2},                                 4,   14.955,    0.018}],     
+ { {dets,req,2},                                  4,   14.955,    0.018},     %
+ [{suspend,                                       4,   14.927,    0.000},      
+  {{erlang,monitor,2},                            4,    0.004,    0.004},      
+  {{erlang,demonitor,1},                          4,    0.004,    0.004},      
+  {garbage_collect,                               2,    0.002,    0.002}]}.    
+
+{[{{bw,daten_schreiben,1},                        2,   14.951,    0.004}],     
+ { {dets,insert,2},                               2,   14.951,    0.004},     %
+ [{{dets,treq,2},                                 2,   14.947,    0.004}]}.    
+
+{[{{bw,daten_schreiben,1},                        2,    0.106,    0.006},      
+  {{bw,daten_lesen,2},                            2,    0.104,    0.006}],     
+ { {dets,open_file,2},                            4,    0.210,    0.012},     %
+ [{{dets,defaults,2},                             4,    0.114,    0.016},      
+  {{dets_server,open_file,2},                     4,    0.084,    0.004}]}.    
+
+{[{{bw,geld_auszahlen,3},                         2,    0.194,    0.010}],     
+ { {bw,daten_lesen,2},                            2,    0.194,    0.010},     %
+ [{{dets,open_file,2},                            2,    0.104,    0.006},      
+  {{dets,close,1},                                2,    0.046,    0.004},      
+  {{dets,lookup,2},                               2,    0.032,    0.004},      
+  {{bw,error_handling,1},                         2,    0.002,    0.002}]}.    
+
+{[{{dets,open_file,2},                            4,    0.114,    0.016}],     
+ { {dets,defaults,2},                             4,    0.114,    0.016},     %
+ [{{lists,foldl,3},                               4,    0.078,    0.008},      
+  {{dets,to_list,1},                              4,    0.012,    0.008},      
+  {{timer,minutes,1},                             4,    0.004,    0.004},      
+  {{dets,is_comp_min_max,1},                      4,    0.004,    0.004}]}.    
+
+{[{{dets,open_file,2},                            4,    0.084,    0.004}],     
+ { {dets_server,open_file,2},                     4,    0.084,    0.004},     %
+ [{{dets_server,call,1},                          4,    0.080,    0.008}]}.    
+
+{[{{dets,defaults,2},                             4,    0.078,    0.008},      
+  {{lists,foldl,3},                               8,    0.000,    0.012}],     
+ { {lists,foldl,3},                              12,    0.078,    0.020},     %
+ [{{dets,'-defaults/2-fun-0-',2},                 8,    0.058,    0.008},      
+  {{lists,foldl,3},                               8,    0.000,    0.012}]}.    
+
+{[{{lists,foldl,3},                               8,    0.058,    0.008}],     
+ { {dets,'-defaults/2-fun-0-',2},                 8,    0.058,    0.008},     %
+ [{{dets,repl,2},                                 8,    0.050,    0.025}]}.    
+
+{[{{dets,'-defaults/2-fun-0-',2},                 8,    0.050,    0.025}],     
+ { {dets,repl,2},                                 8,    0.050,    0.025},     %
+ [{{dets,mem,2},                                  4,    0.012,    0.008},      
+  {{erlang,setelement,3},                         8,    0.008,    0.008},      
+  {{dets,to_list,1},                              4,    0.004,    0.004},      
+  {garbage_collect,                               1,    0.001,    0.001}]}.    
+
+{[{{bw,daten_lesen,2},                            2,    0.032,    0.004}],     
+ { {dets,lookup,2},                               2,    0.032,    0.004},     %
+ [{{dets,treq,2},                                 2,    0.028,    0.004}]}.    
+
+{[{{dets_server,call,1},                          8,    0.024,    0.016}],     
+ { {dets_server,ensure_started,0},                8,    0.024,    0.016},     %
+ [{{erlang,whereis,1},                            8,    0.008,    0.008}]}.    
+
+{[{{gen,call,4},                                  8,    0.008,    0.008},      
+  {{dets_server,ensure_started,0},                8,    0.008,    0.008}],     
+ { {erlang,whereis,1},                           16,    0.016,    0.016},     %
+ [ ]}.
+
+{[{{dets,defaults,2},                             4,    0.012,    0.008},      
+  {{dets,repl,2},                                 4,    0.004,    0.004}],     
+ { {dets,to_list,1},                              8,    0.016,    0.012},     %
+ [{{erlang,atom_to_list,1},                       4,    0.004,    0.004}]}.    
+
+{[{{gen,do_call,4},                               8,    0.008,    0.008},      
+  {{dets,req,2},                                  4,    0.004,    0.004}],     
+ { {erlang,monitor,2},                           12,    0.012,    0.012},     %
+ [ ]}.
+
+{[{{dets,treq,2},                                 4,    0.012,    0.008}],     
+ { {dets_server,get_pid,1},                       4,    0.012,    0.008},     %
+ [{{ets,lookup_element,3},                        4,    0.004,    0.004}]}.    
+
+{[{{dets,repl,2},                                 4,    0.012,    0.008}],     
+ { {dets,mem,2},                                  4,    0.012,    0.008},     %
+ [{{lists,member,2},                              4,    0.004,    0.004}]}.    
+
+{[{{dets,repl,2},                                 8,    0.008,    0.008}],     
+ { {erlang,setelement,3},                         8,    0.008,    0.008},     %
+ [ ]}.
+
+{[{{gen,do_call,4},                               8,    0.008,    0.008}],     
+ { {erlang,send,3},                               8,    0.008,    0.008},     %
+ [ ]}.
+
+{[{{gen,do_call,4},                               8,    0.008,    0.008}],     
+ { {erlang,demonitor,2},                          8,    0.008,    0.008},     %
+ [ ]}.
+
+{[{{dets,defaults,2},                             4,    0.004,    0.004}],     
+ { {timer,minutes,1},                             4,    0.004,    0.004},     %
+ [ ]}.
+
+{[{{dets,mem,2},                                  4,    0.004,    0.004}],     
+ { {lists,member,2},                              4,    0.004,    0.004},     %
+ [ ]}.
+
+{[{{dets_server,get_pid,1},                       4,    0.004,    0.004}],     
+ { {ets,lookup_element,3},                        4,    0.004,    0.004},     %
+ [ ]}.
+
+{[{{dets,req,2},                                  4,    0.004,    0.004}],     
+ { {erlang,demonitor,1},                          4,    0.004,    0.004},     %
+ [ ]}.
+
+{[{{dets,to_list,1},                              4,    0.004,    0.004}],     
+ { {erlang,atom_to_list,1},                       4,    0.004,    0.004},     %
+ [ ]}.
+
+{[{{dets,defaults,2},                             4,    0.004,    0.004}],     
+ { {dets,is_comp_min_max,1},                      4,    0.004,    0.004},     %
+ [ ]}.
+
+{[{{bw,geld_auszahlen,3},                         4,    0.004,    0.004}],     
+ { {bw,kontoinfo,2},                              4,    0.004,    0.004},     %
+ [ ]}.
+
+{[{{dets,req,2},                                  2,    0.002,    0.002},      
+  {{dets,repl,2},                                 1,    0.001,    0.001}],     
+ { garbage_collect,                               3,    0.003,    0.003},     %
+ [ ]}.
+
+{[{{bw,daten_lesen,2},                            2,    0.002,    0.002}],     
+ { {bw,error_handling,1},                         2,    0.002,    0.002},     %
+ [ ]}.
+
+{[{{bw,kontolog,3},                               1,    0.001,    0.001}],     
+ { {erlang,time,0},                               1,    0.001,    0.001},     %
+ [ ]}.
+
+{[{{bw,kontolog,3},                               1,    0.001,    0.001}],     
+ { {erlang,date,0},                               1,    0.001,    0.001},     %
+ [ ]}.
+
+{[ ],
+ { undefined,                                     0,    0.000,    0.000},     %
+ [{{bw,init,0},                                   1,   47.100,    0.003}]}.    
+
+
+%                                               CNT       ACC       OWN        
+[{ "<0.39.0>",                                  206,undefined,    0.319}].   %%
+
+{[{{proc_lib,init_p_do_apply,3},                  0,37172.010,    0.001},      
+  {undefined,                                     0,    0.011,    0.000},      
+  {{gen_server,dispatch,3},                       4,    0.000,    0.011}],     
+ { {bs,handle_info,2},                            4,37172.021,    0.012},     %
+ [{{gen_server,handle_common_reply,6},            1,37172.009,    0.001},      
   {{io,format,2},                                 3,    0.066,    0.006},      
+  {{dets,delete,2},                               3,    0.042,    0.006},      
+  {{fprof,just_call,2},                           0,    0.011,    0.001},      
+  {{cprof,pause,0},                               1,    0.010,    0.003},      
+  {{fprof,trace,1},                               1,    0.007,    0.001}]}.    
+
+{[{undefined,                                     0,37172.010,    0.000}],     
+ { {proc_lib,init_p_do_apply,3},                  0,37172.010,    0.000},     %
+ [{{bs,handle_info,2},                            0,37172.010,    0.001}]}.    
+
+{[{{bs,handle_info,2},                            1,37172.009,    0.001},      
+  {{gen_server,handle_msg,5},                     6,    0.000,    0.006}],     
+ { {gen_server,handle_common_reply,6},            7,37172.009,    0.007},     %
+ [{{gen_server,loop,6},                           7,37172.008,    0.014}]}.    
+
+{[{{gen_server,handle_common_reply,6},            7,37172.008,    0.014}],     
+ { {gen_server,loop,6},                           7,37172.008,    0.014},     %
+ [{suspend,                                       7,37171.678,    0.000},      
+  {{gen_server,decode_msg,8},                     7,14453.022,    0.007}]}.    
+
+{[{{gen_server,loop,6},                           7,37171.678,    0.000},      
+  {{dets,req,2},                                  6,    0.018,    0.000},      
+  {{io,wait_io_mon_reply,2},                      6,    0.006,    0.000},      
+  {{erlang,trace_pattern,3},                      2,    0.002,    0.000},      
+  {{fprof,just_call,2},                           1,    0.000,    0.000}],     
+ { suspend,                                      22,37171.704,    0.000},     %
+ [ ]}.
+
+{[{{gen_server,loop,6},                           7,14453.022,    0.007}],     
+ { {gen_server,decode_msg,8},                     7,14453.022,    0.007},     %
+ [{{gen_server,handle_msg,5},                     7,14453.021,    0.013}]}.    
+
+{[{{gen_server,decode_msg,8},                     7,14453.021,    0.013}],     
+ { {gen_server,handle_msg,5},                     7,14453.021,    0.013},     %
+ [{{gen_server,dispatch,3},                       7,    0.290,    0.007},      
+  {{gen_server,handle_common_reply,6},            6,    0.000,    0.006}]}.    
+
+{[{{gen_server,handle_msg,5},                     7,    0.290,    0.007}],     
+ { {gen_server,dispatch,3},                       7,    0.290,    0.007},     %
+ [{{bs,handle_cast,2},                            3,    0.147,    0.006},      
+  {{bs,handle_info,2},                            4,    0.000,    0.011}]}.    
+
+{[{{gen_server,dispatch,3},                       3,    0.147,    0.006}],     
+ { {bs,handle_cast,2},                            3,    0.147,    0.006},     %
+ [{{bs,erzeuge_transaktion,2},                    3,    0.141,    0.012}]}.    
+
+{[{{bs,handle_cast,2},                            3,    0.141,    0.012}],     
+ { {bs,erzeuge_transaktion,2},                    3,    0.141,    0.012},     %
+ [{{io,format,2},                                 3,    0.066,    0.006},      
+  {{dets,insert,2},                               3,    0.054,    0.006},      
   {{erlang,spawn_link,3},                         3,    0.009,    0.009}]}.    
 
-{[{{dets,insert,2},                               3,   15.024,    0.006},      
+{[{{bs,handle_info,2},                            3,    0.066,    0.006},      
+  {{bs,erzeuge_transaktion,2},                    3,    0.066,    0.006}],     
+ { {io,format,2},                                 6,    0.132,    0.012},     %
+ [{{io,format,3},                                 6,    0.102,    0.006},      
+  {{io,default_output,0},                         6,    0.018,    0.012}]}.    
+
+{[{{io,format,2},                                 6,    0.102,    0.006}],     
+ { {io,format,3},                                 6,    0.102,    0.006},     %
+ [{{io,o_request,3},                              6,    0.096,    0.012}]}.    
+
+{[{{io,format,3},                                 6,    0.096,    0.012}],     
+ { {io,o_request,3},                              6,    0.096,    0.012},     %
+ [{{io,request,2},                                6,    0.084,    0.012}]}.    
+
+{[{{io,o_request,3},                              6,    0.084,    0.012}],     
+ { {io,request,2},                                6,    0.084,    0.012},     %
+ [{{io,execute_request,2},                        6,    0.048,    0.012},      
+  {{io,io_request,2},                             6,    0.024,    0.006}]}.    
+
+{[{{dets,insert,2},                               3,    0.048,    0.006},      
   {{dets,delete,2},                               3,    0.036,    0.006}],     
- { {dets,treq,2},                                 6,   15.060,    0.012},     %
- [{{dets,req,2},                                  6,   15.030,    0.024},      
+ { {dets,treq,2},                                 6,    0.084,    0.012},     %
+ [{{dets,req,2},                                  6,    0.054,    0.024},      
   {{dets_server,get_pid,1},                       6,    0.018,    0.012}]}.    
 
-{[{{dets,treq,2},                                 6,   15.030,    0.024}],     
- { {dets,req,2},                                  6,   15.030,    0.024},     %
- [{suspend,                                       6,   14.994,    0.000},      
+{[{{dets,treq,2},                                 6,    0.054,    0.024}],     
+ { {dets,req,2},                                  6,    0.054,    0.024},     %
+ [{suspend,                                       6,    0.018,    0.000},      
   {{erlang,monitor,2},                            6,    0.006,    0.006},      
   {{erlang,demonitor,1},                          6,    0.006,    0.006}]}.    
 
-{[{{bs,erzeuge_transaktion,2},                    3,   15.030,    0.006}],     
- { {dets,insert,2},                               3,   15.030,    0.006},     %
- [{{dets,treq,2},                                 3,   15.024,    0.006}]}.    
+{[{{bs,erzeuge_transaktion,2},                    3,    0.054,    0.006}],     
+ { {dets,insert,2},                               3,    0.054,    0.006},     %
+ [{{dets,treq,2},                                 3,    0.048,    0.006}]}.    
 
-{[{{bs,handle_info,2},                            3,    0.068,    0.006},      
-  {{bs,erzeuge_transaktion,2},                    3,    0.066,    0.006},      
-  {{bs,terminate,2},                              1,    0.022,    0.002}],     
- { {io,format,2},                                 7,    0.156,    0.014},     %
- [{{io,format,3},                                 7,    0.121,    0.007},      
-  {{io,default_output,0},                         7,    0.021,    0.014}]}.    
-
-{[{{io,format,2},                                 7,    0.121,    0.007}],     
- { {io,format,3},                                 7,    0.121,    0.007},     %
- [{{io,o_request,3},                              7,    0.114,    0.014}]}.    
-
-{[{{io,format,3},                                 7,    0.114,    0.014}],     
- { {io,o_request,3},                              7,    0.114,    0.014},     %
- [{{io,request,2},                                7,    0.100,    0.014}]}.    
-
-{[{{io,o_request,3},                              7,    0.100,    0.014}],     
- { {io,request,2},                                7,    0.100,    0.014},     %
- [{{io,execute_request,2},                        7,    0.056,    0.014},      
-  {{io,io_request,2},                             7,    0.030,    0.008}]}.    
-
-{[{{io,request,2},                                7,    0.056,    0.014}],     
- { {io,execute_request,2},                        7,    0.056,    0.014},     %
- [{{io,wait_io_mon_reply,2},                      7,    0.035,    0.021},      
-  {{erlang,monitor,2},                            7,    0.007,    0.007}]}.    
-
-{[{{gen_server,handle_common_reply,6},            1,    0.050,    0.002}],     
- { {gen_server,terminate,6},                      1,    0.050,    0.002},     %
- [{{bs,terminate,2},                              1,    0.047,    0.003},      
-  {{erlang,exit,1},                               1,    0.001,    0.001}]}.    
-
-{[{{gen_server,terminate,6},                      1,    0.047,    0.003}],     
- { {bs,terminate,2},                              1,    0.047,    0.003},     %
- [{{io,format,2},                                 1,    0.022,    0.002},      
-  {{dets,close,1},                                1,    0.022,    0.002}]}.    
-
-{[{{bs,handle_cast,2},                            1,    0.024,    0.002},      
-  {{bs,terminate,2},                              1,    0.022,    0.002}],     
- { {dets,close,1},                                2,    0.046,    0.004},     %
- [{{dets_server,close,1},                         2,    0.042,    0.002}]}.    
-
-{[{{dets,close,1},                                2,    0.042,    0.002}],     
- { {dets_server,close,1},                         2,    0.042,    0.002},     %
- [{{dets_server,call,1},                          2,    0.040,    0.004}]}.    
+{[{{io,request,2},                                6,    0.048,    0.012}],     
+ { {io,execute_request,2},                        6,    0.048,    0.012},     %
+ [{{io,wait_io_mon_reply,2},                      6,    0.030,    0.018},      
+  {{erlang,monitor,2},                            6,    0.006,    0.006}]}.    
 
 {[{{bs,handle_info,2},                            3,    0.042,    0.006}],     
  { {dets,delete,2},                               3,    0.042,    0.006},     %
  [{{dets,treq,2},                                 3,    0.036,    0.006}]}.    
 
-{[{{dets_server,close,1},                         2,    0.040,    0.004}],     
+{[{{io,execute_request,2},                        6,    0.030,    0.018}],     
+ { {io,wait_io_mon_reply,2},                      6,    0.030,    0.018},     %
+ [{{erlang,demonitor,1},                          6,    0.006,    0.006},      
+  {suspend,                                       6,    0.006,    0.000}]}.    
+
+{[{{io,request,2},                                6,    0.024,    0.006}],     
+ { {io,io_request,2},                             6,    0.024,    0.006},     %
+ [{{io,bc_req,3},                                 6,    0.018,    0.012}]}.    
+
+{[{{io,format,2},                                 6,    0.018,    0.012}],     
+ { {io,default_output,0},                         6,    0.018,    0.012},     %
+ [{{erlang,group_leader,0},                       6,    0.006,    0.006}]}.    
+
+{[{{io,io_request,2},                             6,    0.018,    0.012}],     
+ { {io,bc_req,3},                                 6,    0.018,    0.012},     %
+ [{{net_kernel,dflag_unicode_io,1},               6,    0.006,    0.006}]}.    
+
+{[{{dets,treq,2},                                 6,    0.018,    0.012}],     
+ { {dets_server,get_pid,1},                       6,    0.018,    0.012},     %
+ [{{ets,lookup_element,3},                        6,    0.006,    0.006}]}.    
+
+{[{{bs,handle_info,2},                            0,    0.011,    0.001},      
+  {{fprof,call,1},                                1,    0.003,    0.002},      
+  {undefined,                                     0,    0.002,    0.001}],     
+ { {fprof,just_call,2},                           1,    0.016,    0.004},     %
+ [{{cprof,start,0},                               1,    0.010,    0.003},      
+  {{erlang,monitor,2},                            1,    0.001,    0.001},      
+  {{erlang,demonitor,1},                          1,    0.001,    0.001},      
+  {suspend,                                       1,    0.000,    0.000}]}.    
+
+{[{{cprof,start,0},                               2,    0.007,    0.003},      
+  {{cprof,pause,0},                               2,    0.007,    0.003}],     
+ { {cprof,tr,2},                                  4,    0.014,    0.006},     %
+ [{{erlang,trace_pattern,3},                      4,    0.008,    0.006}]}.    
+
+{[{{io,execute_request,2},                        6,    0.006,    0.006},      
+  {{dets,req,2},                                  6,    0.006,    0.006},      
+  {{fprof,just_call,2},                           1,    0.001,    0.001}],     
+ { {erlang,monitor,2},                           13,    0.013,    0.013},     %
+ [ ]}.
+
+{[{{io,wait_io_mon_reply,2},                      6,    0.006,    0.006},      
+  {{dets,req,2},                                  6,    0.006,    0.006},      
+  {{fprof,just_call,2},                           1,    0.001,    0.001}],     
+ { {erlang,demonitor,1},                         13,    0.013,    0.013},     %
+ [ ]}.
+
+{[{{fprof,just_call,2},                           1,    0.010,    0.003}],     
+ { {cprof,start,0},                               1,    0.010,    0.003},     %
+ [{{cprof,tr,2},                                  2,    0.007,    0.003}]}.    
+
+{[{{bs,handle_info,2},                            1,    0.010,    0.003}],     
+ { {cprof,pause,0},                               1,    0.010,    0.003},     %
+ [{{cprof,tr,2},                                  2,    0.007,    0.003}]}.    
+
+{[{{bs,erzeuge_transaktion,2},                    3,    0.009,    0.009}],     
+ { {erlang,spawn_link,3},                         3,    0.009,    0.009},     %
+ [ ]}.
+
+{[{{cprof,tr,2},                                  4,    0.008,    0.006}],     
+ { {erlang,trace_pattern,3},                      4,    0.008,    0.006},     %
+ [{suspend,                                       2,    0.002,    0.000}]}.    
+
+{[{{bs,handle_info,2},                            1,    0.007,    0.001}],     
+ { {fprof,trace,1},                               1,    0.007,    0.001},     %
+ [{{fprof,call,1},                                1,    0.006,    0.002}]}.    
+
+{[{{io,bc_req,3},                                 6,    0.006,    0.006}],     
+ { {net_kernel,dflag_unicode_io,1},               6,    0.006,    0.006},     %
+ [ ]}.
+
+{[{{fprof,trace,1},                               1,    0.006,    0.002}],     
+ { {fprof,call,1},                                1,    0.006,    0.002},     %
+ [{{fprof,just_call,2},                           1,    0.003,    0.002},      
+  {{erlang,whereis,1},                            1,    0.001,    0.001}]}.    
+
+{[{{dets_server,get_pid,1},                       6,    0.006,    0.006}],     
+ { {ets,lookup_element,3},                        6,    0.006,    0.006},     %
+ [ ]}.
+
+{[{{io,default_output,0},                         6,    0.006,    0.006}],     
+ { {erlang,group_leader,0},                       6,    0.006,    0.006},     %
+ [ ]}.
+
+{[{{fprof,call,1},                                1,    0.001,    0.001}],     
+ { {erlang,whereis,1},                            1,    0.001,    0.001},     %
+ [ ]}.
+
+{[ ],
+ { undefined,                                     0,    0.000,    0.000},     %
+ [{{proc_lib,init_p_do_apply,3},                  0,37172.010,    0.000},      
+  {{bs,handle_info,2},                            0,    0.011,    0.000},      
+  {{fprof,just_call,2},                           0,    0.002,    0.001}]}.    
+
+
+%                                               CNT       ACC       OWN        
+[{ "<0.1038.0>",                                 61,undefined,    0.101},    %%
+ { spawned_by, "<0.39.0>"},
+ { spawned_as, {bw,init,[]}},
+ { initial_calls, [{bw,init,0},{bw,init,0}]}].
+
+{[{undefined,                                     1,  108.995,    0.003},      
+  {{bw,init,0},                                   1,    0.000,    0.001}],     
+ { {bw,init,0},                                   2,  108.995,    0.004},     %
+ [{{bw,historie,2},                               1,  108.943,    0.003},      
+  {suspend,                                       2,    0.048,    0.000},      
+  {{bw,init,0},                                   1,    0.000,    0.001}]}.    
+
+{[{{bw,init,0},                                   1,  108.943,    0.003}],     
+ { {bw,historie,2},                               1,  108.943,    0.003},     %
+ [{{timer,sleep,1},                               1,  108.843,    0.002},      
+  {{bw,daten_lesen,2},                            1,    0.097,    0.005}]}.    
+
+{[{{timer,sleep,1},                               1,  108.841,    0.000},      
+  {{bw,init,0},                                   2,    0.048,    0.000},      
+  {{gen,do_call,4},                               2,    0.004,    0.000},      
+  {{dets,req,2},                                  1,    0.001,    0.000}],     
+ { suspend,                                       6,  108.894,    0.000},     %
+ [ ]}.
+
+{[{{bw,historie,2},                               1,  108.843,    0.002}],     
+ { {timer,sleep,1},                               1,  108.843,    0.002},     %
+ [{suspend,                                       1,  108.841,    0.000}]}.    
+
+{[{{bw,historie,2},                               1,    0.097,    0.005}],     
+ { {bw,daten_lesen,2},                            1,    0.097,    0.005},     %
+ [{{dets,open_file,2},                            1,    0.052,    0.003},      
+  {{dets,close,1},                                1,    0.023,    0.002},      
+  {{dets,lookup,2},                               1,    0.016,    0.002},      
+  {{bw,error_handling,1},                         1,    0.001,    0.001}]}.    
+
+{[{{bw,daten_lesen,2},                            1,    0.052,    0.003}],     
+ { {dets,open_file,2},                            1,    0.052,    0.003},     %
+ [{{dets,defaults,2},                             1,    0.028,    0.004},      
+  {{dets_server,open_file,2},                     1,    0.021,    0.001}]}.    
+
+{[{{dets_server,open_file,2},                     1,    0.020,    0.002},      
+  {{dets_server,close,1},                         1,    0.020,    0.002}],     
  { {dets_server,call,1},                          2,    0.040,    0.004},     %
  [{{gen_server,call,3},                           2,    0.030,    0.004},      
   {{dets_server,ensure_started,0},                2,    0.006,    0.004}]}.    
 
-{[{{io,execute_request,2},                        7,    0.035,    0.021}],     
- { {io,wait_io_mon_reply,2},                      7,    0.035,    0.021},     %
- [{{erlang,demonitor,1},                          7,    0.007,    0.007},      
-  {suspend,                                       7,    0.007,    0.000}]}.    
-
-{[{{io,request,2},                                7,    0.030,    0.008}],     
- { {io,io_request,2},                             7,    0.030,    0.008},     %
- [{{io,bc_req,3},                                 7,    0.021,    0.014},      
-  {garbage_collect,                               1,    0.001,    0.001}]}.    
-
 {[{{dets_server,call,1},                          2,    0.030,    0.004}],     
  { {gen_server,call,3},                           2,    0.030,    0.004},     %
  [{{gen,call,4},                                  2,    0.026,    0.004}]}.    
+
+{[{{dets,open_file,2},                            1,    0.028,    0.004}],     
+ { {dets,defaults,2},                             1,    0.028,    0.004},     %
+ [{{lists,foldl,3},                               1,    0.019,    0.002},      
+  {{dets,to_list,1},                              1,    0.003,    0.002},      
+  {{timer,minutes,1},                             1,    0.001,    0.001},      
+  {{dets,is_comp_min_max,1},                      1,    0.001,    0.001}]}.    
 
 {[{{gen_server,call,3},                           2,    0.026,    0.004}],     
  { {gen,call,4},                                  2,    0.026,    0.004},     %
  [{{gen,do_call,4},                               2,    0.020,    0.010},      
   {{erlang,whereis,1},                            2,    0.002,    0.002}]}.    
 
-{[{{io,format,2},                                 7,    0.021,    0.014}],     
- { {io,default_output,0},                         7,    0.021,    0.014},     %
- [{{erlang,group_leader,0},                       7,    0.007,    0.007}]}.    
+{[{{bw,daten_lesen,2},                            1,    0.023,    0.002}],     
+ { {dets,close,1},                                1,    0.023,    0.002},     %
+ [{{dets_server,close,1},                         1,    0.021,    0.001}]}.    
 
-{[{{io,io_request,2},                             7,    0.021,    0.014}],     
- { {io,bc_req,3},                                 7,    0.021,    0.014},     %
- [{{net_kernel,dflag_unicode_io,1},               7,    0.007,    0.007}]}.    
+{[{{dets,open_file,2},                            1,    0.021,    0.001}],     
+ { {dets_server,open_file,2},                     1,    0.021,    0.001},     %
+ [{{dets_server,call,1},                          1,    0.020,    0.002}]}.    
+
+{[{{dets,close,1},                                1,    0.021,    0.001}],     
+ { {dets_server,close,1},                         1,    0.021,    0.001},     %
+ [{{dets_server,call,1},                          1,    0.020,    0.002}]}.    
 
 {[{{gen,call,4},                                  2,    0.020,    0.010}],     
  { {gen,do_call,4},                               2,    0.020,    0.010},     %
@@ -172,65 +740,37 @@
   {{erlang,monitor,2},                            2,    0.002,    0.002},      
   {{erlang,demonitor,2},                          2,    0.002,    0.002}]}.    
 
-{[{{dets,treq,2},                                 6,    0.018,    0.012}],     
- { {dets_server,get_pid,1},                       6,    0.018,    0.012},     %
- [{{ets,lookup_element,3},                        6,    0.006,    0.006}]}.    
+{[{{dets,defaults,2},                             1,    0.019,    0.002},      
+  {{lists,foldl,3},                               2,    0.000,    0.003}],     
+ { {lists,foldl,3},                               3,    0.019,    0.005},     %
+ [{{dets,'-defaults/2-fun-0-',2},                 2,    0.014,    0.002},      
+  {{lists,foldl,3},                               2,    0.000,    0.003}]}.    
 
-{[{{io,execute_request,2},                        7,    0.007,    0.007},      
-  {{dets,req,2},                                  6,    0.006,    0.006},      
-  {{gen,do_call,4},                               2,    0.002,    0.002}],     
- { {erlang,monitor,2},                           15,    0.015,    0.015},     %
- [ ]}.
+{[{{bw,daten_lesen,2},                            1,    0.016,    0.002}],     
+ { {dets,lookup,2},                               1,    0.016,    0.002},     %
+ [{{dets,treq,2},                                 1,    0.014,    0.002}]}.    
 
-{[{{io,wait_io_mon_reply,2},                      7,    0.007,    0.007},      
-  {{dets,req,2},                                  6,    0.006,    0.006},      
-  {{fprof,just_call,2},                           1,    0.001,    0.001}],     
- { {erlang,demonitor,1},                         14,    0.014,    0.014},     %
- [ ]}.
+{[{{dets,lookup,2},                               1,    0.014,    0.002}],     
+ { {dets,treq,2},                                 1,    0.014,    0.002},     %
+ [{{dets,req,2},                                  1,    0.009,    0.005},      
+  {{dets_server,get_pid,1},                       1,    0.003,    0.002}]}.    
 
-{[{undefined,                                     1,    0.013,    0.003}],     
- { {proc_lib,exit_p,2},                           1,    0.013,    0.003},     %
- [{{proc_lib,make_dummy_args,2},                  1,    0.008,    0.004},      
-  {{proc_lib,crash_report,3},                     1,    0.001,    0.001},      
-  {{erlang,exit,1},                               1,    0.001,    0.001}]}.    
+{[{{lists,foldl,3},                               2,    0.014,    0.002}],     
+ { {dets,'-defaults/2-fun-0-',2},                 2,    0.014,    0.002},     %
+ [{{dets,repl,2},                                 2,    0.012,    0.006}]}.    
 
-{[{{bs,handle_info,2},                            0,    0.011,    0.001},      
-  {undefined,                                     0,    0.002,    0.001}],     
- { {fprof,just_call,2},                           0,    0.013,    0.002},     %
- [{{cprof,start,0},                               1,    0.010,    0.003},      
-  {{erlang,demonitor,1},                          1,    0.001,    0.001}]}.    
+{[{{dets,'-defaults/2-fun-0-',2},                 2,    0.012,    0.006}],     
+ { {dets,repl,2},                                 2,    0.012,    0.006},     %
+ [{{dets,mem,2},                                  1,    0.003,    0.002},      
+  {{erlang,setelement,3},                         2,    0.002,    0.002},      
+  {{dets,to_list,1},                              1,    0.001,    0.001}]}.    
 
-{[{{fprof,just_call,2},                           1,    0.010,    0.003}],     
- { {cprof,start,0},                               1,    0.010,    0.003},     %
- [{{cprof,tr,2},                                  2,    0.007,    0.003}]}.    
-
-{[{{bs,erzeuge_transaktion,2},                    3,    0.009,    0.009}],     
- { {erlang,spawn_link,3},                         3,    0.009,    0.009},     %
- [ ]}.
-
-{[{{proc_lib,exit_p,2},                           1,    0.008,    0.004},      
-  {{proc_lib,make_dummy_args,2},                  1,    0.000,    0.001}],     
- { {proc_lib,make_dummy_args,2},                  2,    0.008,    0.005},     %
- [{{erlang,list_to_atom,1},                       1,    0.001,    0.001},      
-  {{erlang,integer_to_list,1},                    1,    0.001,    0.001},      
-  {{erlang,'++',2},                               1,    0.001,    0.001},      
-  {{proc_lib,make_dummy_args,2},                  1,    0.000,    0.001}]}.    
-
-{[{{io,bc_req,3},                                 7,    0.007,    0.007}],     
- { {net_kernel,dflag_unicode_io,1},               7,    0.007,    0.007},     %
- [ ]}.
-
-{[{{io,default_output,0},                         7,    0.007,    0.007}],     
- { {erlang,group_leader,0},                       7,    0.007,    0.007},     %
- [ ]}.
-
-{[{{cprof,start,0},                               2,    0.007,    0.003}],     
- { {cprof,tr,2},                                  2,    0.007,    0.003},     %
- [{{erlang,trace_pattern,3},                      2,    0.004,    0.003}]}.    
-
-{[{{dets_server,get_pid,1},                       6,    0.006,    0.006}],     
- { {ets,lookup_element,3},                        6,    0.006,    0.006},     %
- [ ]}.
+{[{{dets,treq,2},                                 1,    0.009,    0.005}],     
+ { {dets,req,2},                                  1,    0.009,    0.005},     %
+ [{{erlang,monitor,2},                            1,    0.001,    0.001},      
+  {{erlang,demonitor,1},                          1,    0.001,    0.001},      
+  {suspend,                                       1,    0.001,    0.000},      
+  {garbage_collect,                               1,    0.001,    0.001}]}.    
 
 {[{{dets_server,call,1},                          2,    0.006,    0.004}],     
  { {dets_server,ensure_started,0},                2,    0.006,    0.004},     %
@@ -241,717 +781,70 @@
  { {erlang,whereis,1},                            4,    0.004,    0.004},     %
  [ ]}.
 
-{[{{cprof,tr,2},                                  2,    0.004,    0.003}],     
- { {erlang,trace_pattern,3},                      2,    0.004,    0.003},     %
- [{suspend,                                       1,    0.001,    0.000}]}.    
+{[{{dets,defaults,2},                             1,    0.003,    0.002},      
+  {{dets,repl,2},                                 1,    0.001,    0.001}],     
+ { {dets,to_list,1},                              2,    0.004,    0.003},     %
+ [{{erlang,atom_to_list,1},                       1,    0.001,    0.001}]}.    
+
+{[{{gen,do_call,4},                               2,    0.002,    0.002},      
+  {{dets,req,2},                                  1,    0.001,    0.001}],     
+ { {erlang,monitor,2},                            3,    0.003,    0.003},     %
+ [ ]}.
+
+{[{{dets,treq,2},                                 1,    0.003,    0.002}],     
+ { {dets_server,get_pid,1},                       1,    0.003,    0.002},     %
+ [{{ets,lookup_element,3},                        1,    0.001,    0.001}]}.    
+
+{[{{dets,repl,2},                                 1,    0.003,    0.002}],     
+ { {dets,mem,2},                                  1,    0.003,    0.002},     %
+ [{{lists,member,2},                              1,    0.001,    0.001}]}.    
+
+{[{{dets,repl,2},                                 2,    0.002,    0.002}],     
+ { {erlang,setelement,3},                         2,    0.002,    0.002},     %
+ [ ]}.
 
 {[{{gen,do_call,4},                               2,    0.002,    0.002}],     
  { {erlang,send,3},                               2,    0.002,    0.002},     %
- [ ]}.
-
-{[{{proc_lib,exit_p,2},                           1,    0.001,    0.001},      
-  {{gen_server,terminate,6},                      1,    0.001,    0.001}],     
- { {erlang,exit,1},                               2,    0.002,    0.002},     %
  [ ]}.
 
 {[{{gen,do_call,4},                               2,    0.002,    0.002}],     
  { {erlang,demonitor,2},                          2,    0.002,    0.002},     %
  [ ]}.
 
-{[{{proc_lib,exit_p,2},                           1,    0.001,    0.001}],     
- { {proc_lib,crash_report,3},                     1,    0.001,    0.001},     %
+{[{{dets,defaults,2},                             1,    0.001,    0.001}],     
+ { {timer,minutes,1},                             1,    0.001,    0.001},     %
  [ ]}.
 
-{[{{proc_lib,make_dummy_args,2},                  1,    0.001,    0.001}],     
- { {erlang,list_to_atom,1},                       1,    0.001,    0.001},     %
+{[{{dets,mem,2},                                  1,    0.001,    0.001}],     
+ { {lists,member,2},                              1,    0.001,    0.001},     %
  [ ]}.
 
-{[{{proc_lib,make_dummy_args,2},                  1,    0.001,    0.001}],     
- { {erlang,integer_to_list,1},                    1,    0.001,    0.001},     %
+{[{{dets_server,get_pid,1},                       1,    0.001,    0.001}],     
+ { {ets,lookup_element,3},                        1,    0.001,    0.001},     %
  [ ]}.
 
-{[{{proc_lib,make_dummy_args,2},                  1,    0.001,    0.001}],     
- { {erlang,'++',2},                               1,    0.001,    0.001},     %
+{[{{dets,req,2},                                  1,    0.001,    0.001}],     
+ { {erlang,demonitor,1},                          1,    0.001,    0.001},     %
  [ ]}.
 
-{[{{io,io_request,2},                             1,    0.001,    0.001}],     
+{[{{dets,to_list,1},                              1,    0.001,    0.001}],     
+ { {erlang,atom_to_list,1},                       1,    0.001,    0.001},     %
+ [ ]}.
+
+{[{{dets,defaults,2},                             1,    0.001,    0.001}],     
+ { {dets,is_comp_min_max,1},                      1,    0.001,    0.001},     %
+ [ ]}.
+
+{[{{bw,daten_lesen,2},                            1,    0.001,    0.001}],     
+ { {bw,error_handling,1},                         1,    0.001,    0.001},     %
+ [ ]}.
+
+{[{{dets,req,2},                                  1,    0.001,    0.001}],     
  { garbage_collect,                               1,    0.001,    0.001},     %
  [ ]}.
 
 {[ ],
  { undefined,                                     0,    0.000,    0.000},     %
- [{{proc_lib,init_p_do_apply,3},                  0,15953.069,    0.000},      
-  {{proc_lib,exit_p,2},                           1,    0.013,    0.003},      
-  {{bs,handle_info,2},                            0,    0.011,    0.000},      
-  {{fprof,just_call,2},                           0,    0.002,    0.001}]}.    
-
-
-%                                               CNT       ACC       OWN        
-[{ "<0.827.0>",                                 226,undefined,    0.384},    %%
- { spawned_by, "<0.168.0>"},
- { spawned_as, {bw,init,[]}},
- { initial_calls, [{bw,init,0},{bw,init,0}]}].
-
-{[{undefined,                                     1,   46.100,    0.003},      
-  {{bw,init,0},                                   1,    0.000,    0.001}],     
- { {bw,init,0},                                   2,   46.100,    0.004},     %
- [{{bw,geld_auszahlen,3},                         1,   46.048,    0.009},      
-  {suspend,                                       2,    0.048,    0.000},      
-  {{bw,init,0},                                   1,    0.000,    0.001}]}.    
-
-{[{{bw,init,0},                                   1,   46.048,    0.009}],     
- { {bw,geld_auszahlen,3},                         1,   46.048,    0.009},     %
- [{{bw,kontolog,3},                               1,   30.974,    0.003},      
-  {{bw,kontochange,3},                            1,   14.867,    0.002},      
-  {{bw,daten_lesen,2},                            2,    0.194,    0.010},      
-  {{bw,kontoinfo,2},                              4,    0.004,    0.004}]}.    
-
-{[{{bw,kontolog,3},                               1,   30.969,    0.002},      
-  {{bw,geld_auszahlen,3},                         1,   14.867,    0.002}],     
- { {bw,kontochange,3},                            2,   45.836,    0.004},     %
- [{{bw,daten_schreiben,1},                        2,   45.832,    0.006}]}.    
-
-{[{{bw,kontochange,3},                            2,   45.832,    0.006}],     
- { {bw,daten_schreiben,1},                        2,   45.832,    0.006},     %
- [{{dets,insert,2},                               2,   30.699,    0.004},      
-  {{dets,close,1},                                2,   15.023,    0.004},      
-  {{dets,open_file,2},                            2,    0.104,    0.006}]}.    
-
-{[{{dets,req,2},                                  4,   30.675,    0.000},      
-  {{gen,do_call,4},                               8,   14.993,    0.000},      
-  {{bw,init,0},                                   2,    0.048,    0.000}],     
- { suspend,                                      14,   45.716,    0.000},     %
- [ ]}.
-
-{[{{bw,geld_auszahlen,3},                         1,   30.974,    0.003}],     
- { {bw,kontolog,3},                               1,   30.974,    0.003},     %
- [{{bw,kontochange,3},                            1,   30.969,    0.002},      
-  {{erlang,time,0},                               1,    0.001,    0.001},      
-  {{erlang,date,0},                               1,    0.001,    0.001}]}.    
-
-{[{{dets,insert,2},                               2,   30.695,    0.004},      
-  {{dets,lookup,2},                               2,    0.028,    0.004}],     
- { {dets,treq,2},                                 4,   30.723,    0.008},     %
- [{{dets,req,2},                                  4,   30.703,    0.018},      
-  {{dets_server,get_pid,1},                       4,    0.012,    0.008}]}.    
-
-{[{{dets,treq,2},                                 4,   30.703,    0.018}],     
- { {dets,req,2},                                  4,   30.703,    0.018},     %
- [{suspend,                                       4,   30.675,    0.000},      
-  {{erlang,monitor,2},                            4,    0.004,    0.004},      
-  {{erlang,demonitor,1},                          4,    0.004,    0.004},      
-  {garbage_collect,                               2,    0.002,    0.002}]}.    
-
-{[{{bw,daten_schreiben,1},                        2,   30.699,    0.004}],     
- { {dets,insert,2},                               2,   30.699,    0.004},     %
- [{{dets,treq,2},                                 2,   30.695,    0.004}]}.    
-
-{[{{dets_server,close,1},                         4,   15.057,    0.008},      
-  {{dets_server,open_file,2},                     4,    0.080,    0.008}],     
- { {dets_server,call,1},                          8,   15.137,    0.016},     %
- [{{gen_server,call,3},                           8,   15.097,    0.016},      
-  {{dets_server,ensure_started,0},                8,    0.024,    0.016}]}.    
-
-{[{{dets_server,call,1},                          8,   15.097,    0.016}],     
- { {gen_server,call,3},                           8,   15.097,    0.016},     %
- [{{gen,call,4},                                  8,   15.081,    0.016}]}.    
-
-{[{{gen_server,call,3},                           8,   15.081,    0.016}],     
- { {gen,call,4},                                  8,   15.081,    0.016},     %
- [{{gen,do_call,4},                               8,   15.057,    0.040},      
-  {{erlang,whereis,1},                            8,    0.008,    0.008}]}.    
-
-{[{{bw,daten_schreiben,1},                        2,   15.023,    0.004},      
-  {{bw,daten_lesen,2},                            2,    0.046,    0.004}],     
- { {dets,close,1},                                4,   15.069,    0.008},     %
- [{{dets_server,close,1},                         4,   15.061,    0.004}]}.    
-
-{[{{dets,close,1},                                4,   15.061,    0.004}],     
- { {dets_server,close,1},                         4,   15.061,    0.004},     %
- [{{dets_server,call,1},                          4,   15.057,    0.008}]}.    
-
-{[{{gen,call,4},                                  8,   15.057,    0.040}],     
- { {gen,do_call,4},                               8,   15.057,    0.040},     %
- [{suspend,                                       8,   14.993,    0.000},      
-  {{erlang,send,3},                               8,    0.008,    0.008},      
-  {{erlang,monitor,2},                            8,    0.008,    0.008},      
-  {{erlang,demonitor,2},                          8,    0.008,    0.008}]}.    
-
-{[{{bw,daten_schreiben,1},                        2,    0.104,    0.006},      
-  {{bw,daten_lesen,2},                            2,    0.104,    0.006}],     
- { {dets,open_file,2},                            4,    0.208,    0.012},     %
- [{{dets,defaults,2},                             4,    0.112,    0.016},      
-  {{dets_server,open_file,2},                     4,    0.084,    0.004}]}.    
-
-{[{{bw,geld_auszahlen,3},                         2,    0.194,    0.010}],     
- { {bw,daten_lesen,2},                            2,    0.194,    0.010},     %
- [{{dets,open_file,2},                            2,    0.104,    0.006},      
-  {{dets,close,1},                                2,    0.046,    0.004},      
-  {{dets,lookup,2},                               2,    0.032,    0.004},      
-  {{bw,error_handling,1},                         2,    0.002,    0.002}]}.    
-
-{[{{dets,open_file,2},                            4,    0.112,    0.016}],     
- { {dets,defaults,2},                             4,    0.112,    0.016},     %
- [{{lists,foldl,3},                               4,    0.076,    0.008},      
-  {{dets,to_list,1},                              4,    0.012,    0.008},      
-  {{timer,minutes,1},                             4,    0.004,    0.004},      
-  {{dets,is_comp_min_max,1},                      4,    0.004,    0.004}]}.    
-
-{[{{dets,open_file,2},                            4,    0.084,    0.004}],     
- { {dets_server,open_file,2},                     4,    0.084,    0.004},     %
- [{{dets_server,call,1},                          4,    0.080,    0.008}]}.    
-
-{[{{dets,defaults,2},                             4,    0.076,    0.008},      
-  {{lists,foldl,3},                               8,    0.000,    0.012}],     
- { {lists,foldl,3},                              12,    0.076,    0.020},     %
- [{{dets,'-defaults/2-fun-0-',2},                 8,    0.056,    0.008},      
-  {{lists,foldl,3},                               8,    0.000,    0.012}]}.    
-
-{[{{lists,foldl,3},                               8,    0.056,    0.008}],     
- { {dets,'-defaults/2-fun-0-',2},                 8,    0.056,    0.008},     %
- [{{dets,repl,2},                                 8,    0.048,    0.024}]}.    
-
-{[{{dets,'-defaults/2-fun-0-',2},                 8,    0.048,    0.024}],     
- { {dets,repl,2},                                 8,    0.048,    0.024},     %
- [{{dets,mem,2},                                  4,    0.012,    0.008},      
-  {{erlang,setelement,3},                         8,    0.008,    0.008},      
-  {{dets,to_list,1},                              4,    0.004,    0.004}]}.    
-
-{[{{bw,daten_lesen,2},                            2,    0.032,    0.004}],     
- { {dets,lookup,2},                               2,    0.032,    0.004},     %
- [{{dets,treq,2},                                 2,    0.028,    0.004}]}.    
-
-{[{{dets_server,call,1},                          8,    0.024,    0.016}],     
- { {dets_server,ensure_started,0},                8,    0.024,    0.016},     %
- [{{erlang,whereis,1},                            8,    0.008,    0.008}]}.    
-
-{[{{gen,call,4},                                  8,    0.008,    0.008},      
-  {{dets_server,ensure_started,0},                8,    0.008,    0.008}],     
- { {erlang,whereis,1},                           16,    0.016,    0.016},     %
- [ ]}.
-
-{[{{dets,defaults,2},                             4,    0.012,    0.008},      
-  {{dets,repl,2},                                 4,    0.004,    0.004}],     
- { {dets,to_list,1},                              8,    0.016,    0.012},     %
- [{{erlang,atom_to_list,1},                       4,    0.004,    0.004}]}.    
-
-{[{{gen,do_call,4},                               8,    0.008,    0.008},      
-  {{dets,req,2},                                  4,    0.004,    0.004}],     
- { {erlang,monitor,2},                           12,    0.012,    0.012},     %
- [ ]}.
-
-{[{{dets,treq,2},                                 4,    0.012,    0.008}],     
- { {dets_server,get_pid,1},                       4,    0.012,    0.008},     %
- [{{ets,lookup_element,3},                        4,    0.004,    0.004}]}.    
-
-{[{{dets,repl,2},                                 4,    0.012,    0.008}],     
- { {dets,mem,2},                                  4,    0.012,    0.008},     %
- [{{lists,member,2},                              4,    0.004,    0.004}]}.    
-
-{[{{dets,repl,2},                                 8,    0.008,    0.008}],     
- { {erlang,setelement,3},                         8,    0.008,    0.008},     %
- [ ]}.
-
-{[{{gen,do_call,4},                               8,    0.008,    0.008}],     
- { {erlang,send,3},                               8,    0.008,    0.008},     %
- [ ]}.
-
-{[{{gen,do_call,4},                               8,    0.008,    0.008}],     
- { {erlang,demonitor,2},                          8,    0.008,    0.008},     %
- [ ]}.
-
-{[{{dets,defaults,2},                             4,    0.004,    0.004}],     
- { {timer,minutes,1},                             4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{dets,mem,2},                                  4,    0.004,    0.004}],     
- { {lists,member,2},                              4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{dets_server,get_pid,1},                       4,    0.004,    0.004}],     
- { {ets,lookup_element,3},                        4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{dets,req,2},                                  4,    0.004,    0.004}],     
- { {erlang,demonitor,1},                          4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{dets,to_list,1},                              4,    0.004,    0.004}],     
- { {erlang,atom_to_list,1},                       4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{dets,defaults,2},                             4,    0.004,    0.004}],     
- { {dets,is_comp_min_max,1},                      4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{bw,geld_auszahlen,3},                         4,    0.004,    0.004}],     
- { {bw,kontoinfo,2},                              4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{bw,daten_lesen,2},                            2,    0.002,    0.002}],     
- { {bw,error_handling,1},                         2,    0.002,    0.002},     %
- [ ]}.
-
-{[{{dets,req,2},                                  2,    0.002,    0.002}],     
- { garbage_collect,                               2,    0.002,    0.002},     %
- [ ]}.
-
-{[{{bw,kontolog,3},                               1,    0.001,    0.001}],     
- { {erlang,time,0},                               1,    0.001,    0.001},     %
- [ ]}.
-
-{[{{bw,kontolog,3},                               1,    0.001,    0.001}],     
- { {erlang,date,0},                               1,    0.001,    0.001},     %
- [ ]}.
-
-{[ ],
- { undefined,                                     0,    0.000,    0.000},     %
- [{{bw,init,0},                                   1,   46.100,    0.003}]}.    
-
-
-%                                               CNT       ACC       OWN        
-[{ "<0.814.0>",                                 226,undefined,    0.384},    %%
- { spawned_by, "<0.168.0>"},
- { spawned_as, {bw,init,[]}},
- { initial_calls, [{bw,init,0},{bw,init,0}]}].
-
-{[{undefined,                                     1,   31.100,    0.003},      
-  {{bw,init,0},                                   1,    0.000,    0.001}],     
- { {bw,init,0},                                   2,   31.100,    0.004},     %
- [{{bw,geld_auszahlen,3},                         1,   31.049,    0.009},      
-  {suspend,                                       2,    0.047,    0.000},      
-  {{bw,init,0},                                   1,    0.000,    0.001}]}.    
-
-{[{{bw,init,0},                                   1,   31.049,    0.009}],     
- { {bw,geld_auszahlen,3},                         1,   31.049,    0.009},     %
- [{{bw,kontolog,3},                               1,   15.999,    0.003},      
-  {{bw,kontochange,3},                            1,   14.843,    0.002},      
-  {{bw,daten_lesen,2},                            2,    0.194,    0.010},      
-  {{bw,kontoinfo,2},                              4,    0.004,    0.004}]}.    
-
-{[{{bw,kontolog,3},                               1,   15.994,    0.002},      
-  {{bw,geld_auszahlen,3},                         1,   14.843,    0.002}],     
- { {bw,kontochange,3},                            2,   30.837,    0.004},     %
- [{{bw,daten_schreiben,1},                        2,   30.833,    0.006}]}.    
-
-{[{{bw,kontochange,3},                            2,   30.833,    0.006}],     
- { {bw,daten_schreiben,1},                        2,   30.833,    0.006},     %
- [{{dets,close,1},                                2,   30.693,    0.004},      
-  {{dets,open_file,2},                            2,    0.104,    0.006},      
-  {{dets,insert,2},                               2,    0.030,    0.004}]}.    
-
-{[{{dets_server,close,1},                         4,   30.727,    0.008},      
-  {{dets_server,open_file,2},                     4,    0.080,    0.008}],     
- { {dets_server,call,1},                          8,   30.807,    0.016},     %
- [{{gen_server,call,3},                           8,   30.767,    0.016},      
-  {{dets_server,ensure_started,0},                8,    0.024,    0.016}]}.    
-
-{[{{dets_server,call,1},                          8,   30.767,    0.016}],     
- { {gen_server,call,3},                           8,   30.767,    0.016},     %
- [{{gen,call,4},                                  8,   30.751,    0.016}]}.    
-
-{[{{gen_server,call,3},                           8,   30.751,    0.016}],     
- { {gen,call,4},                                  8,   30.751,    0.016},     %
- [{{gen,do_call,4},                               8,   30.727,    0.040},      
-  {{erlang,whereis,1},                            8,    0.008,    0.008}]}.    
-
-{[{{bw,daten_schreiben,1},                        2,   30.693,    0.004},      
-  {{bw,daten_lesen,2},                            2,    0.046,    0.004}],     
- { {dets,close,1},                                4,   30.739,    0.008},     %
- [{{dets_server,close,1},                         4,   30.731,    0.004}]}.    
-
-{[{{dets,close,1},                                4,   30.731,    0.004}],     
- { {dets_server,close,1},                         4,   30.731,    0.004},     %
- [{{dets_server,call,1},                          4,   30.727,    0.008}]}.    
-
-{[{{gen,call,4},                                  8,   30.727,    0.040}],     
- { {gen,do_call,4},                               8,   30.727,    0.040},     %
- [{suspend,                                       8,   30.663,    0.000},      
-  {{erlang,send,3},                               8,    0.008,    0.008},      
-  {{erlang,monitor,2},                            8,    0.008,    0.008},      
-  {{erlang,demonitor,2},                          8,    0.008,    0.008}]}.    
-
-{[{{gen,do_call,4},                               8,   30.663,    0.000},      
-  {{bw,init,0},                                   2,    0.047,    0.000},      
-  {{dets,req,2},                                  4,    0.006,    0.000}],     
- { suspend,                                      14,   30.716,    0.000},     %
- [ ]}.
-
-{[{{bw,geld_auszahlen,3},                         1,   15.999,    0.003}],     
- { {bw,kontolog,3},                               1,   15.999,    0.003},     %
- [{{bw,kontochange,3},                            1,   15.994,    0.002},      
-  {{erlang,time,0},                               1,    0.001,    0.001},      
-  {{erlang,date,0},                               1,    0.001,    0.001}]}.    
-
-{[{{bw,daten_schreiben,1},                        2,    0.104,    0.006},      
-  {{bw,daten_lesen,2},                            2,    0.104,    0.006}],     
- { {dets,open_file,2},                            4,    0.208,    0.012},     %
- [{{dets,defaults,2},                             4,    0.112,    0.016},      
-  {{dets_server,open_file,2},                     4,    0.084,    0.004}]}.    
-
-{[{{bw,geld_auszahlen,3},                         2,    0.194,    0.010}],     
- { {bw,daten_lesen,2},                            2,    0.194,    0.010},     %
- [{{dets,open_file,2},                            2,    0.104,    0.006},      
-  {{dets,close,1},                                2,    0.046,    0.004},      
-  {{dets,lookup,2},                               2,    0.032,    0.004},      
-  {{bw,error_handling,1},                         2,    0.002,    0.002}]}.    
-
-{[{{dets,open_file,2},                            4,    0.112,    0.016}],     
- { {dets,defaults,2},                             4,    0.112,    0.016},     %
- [{{lists,foldl,3},                               4,    0.076,    0.008},      
-  {{dets,to_list,1},                              4,    0.012,    0.008},      
-  {{timer,minutes,1},                             4,    0.004,    0.004},      
-  {{dets,is_comp_min_max,1},                      4,    0.004,    0.004}]}.    
-
-{[{{dets,open_file,2},                            4,    0.084,    0.004}],     
- { {dets_server,open_file,2},                     4,    0.084,    0.004},     %
- [{{dets_server,call,1},                          4,    0.080,    0.008}]}.    
-
-{[{{dets,defaults,2},                             4,    0.076,    0.008},      
-  {{lists,foldl,3},                               8,    0.000,    0.012}],     
- { {lists,foldl,3},                              12,    0.076,    0.020},     %
- [{{dets,'-defaults/2-fun-0-',2},                 8,    0.056,    0.008},      
-  {{lists,foldl,3},                               8,    0.000,    0.012}]}.    
-
-{[{{lists,foldl,3},                               8,    0.056,    0.008}],     
- { {dets,'-defaults/2-fun-0-',2},                 8,    0.056,    0.008},     %
- [{{dets,repl,2},                                 8,    0.048,    0.024}]}.    
-
-{[{{dets,lookup,2},                               2,    0.028,    0.004},      
-  {{dets,insert,2},                               2,    0.026,    0.004}],     
- { {dets,treq,2},                                 4,    0.054,    0.008},     %
- [{{dets,req,2},                                  4,    0.034,    0.018},      
-  {{dets_server,get_pid,1},                       4,    0.012,    0.008}]}.    
-
-{[{{dets,'-defaults/2-fun-0-',2},                 8,    0.048,    0.024}],     
- { {dets,repl,2},                                 8,    0.048,    0.024},     %
- [{{dets,mem,2},                                  4,    0.012,    0.008},      
-  {{erlang,setelement,3},                         8,    0.008,    0.008},      
-  {{dets,to_list,1},                              4,    0.004,    0.004}]}.    
-
-{[{{dets,treq,2},                                 4,    0.034,    0.018}],     
- { {dets,req,2},                                  4,    0.034,    0.018},     %
- [{suspend,                                       4,    0.006,    0.000},      
-  {{erlang,monitor,2},                            4,    0.004,    0.004},      
-  {{erlang,demonitor,1},                          4,    0.004,    0.004},      
-  {garbage_collect,                               2,    0.002,    0.002}]}.    
-
-{[{{bw,daten_lesen,2},                            2,    0.032,    0.004}],     
- { {dets,lookup,2},                               2,    0.032,    0.004},     %
- [{{dets,treq,2},                                 2,    0.028,    0.004}]}.    
-
-{[{{bw,daten_schreiben,1},                        2,    0.030,    0.004}],     
- { {dets,insert,2},                               2,    0.030,    0.004},     %
- [{{dets,treq,2},                                 2,    0.026,    0.004}]}.    
-
-{[{{dets_server,call,1},                          8,    0.024,    0.016}],     
- { {dets_server,ensure_started,0},                8,    0.024,    0.016},     %
- [{{erlang,whereis,1},                            8,    0.008,    0.008}]}.    
-
-{[{{gen,call,4},                                  8,    0.008,    0.008},      
-  {{dets_server,ensure_started,0},                8,    0.008,    0.008}],     
- { {erlang,whereis,1},                           16,    0.016,    0.016},     %
- [ ]}.
-
-{[{{dets,defaults,2},                             4,    0.012,    0.008},      
-  {{dets,repl,2},                                 4,    0.004,    0.004}],     
- { {dets,to_list,1},                              8,    0.016,    0.012},     %
- [{{erlang,atom_to_list,1},                       4,    0.004,    0.004}]}.    
-
-{[{{gen,do_call,4},                               8,    0.008,    0.008},      
-  {{dets,req,2},                                  4,    0.004,    0.004}],     
- { {erlang,monitor,2},                           12,    0.012,    0.012},     %
- [ ]}.
-
-{[{{dets,treq,2},                                 4,    0.012,    0.008}],     
- { {dets_server,get_pid,1},                       4,    0.012,    0.008},     %
- [{{ets,lookup_element,3},                        4,    0.004,    0.004}]}.    
-
-{[{{dets,repl,2},                                 4,    0.012,    0.008}],     
- { {dets,mem,2},                                  4,    0.012,    0.008},     %
- [{{lists,member,2},                              4,    0.004,    0.004}]}.    
-
-{[{{dets,repl,2},                                 8,    0.008,    0.008}],     
- { {erlang,setelement,3},                         8,    0.008,    0.008},     %
- [ ]}.
-
-{[{{gen,do_call,4},                               8,    0.008,    0.008}],     
- { {erlang,send,3},                               8,    0.008,    0.008},     %
- [ ]}.
-
-{[{{gen,do_call,4},                               8,    0.008,    0.008}],     
- { {erlang,demonitor,2},                          8,    0.008,    0.008},     %
- [ ]}.
-
-{[{{dets,defaults,2},                             4,    0.004,    0.004}],     
- { {timer,minutes,1},                             4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{dets,mem,2},                                  4,    0.004,    0.004}],     
- { {lists,member,2},                              4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{dets_server,get_pid,1},                       4,    0.004,    0.004}],     
- { {ets,lookup_element,3},                        4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{dets,req,2},                                  4,    0.004,    0.004}],     
- { {erlang,demonitor,1},                          4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{dets,to_list,1},                              4,    0.004,    0.004}],     
- { {erlang,atom_to_list,1},                       4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{dets,defaults,2},                             4,    0.004,    0.004}],     
- { {dets,is_comp_min_max,1},                      4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{bw,geld_auszahlen,3},                         4,    0.004,    0.004}],     
- { {bw,kontoinfo,2},                              4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{bw,daten_lesen,2},                            2,    0.002,    0.002}],     
- { {bw,error_handling,1},                         2,    0.002,    0.002},     %
- [ ]}.
-
-{[{{dets,req,2},                                  2,    0.002,    0.002}],     
- { garbage_collect,                               2,    0.002,    0.002},     %
- [ ]}.
-
-{[{{bw,kontolog,3},                               1,    0.001,    0.001}],     
- { {erlang,time,0},                               1,    0.001,    0.001},     %
- [ ]}.
-
-{[{{bw,kontolog,3},                               1,    0.001,    0.001}],     
- { {erlang,date,0},                               1,    0.001,    0.001},     %
- [ ]}.
-
-{[ ],
- { undefined,                                     0,    0.000,    0.000},     %
- [{{bw,init,0},                                   1,   31.100,    0.003}]}.    
-
-
-%                                               CNT       ACC       OWN        
-[{ "<0.801.0>",                                 226,undefined,    0.384},    %%
- { spawned_by, "<0.168.0>"},
- { spawned_as, {bw,init,[]}},
- { initial_calls, [{bw,init,0},{bw,init,0}]}].
-
-{[{undefined,                                     1,   46.100,    0.003},      
-  {{bw,init,0},                                   1,    0.000,    0.001}],     
- { {bw,init,0},                                   2,   46.100,    0.004},     %
- [{{bw,geld_auszahlen,3},                         1,   31.071,    0.009},      
-  {suspend,                                       2,   15.025,    0.000},      
-  {{bw,init,0},                                   1,    0.000,    0.001}]}.    
-
-{[{{gen,do_call,4},                               8,   30.685,    0.000},      
-  {{bw,init,0},                                   2,   15.025,    0.000},      
-  {{dets,req,2},                                  4,    0.006,    0.000}],     
- { suspend,                                      14,   45.716,    0.000},     %
- [ ]}.
-
-{[{{bw,init,0},                                   1,   31.071,    0.009}],     
- { {bw,geld_auszahlen,3},                         1,   31.071,    0.009},     %
- [{{bw,kontochange,3},                            1,   15.865,    0.002},      
-  {{bw,kontolog,3},                               1,   14.999,    0.003},      
-  {{bw,daten_lesen,2},                            2,    0.194,    0.010},      
-  {{bw,kontoinfo,2},                              4,    0.004,    0.004}]}.    
-
-{[{{bw,geld_auszahlen,3},                         1,   15.865,    0.002},      
-  {{bw,kontolog,3},                               1,   14.994,    0.002}],     
- { {bw,kontochange,3},                            2,   30.859,    0.004},     %
- [{{bw,daten_schreiben,1},                        2,   30.855,    0.006}]}.    
-
-{[{{bw,kontochange,3},                            2,   30.855,    0.006}],     
- { {bw,daten_schreiben,1},                        2,   30.855,    0.006},     %
- [{{dets,close,1},                                2,   30.715,    0.004},      
-  {{dets,open_file,2},                            2,    0.104,    0.006},      
-  {{dets,insert,2},                               2,    0.030,    0.004}]}.    
-
-{[{{dets_server,close,1},                         4,   30.749,    0.008},      
-  {{dets_server,open_file,2},                     4,    0.080,    0.008}],     
- { {dets_server,call,1},                          8,   30.829,    0.016},     %
- [{{gen_server,call,3},                           8,   30.789,    0.016},      
-  {{dets_server,ensure_started,0},                8,    0.024,    0.016}]}.    
-
-{[{{dets_server,call,1},                          8,   30.789,    0.016}],     
- { {gen_server,call,3},                           8,   30.789,    0.016},     %
- [{{gen,call,4},                                  8,   30.773,    0.016}]}.    
-
-{[{{gen_server,call,3},                           8,   30.773,    0.016}],     
- { {gen,call,4},                                  8,   30.773,    0.016},     %
- [{{gen,do_call,4},                               8,   30.749,    0.040},      
-  {{erlang,whereis,1},                            8,    0.008,    0.008}]}.    
-
-{[{{bw,daten_schreiben,1},                        2,   30.715,    0.004},      
-  {{bw,daten_lesen,2},                            2,    0.046,    0.004}],     
- { {dets,close,1},                                4,   30.761,    0.008},     %
- [{{dets_server,close,1},                         4,   30.753,    0.004}]}.    
-
-{[{{dets,close,1},                                4,   30.753,    0.004}],     
- { {dets_server,close,1},                         4,   30.753,    0.004},     %
- [{{dets_server,call,1},                          4,   30.749,    0.008}]}.    
-
-{[{{gen,call,4},                                  8,   30.749,    0.040}],     
- { {gen,do_call,4},                               8,   30.749,    0.040},     %
- [{suspend,                                       8,   30.685,    0.000},      
-  {{erlang,send,3},                               8,    0.008,    0.008},      
-  {{erlang,monitor,2},                            8,    0.008,    0.008},      
-  {{erlang,demonitor,2},                          8,    0.008,    0.008}]}.    
-
-{[{{bw,geld_auszahlen,3},                         1,   14.999,    0.003}],     
- { {bw,kontolog,3},                               1,   14.999,    0.003},     %
- [{{bw,kontochange,3},                            1,   14.994,    0.002},      
-  {{erlang,time,0},                               1,    0.001,    0.001},      
-  {{erlang,date,0},                               1,    0.001,    0.001}]}.    
-
-{[{{bw,daten_schreiben,1},                        2,    0.104,    0.006},      
-  {{bw,daten_lesen,2},                            2,    0.104,    0.006}],     
- { {dets,open_file,2},                            4,    0.208,    0.012},     %
- [{{dets,defaults,2},                             4,    0.112,    0.016},      
-  {{dets_server,open_file,2},                     4,    0.084,    0.004}]}.    
-
-{[{{bw,geld_auszahlen,3},                         2,    0.194,    0.010}],     
- { {bw,daten_lesen,2},                            2,    0.194,    0.010},     %
- [{{dets,open_file,2},                            2,    0.104,    0.006},      
-  {{dets,close,1},                                2,    0.046,    0.004},      
-  {{dets,lookup,2},                               2,    0.032,    0.004},      
-  {{bw,error_handling,1},                         2,    0.002,    0.002}]}.    
-
-{[{{dets,open_file,2},                            4,    0.112,    0.016}],     
- { {dets,defaults,2},                             4,    0.112,    0.016},     %
- [{{lists,foldl,3},                               4,    0.076,    0.008},      
-  {{dets,to_list,1},                              4,    0.012,    0.008},      
-  {{timer,minutes,1},                             4,    0.004,    0.004},      
-  {{dets,is_comp_min_max,1},                      4,    0.004,    0.004}]}.    
-
-{[{{dets,open_file,2},                            4,    0.084,    0.004}],     
- { {dets_server,open_file,2},                     4,    0.084,    0.004},     %
- [{{dets_server,call,1},                          4,    0.080,    0.008}]}.    
-
-{[{{dets,defaults,2},                             4,    0.076,    0.008},      
-  {{lists,foldl,3},                               8,    0.000,    0.012}],     
- { {lists,foldl,3},                              12,    0.076,    0.020},     %
- [{{dets,'-defaults/2-fun-0-',2},                 8,    0.056,    0.008},      
-  {{lists,foldl,3},                               8,    0.000,    0.012}]}.    
-
-{[{{lists,foldl,3},                               8,    0.056,    0.008}],     
- { {dets,'-defaults/2-fun-0-',2},                 8,    0.056,    0.008},     %
- [{{dets,repl,2},                                 8,    0.048,    0.024}]}.    
-
-{[{{dets,lookup,2},                               2,    0.028,    0.004},      
-  {{dets,insert,2},                               2,    0.026,    0.004}],     
- { {dets,treq,2},                                 4,    0.054,    0.008},     %
- [{{dets,req,2},                                  4,    0.034,    0.018},      
-  {{dets_server,get_pid,1},                       4,    0.012,    0.008}]}.    
-
-{[{{dets,'-defaults/2-fun-0-',2},                 8,    0.048,    0.024}],     
- { {dets,repl,2},                                 8,    0.048,    0.024},     %
- [{{dets,mem,2},                                  4,    0.012,    0.008},      
-  {{erlang,setelement,3},                         8,    0.008,    0.008},      
-  {{dets,to_list,1},                              4,    0.004,    0.004}]}.    
-
-{[{{dets,treq,2},                                 4,    0.034,    0.018}],     
- { {dets,req,2},                                  4,    0.034,    0.018},     %
- [{suspend,                                       4,    0.006,    0.000},      
-  {{erlang,monitor,2},                            4,    0.004,    0.004},      
-  {{erlang,demonitor,1},                          4,    0.004,    0.004},      
-  {garbage_collect,                               2,    0.002,    0.002}]}.    
-
-{[{{bw,daten_lesen,2},                            2,    0.032,    0.004}],     
- { {dets,lookup,2},                               2,    0.032,    0.004},     %
- [{{dets,treq,2},                                 2,    0.028,    0.004}]}.    
-
-{[{{bw,daten_schreiben,1},                        2,    0.030,    0.004}],     
- { {dets,insert,2},                               2,    0.030,    0.004},     %
- [{{dets,treq,2},                                 2,    0.026,    0.004}]}.    
-
-{[{{dets_server,call,1},                          8,    0.024,    0.016}],     
- { {dets_server,ensure_started,0},                8,    0.024,    0.016},     %
- [{{erlang,whereis,1},                            8,    0.008,    0.008}]}.    
-
-{[{{gen,call,4},                                  8,    0.008,    0.008},      
-  {{dets_server,ensure_started,0},                8,    0.008,    0.008}],     
- { {erlang,whereis,1},                           16,    0.016,    0.016},     %
- [ ]}.
-
-{[{{dets,defaults,2},                             4,    0.012,    0.008},      
-  {{dets,repl,2},                                 4,    0.004,    0.004}],     
- { {dets,to_list,1},                              8,    0.016,    0.012},     %
- [{{erlang,atom_to_list,1},                       4,    0.004,    0.004}]}.    
-
-{[{{gen,do_call,4},                               8,    0.008,    0.008},      
-  {{dets,req,2},                                  4,    0.004,    0.004}],     
- { {erlang,monitor,2},                           12,    0.012,    0.012},     %
- [ ]}.
-
-{[{{dets,treq,2},                                 4,    0.012,    0.008}],     
- { {dets_server,get_pid,1},                       4,    0.012,    0.008},     %
- [{{ets,lookup_element,3},                        4,    0.004,    0.004}]}.    
-
-{[{{dets,repl,2},                                 4,    0.012,    0.008}],     
- { {dets,mem,2},                                  4,    0.012,    0.008},     %
- [{{lists,member,2},                              4,    0.004,    0.004}]}.    
-
-{[{{dets,repl,2},                                 8,    0.008,    0.008}],     
- { {erlang,setelement,3},                         8,    0.008,    0.008},     %
- [ ]}.
-
-{[{{gen,do_call,4},                               8,    0.008,    0.008}],     
- { {erlang,send,3},                               8,    0.008,    0.008},     %
- [ ]}.
-
-{[{{gen,do_call,4},                               8,    0.008,    0.008}],     
- { {erlang,demonitor,2},                          8,    0.008,    0.008},     %
- [ ]}.
-
-{[{{dets,defaults,2},                             4,    0.004,    0.004}],     
- { {timer,minutes,1},                             4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{dets,mem,2},                                  4,    0.004,    0.004}],     
- { {lists,member,2},                              4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{dets_server,get_pid,1},                       4,    0.004,    0.004}],     
- { {ets,lookup_element,3},                        4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{dets,req,2},                                  4,    0.004,    0.004}],     
- { {erlang,demonitor,1},                          4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{dets,to_list,1},                              4,    0.004,    0.004}],     
- { {erlang,atom_to_list,1},                       4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{dets,defaults,2},                             4,    0.004,    0.004}],     
- { {dets,is_comp_min_max,1},                      4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{bw,geld_auszahlen,3},                         4,    0.004,    0.004}],     
- { {bw,kontoinfo,2},                              4,    0.004,    0.004},     %
- [ ]}.
-
-{[{{bw,daten_lesen,2},                            2,    0.002,    0.002}],     
- { {bw,error_handling,1},                         2,    0.002,    0.002},     %
- [ ]}.
-
-{[{{dets,req,2},                                  2,    0.002,    0.002}],     
- { garbage_collect,                               2,    0.002,    0.002},     %
- [ ]}.
-
-{[{{bw,kontolog,3},                               1,    0.001,    0.001}],     
- { {erlang,time,0},                               1,    0.001,    0.001},     %
- [ ]}.
-
-{[{{bw,kontolog,3},                               1,    0.001,    0.001}],     
- { {erlang,date,0},                               1,    0.001,    0.001},     %
- [ ]}.
-
-{[ ],
- { undefined,                                     0,    0.000,    0.000},     %
- [{{bw,init,0},                                   1,   46.100,    0.003}]}.    
+ [{{bw,init,0},                                   1,  108.995,    0.003}]}.    
 
 
