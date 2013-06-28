@@ -1,5 +1,16 @@
 \select@language {ngerman}
 \contentsline {section}{\numberline {1}Teamorganisation}{3}{section.1}
 \contentsline {section}{\numberline {2}Implementierung}{3}{section.2}
-\contentsline {subsection}{\numberline {2.1}Client}{3}{subsection.2.1}
-\contentsline {subsection}{\numberline {2.2}Server}{5}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.1}Bedienungsanleitung}{3}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Client}{4}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Server}{6}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}worker}{8}{subsection.2.4}
+\contentsline {subsubsection}{\numberline {2.4.1}Allgemeines}{8}{subsubsection.2.4.1}
+\contentsline {subsubsection}{\numberline {2.4.2}Das Konto}{9}{subsubsection.2.4.2}
+\contentsline {subsubsection}{\numberline {2.4.3}Die Transaktionsliste}{9}{subsubsection.2.4.3}
+\contentsline {subsubsection}{\numberline {2.4.4}Worker-Funktionen}{10}{subsubsection.2.4.4}
+\contentsline {paragraph}{Interne Funktionen}{10}{section*.2}
+\contentsline {subparagraph}{Error Handling}{10}{section*.3}
+\contentsline {subparagraph}{Datenbankinteraktionen}{11}{section*.4}
+\contentsline {subparagraph}{Konto\IeC {\"a}nderungen}{11}{section*.5}
+\contentsline {paragraph}{Externe Funktionen}{11}{section*.6}
