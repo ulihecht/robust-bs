@@ -1,4 +1,5 @@
 \subsection{Bedienungsanleitung}
+<<<<<<< HEAD
 
 Im folgenden Abschnitt wird das Starten und die Nutzung des Banking Servers grundsätzlich beschrieben. Dabei ist es wichtig zu wissen, dass der Server auf einem eigenen Knoten läuft. Dadurch wird ermöglicht, dass die Software auch auf einem verteilten System eingesetzt werden kann. Bevor man das Programm ausführen kann sind die Module \textbf{bs}, \textbf{bc}, \textbf{bw} und \textbf{virus} zu compilieren.
 
@@ -8,6 +9,17 @@ Jedoch kann der Knoten für den Client beliebig genannt werden. Es ist notwendig
 
 Ab dem jetzigen Zeitpunkt können in der Clientshell Anfragen an einen ausgewählten Client gesendet werden. Beispielsweise:
 
+=======
+
+Im folgenden Abschnitt wird das Starten und die Nutzung des Banking Servers grundsätzlich beschrieben. Dabei ist es wichtig zu wissen, dass der Server auf einem eigenen Knoten läuft. Dadurch wird ermöglicht, dass die Software auch auf einem verteilten System eingesetzt werden kann. Bevor man das Programm ausführen kann sind die Module \textbf{bs}, \textbf{bc}, \textbf{bw} und \textbf{virus} zu compilieren.
+
+Der einfachste Weg eine Erlang Shell einem gewissen Knoten zuzuweisen besteht darin das Ziel einer Verknüpfung zu modifizieren. Dafür klickt man mit der rechten Maustaste auf die Verknüpfung und wählt den Unterpunkt ''Eigenschaften''.  In dem Tab ''Verknüpfungen'' ergänzt man unter ''Ziel:'' die bisherige Eingabe um den Zusatz ''erl -sname bs@localhost''. Gesamt sollte das Textfeld in etwa so gefüllt sein: '\textit{''C:\textbackslash Program Files\textbackslash erl5.10.1\textbackslash bin\textbackslash werl.exe'' erl -sname bs@localhost}'. Die Benennung mit ''bs'' ist für den Server ausschlaggebend.
+
+Jedoch kann der Knoten für den Client beliebig genannt werden. Es ist notwendig eine neue Shell zu starten, diesmal sollte das Ziel der Verknüpfung um ''erl -sname bc@localhost'' erweitert werden. Im weiteren wird der Name des Knotens ''bc'' fest definiert sein. (Gesamteingabe: '\textit{''C:\textbackslash Program Files\textbackslash erl5.10.1\textbackslash bin\textbackslash werl.exe'' erl -sname bc@localhost}') Nun sollten parallel zwei verschiedene Shells laufen. Eine für den Server (Servershell) und eine für den Client (Clientshell). Um den Server zu starten führt man in der Servershell das Kommando \textit{bs:start()} aus. Ein Client kann in der Clientshell durch den Befehl \textit{bc:start(Client1)} angelegt werden. ''Client1'' ist in diesem Fall ein frei wählbarer Name. Zusätzlich könnten noch weitere Clients angefügt werden.
+
+Ab dem jetzigen Zeitpunkt können in der Clientshell Anfragen an einen ausgewählten Client gesendet werden. Beispielsweise:
+
+>>>>>>> 4fe43a2373816ad7fd9beeb0b871bdd72d0d702b
 \begin{lstlisting} 
 (bc@localhost)1> Client1 ! konto_anlegen.
 konto_anlegen
@@ -15,4 +27,8 @@ OK: 2
 (bc@localhost)1> Client1 ! {konto_abfragen, 2}.
 konto_abfragen
 OK: 0
+<<<<<<< HEAD
 \end{lstlisting}
+=======
+\end{lstlisting}
+>>>>>>> 4fe43a2373816ad7fd9beeb0b871bdd72d0d702b
