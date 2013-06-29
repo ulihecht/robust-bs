@@ -1,0 +1,105 @@
+In diesem Abschnitt wird gezeigt, wie ein Einsatz des Banking Servers in der Realität aussehen könnte. Alle Charaktere sind frei erfunden. Ähnlichkeiten zu lebenden oder verstorbenen Personen wären zufällig und nicht beabsichtigt. Die Fallstudie betrachtet die Nutzung eines Bankkontos über einen Monat hinweg, dabei werden verschiedene Clients und Konten benutzt. Die Konten wurden bereits erstellt und die Clients wurden gemäß der Bedienungsanleitung gestartet. Hier eine Aufstellung über Personen und zugehörige Kontonummern:
+
+\begin{tabular}{p{3 cm}| p{3 cm}| p{3 cm}}
+Kontonummer & Person & Rolle\\
+				\hline
+				\hline
+13 & Martin Schmidt & Student\\ \hline
+
+14 & Alfred Schmidt & Vater\\ \hline
+
+15 & OnlineKauf GmbH & Online Shopping Portal\\ \hline
+
+16 & Informatik AG & Arbeitgeber\\ \hline
+\end{tabular}\\
+
+Zu Beginn der Studie ist auf dem Bankkonto von Martin kein Geld, der Kontostand der anderen Personen ist immer ausreichend groß. Am 01.07.13 bekommt Martin seinen Lohn von der Buchhaltungsabteilung seines Arbeitgebers ''Informatik AG'' überwiesen. 
+\begin{lstlisting}
+(bc@localhost)1> informatikAG_Buchhaltung ! {geld_ueberweisen, 13, 16, 560}.    
+{geld_ueberweisen,13,16,560}
+OK: 'Geld wurde ueberwiesen'
+\end{lstlisting}
+Zusätzlich erhält der Student 2 Tage später sein Taschengeld in Form einer Überweisung von seinem Vater.
+\begin{lstlisting}
+(bc@localhost)2> alfred_onlineBanking ! {geld_ueberweisen, 13, 14, 60}.        
+{geld_ueberweisen,13,14,60}
+OK: 'Geld wurde ueberwiesen'
+\end{lstlisting}
+Martin freut sich über das Geld und kauft sich am 05.07. neue Fußballschuhe im Wert von 200 Euro bei dem Internet Shopping Portal ''OnlineKauf GmbH''. Die Zahlung erledigt er noch am gleichen Tag via Online Banking.
+\begin{lstlisting}
+(bc@localhost)3> martin_onlineBanking ! {geld_ueberweisen, 15, 13, 200}.        
+{geld_ueberweisen,15,13,200}              
+OK: 'Geld wurde ueberwiesen'
+\end{lstlisting}
+Nachdem am Ende der zweiten Juliwoche ruft Martin seinen Kontostand ab um den Überblick über seine Finanzen zu bewahren.
+\begin{lstlisting}
+(bc@localhost)4> martin_onlineBanking ! {kontostand_abfragen, 13}.         
+{kontostand_abfragen,13}
+OK: 420
+\end{lstlisting}
+Am 19. des Monats besucht Martin seine Oma, die ihm einen 50 Euroschein zusteckt. Diesen will er gleich auf sein Konto einzahlen und benutzt dazu die örtliche Bankfiliale.
+\begin{lstlisting}
+(bc@localhost)5> filialeOberndorf ! {geld_einzahlen, 13, omaGeschenk, 50}.
+{geld_einzahlen,13,omaGeschenk,50}
+OK: 470  
+\end{lstlisting}
+Durch einen unglücklichen Vorfall verliert der Student nur 3 Tage später seine Bankkarte. Natürlich ruft er sofort die Bank an und lässt sein Konto sperren.
+\begin{lstlisting}
+(bc@localhost)6> filialeOberndorf ! {konto_sperren, 13}.
+{konto_sperren,13}
+OK: 'Konto wurde gesperrt'
+\end{lstlisting}
+Das Konto ist ab diesem Zeitpunkt gesperrt und es können keine Zugriffe darauf stattfinden. Zum Glück findet Martin seine Bankkarte schon bald wieder. Am 28.07. hebt er 20 Euro am Geldautomaten ab um ins Kino zu gehen.
+\begin{lstlisting}
+(bc@localhost)7> geldautomat_Kinokomplex ! {geld_auszahlen, 13, 20}.
+{geld_auszahlen,13,20}
+OK: 450  
+\end{lstlisting}
+Am Monatsende wird noch einmal die Historie über den gesamten Monat ausgegeben. 
+\begin{lstlisting}
+(bc@localhost)8> martin_onlineBanking ! {historie, 13}.                   
+{historie,13}
+OK: [{transaktionsliste,[{<6747.299.0>,auszahlung,
+                          {zeit,{2013,7,28},{13,16,46}},
+                          {notizen,[]},
+                          {wer,13},
+                          {wert,20}},
+                         {<6747.285.0>,entsperrung,
+                          {zeit,{2013,7,25},{13,16,43}},
+                          {notizen,"Konto entsperrt"},
+                          {wer,13},
+                          {wert,0}},
+                         {<6747.255.0>,sperrung,
+                          {zeit,{2013,7,22},{13,12,27}},
+                          {notizen,"Konto gesperrt"},
+                          {wer,13},
+                          {wert,0}},
+                         {<6747.236.0>,einzahlung,
+                          {zeit,{2013,7,19},{13,10,5}},
+                          {notizen,omaGeschenk},
+                          {wer,13},
+                          {wert,50}},
+                         {<6747.228.0>,erfragung,
+                          {zeit,{2013,7,13},{13,6,3}},
+                          {notizen,"Kontostand wurde abgefragt"},
+                          {wer,13},
+                          {wert,0}},
+                         {<6747.187.0>,auszahlung,
+                          {zeit,{2013,7,05},{13,2,4}},
+                          {notizen,[]},
+                          {wer,13},
+                          {wert,200}},
+                         {<6747.173.0>,einzahlung,
+                          {zeit,{2013,7,03},{12,57,34}},
+                          {notizen,14},
+                          {wer,13},
+                          {wert,60}},
+                         {<6747.125.0>,einzahlung,
+                          {zeit,{2013,7,01},{12,53,8}},
+                          {notizen,16},
+                          {wer,13},
+                          {wert,560}}]},
+     {vermoegen,450}]
+\end{lstlisting}
+\paragraph{Fazit}
+Die Fallstudie zeigt, dass die grundlegenden Anforderungen an einen Banking Server erfüllt werden. Die Funktionalitäten werden restlos angeboten und durch den Umstand, dass der Server auf einen Knoten läuft, können Clients von beliebigen Orten mit ihm verbunden werden. Es ist einleuchtend, dass ein Banking Server ohne ein Authentifikationsverfahren, in der realen Welt nicht einsetzbar ist. Die Sicherheitsziele wurden bei der Projektarbeit aber außen vor gelassen. Nach der Fallstudie könnte man den Server als funktionsfähig und guter Ansatz, bietet jedoch auch Verbesserungspotential und große Lücken im Punkt Sicherheit.
