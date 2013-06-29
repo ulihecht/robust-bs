@@ -1,29 +1,18 @@
-<<<<<<< HEAD
 \BOOKMARK [1][-]{section.1}{Vorwort}{}% 1
 \BOOKMARK [1][-]{section.2}{Teamorganisation}{}% 2
-\BOOKMARK [1][-]{section.3}{Bedienungsanleitung}{}% 3
-\BOOKMARK [2][-]{subsection.3.1}{Das Starten}{section.3}% 4
-\BOOKMARK [2][-]{subsection.3.2}{Das Beenden}{section.3}% 5
-\BOOKMARK [1][-]{section.4}{Fallstudie}{}% 6
-\BOOKMARK [1][-]{section.5}{Implementierung}{}% 7
-\BOOKMARK [2][-]{subsection.5.1}{Client}{section.5}% 8
-\BOOKMARK [2][-]{subsection.5.2}{Server}{section.5}% 9
-\BOOKMARK [2][-]{subsection.5.3}{worker}{section.5}% 10
-\BOOKMARK [3][-]{subsubsection.5.3.1}{Allgemeines}{subsection.5.3}% 11
-\BOOKMARK [3][-]{subsubsection.5.3.2}{Das Konto}{subsection.5.3}% 12
-\BOOKMARK [3][-]{subsubsection.5.3.3}{Die Transaktionsliste}{subsection.5.3}% 13
-\BOOKMARK [3][-]{subsubsection.5.3.4}{Worker-Funktionen}{subsection.5.3}% 14
-=======
-\BOOKMARK [1][-]{section.1}{Teamorganisation}{}% 1
-\BOOKMARK [1][-]{section.2}{Bedienungsanleitung}{}% 2
-\BOOKMARK [2][-]{subsection.2.1}{Das Starten}{section.2}% 3
-\BOOKMARK [2][-]{subsection.2.2}{Das Beenden}{section.2}% 4
-\BOOKMARK [1][-]{section.3}{Implementierung}{}% 5
-\BOOKMARK [2][-]{subsection.3.1}{Client}{section.3}% 6
-\BOOKMARK [2][-]{subsection.3.2}{Server}{section.3}% 7
-\BOOKMARK [2][-]{subsection.3.3}{worker}{section.3}% 8
-\BOOKMARK [3][-]{subsubsection.3.3.1}{Allgemeines}{subsection.3.3}% 9
-\BOOKMARK [3][-]{subsubsection.3.3.2}{Das Konto}{subsection.3.3}% 10
-\BOOKMARK [3][-]{subsubsection.3.3.3}{Die Transaktionsliste}{subsection.3.3}% 11
-\BOOKMARK [3][-]{subsubsection.3.3.4}{Worker-Funktionen}{subsection.3.3}% 12
->>>>>>> 32b051ad421702fad8c12db32245b608b7ab4034
+\BOOKMARK [1][-]{section.3}{Konzept}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Grundkonzept}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Multiclient Konzept}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.3}{St\366rungs Konzept}{section.3}% 6
+\BOOKMARK [1][-]{section.4}{Bedienungsanleitung}{}% 7
+\BOOKMARK [2][-]{subsection.4.1}{Das Starten}{section.4}% 8
+\BOOKMARK [2][-]{subsection.4.2}{Das Beenden}{section.4}% 9
+\BOOKMARK [1][-]{section.5}{Fallstudie}{}% 10
+\BOOKMARK [1][-]{section.6}{Implementierung}{}% 11
+\BOOKMARK [2][-]{subsection.6.1}{Client}{section.6}% 12
+\BOOKMARK [2][-]{subsection.6.2}{Server}{section.6}% 13
+\BOOKMARK [2][-]{subsection.6.3}{worker}{section.6}% 14
+\BOOKMARK [3][-]{subsubsection.6.3.1}{Allgemeines}{subsection.6.3}% 15
+\BOOKMARK [3][-]{subsubsection.6.3.2}{Das Konto}{subsection.6.3}% 16
+\BOOKMARK [3][-]{subsubsection.6.3.3}{Die Transaktionsliste}{subsection.6.3}% 17
+\BOOKMARK [3][-]{subsubsection.6.3.4}{Worker-Funktionen}{subsection.6.3}% 18

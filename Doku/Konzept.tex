@@ -1,4 +1,59 @@
 \section{Konzept}
-\include{Konzept/Client}
-\include{Konzept/Server}
-\include{Konzept/Worker}
+
+Im Folgendem wird das Gesamtkonzept des Bankingserver beschrieben. Dies geschieht verteilt anhand von mehreren Sequenzdiagrammen.\\
+
+\subsection{Grundkonzept}
+
+Den Anfang macht hier das Diagramm zum Grundkonzept des Bankingservers.
+
+\begin{figure}
+\centering
+\includegraphics{/konzept/Allgemein}
+\caption{Das Grundkonzept des kompletten Bankingservers}
+\label{fig:grundkonzept}
+\end{figure}
+
+Der Startzustand besteht darin, dass Client so wie Server gestartet sind. Der Server ist kurz darauf in seinem Wartezustand, bei dem er auf eintreffende Nachrichten wartet.\\
+Sobald der Client eine Anfrage an den Server richtet, wie z.B. "Konto erstellen", startet dieser einen Arbeitsprozess. Dieser neue Arbeitsprozess, oder auch Worker, erhält während seines Aufrufes alle notwendigen Daten, die er zur Erfüllung seiner Aufgabe benötigt. Dazu zählt auch die ProzessID des Clients.\\
+Der Server erhält nach dem erfolgreichen Start des Workers ein ''ok'' zurück.\\
+Der arbeitende Prozess ist nun damit beschäftigt die Aufgabe des Clients zu bearbeiten. So lange dies geschieht, bleibt der Server weiterhin erreichbar für neue Anfragen (dazu später mehr).\\
+Sobald der Worker fertig mit seiner Arbeit ist, sendet er eine Antwort, welche eine Erfolgsmeldung und mögliche Kontodaten enthält, an den Client. Dieser kann die Nachrichten wie gewohnt über den \textbf{receive} - Befehl auslesen.\\
+Der Server hingegen erhält bei der Beendigung des Workers ein normales ''exit'', welches signalisiert, dass der arbeitende Prozess sich ordnungsmäßig beendet und somit seine Aufgabe erfüllt hat.
+
+\subsection{Multiclient Konzept}
+
+Die Anfragen, welche an dem Server gestellt werden, sollen möglichst schnell abgearbeitet werden. Dazu ist es erforderlich das Abarbeiten dieser Anfragen zu parallelisieren.
+
+\begin{figure}
+\centering
+\includegraphics{/konzept/Multiclient}
+\caption{Bankingserver mit mehreren parallelen Clients}
+\label{fig:multiclient}
+\end{figure}
+
+In diesem Sequenzdiagramm befinden sich zwei Clients, welche fast zeitgleich, jeweils eine Anfrage an den Server richten.\\
+Der Server bekommt zu erst die ''Anfrage 1'' von ''Client 1'', welche somit auch als erstes abzuarbeiten ist. Dazu wird, wie schon im Grundkonzept beschrieben, ein Worker (hier ''Worker 1'') gestartet.\\
+So lange der Server mit dem \textit{spawn\_link} für ''Worker 1'' benötigt, wird ''Anfrage 2'' nicht bearbeitet. Diese Verzögerung ist jedoch minimal, muss allerdings trotzdem in kauf genommen werden.\\
+Darauf folgend wird ''Anfrage 2'' so schnell wie möglich bearbeitet. Dies geschieht hier in ''Worker 2''.\\
+Die Clients erhalten, nach der Abarbeitung ihrer entsprechenden Anfragen, nach schon bekanntem Verfahren, die jeweiligen Antworten von den Workern.
+
+\subsection{Störungs Konzept}
+
+Eine der Aufgaben des Projekts war eine Störquelle einzubauen, welche den normalen Betrieb der Worker beeinträchtigen soll. Dieses wird dadurch realisiert, dass ein Störprozess vereinzelt Worker beendet, bevor sie mit ihren Aufgaben fertig sind.\\
+Das folgende Diagramm zeigt wie besagter Prozess den ersten laufenden Worker beendet, denn zweiten allerdings ohne einzugreifen arbeiten lässt.\\
+
+\begin{figure}
+\centering
+\includegraphics{/konzept/Stoerung}
+\caption{Bankingserver mit eingebauter, aktiver Stoerungsquelle}
+\label{fig:stoerung}
+\end{figure}
+
+Client und Server verfahren vorerst, nach bekanntem Vorgehen. Nachdem allerdings der neue Worker sein ''ok'' an den Server zurückschickt, informiert der Server, die Störquelle über den neuen Arbeitsprozess. \\
+Dieses Verhalten des Servers ist normalerweise nicht in endgültiger Software enthalten, und ist hier nur erforderlich um Störungen und Fehlverhalten zu simulieren.\\
+Der Störprozess entscheidet nun, dass dieser Worker von ihm beendet wird (''kill''). In Folge dessen erhält der Server, wegen der Verlinkung mit dem Worker, ein ''exit(error)''. Dies signalisiert dem Bankingserver, dass der Arbeitsprozess sich mit einem Fehler beendete. Wenn der Worker seine Aufgabe noch nicht erledigen konnte, bevor er vom Störprozess beendet wurde, ist die Anfrage des Clients immer noch ausstehend. In diesem Beispiel wird von diesem Fall ausgegangen.\\
+Es ist also erforderlich, dass der gleiche Arbeitsprozess, mit den gleichen Parameter, erneut gestartet wird.
+
+%\include{Konzept/Client}
+%\include{Konzept/Server}
+%\include{Konzept/Worker}
