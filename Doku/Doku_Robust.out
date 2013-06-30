@@ -4,15 +4,17 @@
 \BOOKMARK [2][-]{subsection.3.1}{Grundkonzept}{section.3}% 4
 \BOOKMARK [2][-]{subsection.3.2}{Multiclient Konzept}{section.3}% 5
 \BOOKMARK [2][-]{subsection.3.3}{St\366rungs Konzept}{section.3}% 6
-\BOOKMARK [1][-]{section.4}{Bedienungsanleitung}{}% 7
-\BOOKMARK [2][-]{subsection.4.1}{Das Starten}{section.4}% 8
-\BOOKMARK [2][-]{subsection.4.2}{Das Beenden}{section.4}% 9
-\BOOKMARK [1][-]{section.5}{Fallstudie}{}% 10
-\BOOKMARK [1][-]{section.6}{Implementierung}{}% 11
-\BOOKMARK [2][-]{subsection.6.1}{Client}{section.6}% 12
-\BOOKMARK [2][-]{subsection.6.2}{Server}{section.6}% 13
-\BOOKMARK [2][-]{subsection.6.3}{worker}{section.6}% 14
-\BOOKMARK [3][-]{subsubsection.6.3.1}{Allgemeines}{subsection.6.3}% 15
-\BOOKMARK [3][-]{subsubsection.6.3.2}{Das Konto}{subsection.6.3}% 16
-\BOOKMARK [3][-]{subsubsection.6.3.3}{Die Transaktionsliste}{subsection.6.3}% 17
-\BOOKMARK [3][-]{subsubsection.6.3.4}{Worker-Funktionen}{subsection.6.3}% 18
+\BOOKMARK [3][-]{subsubsection.3.3.1}{Das Wirken der St\366rung}{subsection.3.3}% 7
+\BOOKMARK [3][-]{subsubsection.3.3.2}{Das Ausgleichen der St\366rung}{subsection.3.3}% 8
+\BOOKMARK [1][-]{section.4}{Bedienungsanleitung}{}% 9
+\BOOKMARK [2][-]{subsection.4.1}{Das Starten}{section.4}% 10
+\BOOKMARK [2][-]{subsection.4.2}{Das Beenden}{section.4}% 11
+\BOOKMARK [1][-]{section.5}{Fallstudie}{}% 12
+\BOOKMARK [1][-]{section.6}{Implementierung}{}% 13
+\BOOKMARK [2][-]{subsection.6.1}{Client}{section.6}% 14
+\BOOKMARK [2][-]{subsection.6.2}{Server}{section.6}% 15
+\BOOKMARK [2][-]{subsection.6.3}{worker}{section.6}% 16
+\BOOKMARK [3][-]{subsubsection.6.3.1}{Allgemeines}{subsection.6.3}% 17
+\BOOKMARK [3][-]{subsubsection.6.3.2}{Das Konto}{subsection.6.3}% 18
+\BOOKMARK [3][-]{subsubsection.6.3.3}{Die Transaktionsliste}{subsection.6.3}% 19
+\BOOKMARK [3][-]{subsubsection.6.3.4}{Worker-Funktionen}{subsection.6.3}% 20
