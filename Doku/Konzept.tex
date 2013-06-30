@@ -40,6 +40,9 @@ Die Clients erhalten, nach der Abarbeitung ihrer entsprechenden Anfragen, nach s
 \subsection{Störungs Konzept}
 
 Eine der Aufgaben des Projekts war eine Störquelle einzubauen, welche den normalen Betrieb der Worker beeinträchtigen soll. Dieses wird dadurch realisiert, dass ein Störprozess vereinzelt Worker beendet, bevor sie mit ihren Aufgaben fertig sind.\\
+
+\subsubsection{Das Wirken der Störung}
+
 Das folgende Diagramm zeigt wie besagter Prozess den ersten laufenden Worker beendet, denn zweiten allerdings ohne einzugreifen arbeiten lässt.\\
 
 \begin{figure}
@@ -53,6 +56,60 @@ Client und Server verfahren vorerst, nach bekanntem Vorgehen. Nachdem allerdings
 Dieses Verhalten des Servers ist normalerweise nicht in endgültiger Software enthalten, und ist hier nur erforderlich um Störungen und Fehlverhalten zu simulieren.\\
 Der Störprozess entscheidet nun, dass dieser Worker von ihm beendet wird (''kill''). In Folge dessen erhält der Server, wegen der Verlinkung mit dem Worker, ein ''exit(error)''. Dies signalisiert dem Bankingserver, dass der Arbeitsprozess sich mit einem Fehler beendete. Wenn der Worker seine Aufgabe noch nicht erledigen konnte, bevor er vom Störprozess beendet wurde, ist die Anfrage des Clients immer noch ausstehend. In diesem Beispiel wird von diesem Fall ausgegangen.\\
 Es ist also erforderlich, dass der gleiche Arbeitsprozess, mit den gleichen Parameter, erneut gestartet wird.
+
+\subsubsection{Das Ausgleichen der Störung}
+
+Nachdem die Unterbrechung durch den Störungsprozess verursacht wurde, muss dies erkannt und aufgelöst werden.\\
+Wie anhand von dem Diagramm~\ref{fig:stoerung} erklärt wurde, gibt ein von dem Störungsprozess beendeter Worker ein \textit{exit(error)} an den Server zurück. Dieser erkennt diese Meldung und hat nun die Aufgabe potenziellen Schaden zu erkennen.\\
+Um die Suche nach nicht ausgeführten Anfragen durchzuführen werden die zugehörigen Transaktionslisten durchsucht.
+
+\paragraph{Transaktionsliste des Servers}
+
+Die Transaktionsliste des Servers enthält sämtliche Transaktionen, welche derzeit durchgeführt werden. Wurde eine Anfrage erfolgreich bearbeitet wird der dazugehörige Eintrag dieser Liste gelöscht.\\
+Der Aufbau eines Tupels der Liste ist folgende:
+
+\begin{lstlisting}
+%
+%{ TransaktionsID,  { Aktion, [ ClientPID | Arguments ] ] } }
+%
+\end{lstlisting}
+
+\begin{itemize}
+	\item ''TransaktionsID'': Ist eine eindeutige ID, welche eine Transaktion markiert.
+\end{itemize}
+Das darauf folgende Tupel ist dafür die restlichen Informationen zu speichern, welche unter Umständen dafür benötigt werden um Worker erneut zu starten.
+\begin{itemize}
+	\item ''Aktion'': Speichert die Aufgabe, welche durchgeführt werden soll.
+	\item ''ClientPID'': Steht für die Prozess ID des Clients, welcher die Anfrage gestellt hat.
+	\item ''Arguments'': Der Rest der Liste besteht aus den Argumenten für den Worker, welche die Aufgabe ausführen muss.
+\end{itemize}
+
+\paragraph{Transaktionen in der allgemeine Kontenspeicherung}
+
+Im \textit{dets} - Modul für die allgemeine Kontenspeicherung wird jede durchgeführte Transaktion bei den einzelnen Konten gespeichert. Die angehängten Transaktionslisten sind folgendermaßen aufgebaut:
+
+\begin{lstlisting}
+% 
+% {TransaktionsID,
+%	Aktion,
+%	{zeit, Datum, Uhrzeit},
+%	{notizen, Notizen},
+%	{wer, Kontonummer},
+%	{wert, Betrag}
+% }
+%  
+\end{lstlisting}
+
+\begin{itemize}
+	\item ''TransaktionsID'': Diese ID eindeutig markiert einzelne Transaktionen und stimmt mit der TransaktionsID der Transaktionsliste des Servers überein.
+	\item ''Aktion'': Speichert die durchgeführte Aktion.
+	\item Tupel ''Zeit'': Speichert den Zeitpunkt in dem die Aktion ausgeführt wurde.
+	\item Tupel ''Notizen'': Speichert zusätzliche Notizen bei einzelnen Transaktionen.
+	\item Tupel ''Wer'': Speichert die Information von welchem Konto die Transaktion ausgelöst wurde. Dies ist vor allem bei Überweisungen wichtig.
+	\item Tupel ''Betrag'': Speichert den Betrag, welcher bei der Transaktion bewegt wurde.
+\end{itemize}
+\\
+Sobald der Server die Nachricht eines sich fehlerhaft beendeten Workers erhält, überprüft er, ob die Transaktion welcher der Worker auszuführen hatte, erledigt wurde. Dies geschieht dadurch, dass der Server die Transaktions - ID des Workers in der Transaktionsliste des betreffenden Kontos sucht. Kann er diese finden, wurde die Anfrage vor dem Wirken der Störung durchgeführt. Dies bedeutet, dass die Aufgabe des Workers nicht wiederholt werden muss. Wird die entsprechende Transaktions - ID nicht gefunden, wurde die Anfrage noch nicht bearbeitet. Ein gleicher Worker muss gestartet und die Aufgabe wiederholt werden.
 
 %\include{Konzept/Client}
 %\include{Konzept/Server}
