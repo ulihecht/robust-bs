@@ -6,7 +6,7 @@ Im Folgendem wird das Gesamtkonzept des Bankingservers beschrieben. Dies geschie
 
 Den Anfang macht hier das Diagramm zum Grundkonzept des Bankingservers.
 
-\begin{figure}
+\begin{figure}[H]
 \centering
 \includegraphics{/konzept/Allgemein}
 \caption{Das Grundkonzept des kompletten Bankingservers}
@@ -24,7 +24,7 @@ Der Server hingegen erhält bei der Beendigung des Workers ein normales ''exit''
 
 Die Anfragen, welche an dem Server gestellt werden, sollen möglichst schnell abgearbeitet werden. Dazu ist es erforderlich das Abarbeiten dieser Anfragen zu parallelisieren.
 
-\begin{figure}
+\begin{figure}[H]
 \centering
 \includegraphics{/konzept/Multiclient}
 \caption{Bankingserver mit mehreren parallelen Clients}
@@ -45,7 +45,7 @@ Eine der Aufgaben des Projekts war es, eine Störquelle einzubauen, welche den n
 
 Das folgende Diagramm zeigt wie besagter Prozess den ersten laufenden Worker beendet, den zweiten allerdings ohne einzugreifen arbeiten lässt.\\
 
-\begin{figure}
+\begin{figure}[H]
 \centering
 \includegraphics{/konzept/Stoerung}
 \caption{Bankingserver mit eingebauter, aktiver Stoerungsquelle}
