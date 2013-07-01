@@ -27,3 +27,4 @@
 \contentsline {subparagraph}{Datenbankinteraktionen}{19}{section*.7}
 \contentsline {subparagraph}{Konto\IeC {\"a}nderungen}{19}{section*.8}
 \contentsline {paragraph}{Externe Funktionen}{20}{section*.9}
+\contentsline {section}{\numberline {7}Fazit}{22}{section.7}

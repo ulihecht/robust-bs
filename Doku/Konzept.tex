@@ -108,7 +108,6 @@ Im \textit{dets} - Modul für die allgemeine Kontenspeicherung wird jede durchge
 	\item Tupel ''Wer'': Speichert die Information von welchem Konto die Transaktion ausgelöst wurde. Dies ist vor allem bei Überweisungen wichtig.
 	\item Tupel ''Betrag'': Speichert den Betrag, welcher bei der Transaktion bewegt wurde.
 \end{itemize}
-\\
 Sobald der Server die Nachricht eines sich fehlerhaft beendeten Workers erhält, überprüft er, ob die Transaktion welcher der Worker auszuführen hatte, erledigt wurde. Dies geschieht dadurch, dass der Server die Transaktions - ID des Workers in der Transaktionsliste des betreffenden Kontos sucht. Kann er diese finden, wurde die Anfrage vor dem Wirken der Störung durchgeführt. Dies bedeutet, dass die Aufgabe des Workers nicht wiederholt werden muss. Wird die entsprechende Transaktions - ID nicht gefunden, wurde die Anfrage noch nicht bearbeitet. Ein gleicher Worker muss gestartet und die Aufgabe wiederholt werden.
 
 %\include{Konzept/Client}
