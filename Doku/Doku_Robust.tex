@@ -140,6 +140,14 @@ Für die erste Präsentation wurden die Themen verteilt, sodass jeder einen Aufg
 \input{Server}						% Christopher
 \input{Worker_Teil_Alex}
 \input{Fazit}
+\section{Glossar}
+\begin{description}
+	\item[Behavior-Modul] Ein Behavior-Modul ist vergleichbar mit einer Schnittstelle. Sobald es eingesetzt wird, müssen durch das Modul spezifizierte Callback-Funktionen implementiert werden.
+	\item[dets] Erlang-Modul, dass eine Schnittstelle zur persistenten Datenspeicherung bietet und einige Methoden für einen einfachen Datenzugriff abstrahiert.
+	\item[gen\_server] Behavior-Modul \textit{generischer Server}, das Richtlinien zur Implementierung eines Servers festlegt
+	\item[Profiler] Werkzeug, um Zeitmessungen in einer Software durchzuführen
+	\item[Worker(-Prozess)] Prozess, der nur zur asynchronen Abarbeitung einer spezifischen Aufgabe von einem übergeordneten Prozess gestartet wird und sich nach Fertigstellung dieser selbst beendet.
+\end{description}
 \section{Literaturverzeichnis}
 Für die Projektarbeit wurde auf die folgenden Quellen zurückgegriffen:
 \begin{itemize}
@@ -149,6 +157,9 @@ Für die Projektarbeit wurde auf die folgenden Quellen zurückgegriffen:
 \item http://www.erlang.org/doc/man/dets.html 
 \item http://www.erlang.org/doc/efficiency\textunderscore guide/profiling.html 
 \item http://20bits.com/article/erlang-a-generic-server-tutorial
+\item http://www.erlang.org/doc/apps/tools/cprof\textunderscore chapter.html
+\item http://www.erlang.org/doc/apps/tools/fprof\textunderscore chapter.html
+\item http://www.erlang.org/doc/man/fprof.html
 \end{itemize}
 Für alle Internetquellen gilt der 25.Juni 2013 als das letzte Datum des Zugriffs. 
 %\input{Anhang}
