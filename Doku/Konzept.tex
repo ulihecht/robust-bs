@@ -1,6 +1,6 @@
 \section{Konzept}
 
-Im Folgendem wird das Gesamtkonzept des Bankingserver beschrieben. Dies geschieht verteilt anhand von mehreren Sequenzdiagrammen.\\
+Im Folgendem wird das Gesamtkonzept des Bankingservers beschrieben. Dies geschieht verteilt anhand von mehreren Sequenzdiagrammen.\\
 
 \subsection{Grundkonzept}
 
@@ -13,14 +13,14 @@ Den Anfang macht hier das Diagramm zum Grundkonzept des Bankingservers.
 \label{fig:grundkonzept}
 \end{figure}
 
-Der Startzustand besteht darin, dass Client so wie Server gestartet sind. Der Server ist kurz darauf in seinem Wartezustand, bei dem er auf eintreffende Nachrichten wartet.\\
-Sobald der Client eine Anfrage an den Server richtet, wie z.B. "Konto erstellen", startet dieser einen Arbeitsprozess. Dieser neue Arbeitsprozess, oder auch Worker, erhält während seines Aufrufes alle notwendigen Daten, die er zur Erfüllung seiner Aufgabe benötigt. Dazu zählt auch die ProzessID des Clients.\\
+Der Startzustand besteht darin, dass Client so wie Server gestartet sind. Der Server ist kurz darauf in seinem Wartezustand, in dem er auf eintreffende Nachrichten wartet.\\
+Sobald der Client eine Anfrage an den Server richtet, wie z.B. "Konto erstellen", startet dieser einen Arbeitsprozess. Dieser neue Arbeitsprozess, oder auch \textit{Worker}, erhält während seines Aufrufs alle notwendigen Daten, die er zur Erfüllung seiner Aufgabe benötigt. Dazu zählt auch die Prozess-ID des Clients.\\
 Der Server erhält nach dem erfolgreichen Start des Workers ein ''ok'' zurück.\\
 Der arbeitende Prozess ist nun damit beschäftigt die Aufgabe des Clients zu bearbeiten. So lange dies geschieht, bleibt der Server weiterhin erreichbar für neue Anfragen (dazu später mehr).\\
-Sobald der Worker fertig mit seiner Arbeit ist, sendet er eine Antwort, welche eine Erfolgsmeldung und mögliche Kontodaten enthält, an den Client. Dieser kann die Nachrichten wie gewohnt über den \textbf{receive} - Befehl auslesen.\\
+Sobald der Worker fertig mit seiner Arbeit ist, sendet er eine Antwort, welche eine Erfolgsmeldung und mögliche Kontodaten enthält, an den Client. Dieser kann die Nachrichten wie gewohnt über den \texttt{receive}-Befehl auslesen.\\
 Der Server hingegen erhält bei der Beendigung des Workers ein normales ''exit'', welches signalisiert, dass der arbeitende Prozess sich ordnungsmäßig beendet und somit seine Aufgabe erfüllt hat.
 
-\subsection{Multiclient Konzept}
+\subsection{Multiclient-Konzept}
 
 Die Anfragen, welche an dem Server gestellt werden, sollen möglichst schnell abgearbeitet werden. Dazu ist es erforderlich das Abarbeiten dieser Anfragen zu parallelisieren.
 
@@ -31,19 +31,19 @@ Die Anfragen, welche an dem Server gestellt werden, sollen möglichst schnell ab
 \label{fig:multiclient}
 \end{figure}
 
-In diesem Sequenzdiagramm befinden sich zwei Clients, welche fast zeitgleich, jeweils eine Anfrage an den Server richten.\\
-Der Server bekommt zu erst die ''Anfrage 1'' von ''Client 1'', welche somit auch als erstes abzuarbeiten ist. Dazu wird, wie schon im Grundkonzept beschrieben, ein Worker (hier ''Worker 1'') gestartet.\\
-So lange der Server mit dem \textit{spawn\_link} für ''Worker 1'' benötigt, wird ''Anfrage 2'' nicht bearbeitet. Diese Verzögerung ist jedoch minimal, muss allerdings trotzdem in kauf genommen werden.\\
+In diesem Sequenzdiagramm befinden sich zwei Clients, welche fast zeitgleich jeweils eine Anfrage an den Server richten.\\
+Der Server bekommt zuerst die ''Anfrage 1'' von ''Client 1'', welche somit auch als erstes abzuarbeiten ist. Dazu wird, wie schon im Grundkonzept beschrieben, ein Worker (hier ''Worker 1'') gestartet.\\
+So lange der Server mit der Ausführung von \texttt{spawn\_link} für ''Worker 1'' benötigt, wird ''Anfrage 2'' nicht bearbeitet. Diese Verzögerung ist jedoch minimal, muss allerdings trotzdem in Kauf genommen werden.\\
 Darauf folgend wird ''Anfrage 2'' so schnell wie möglich bearbeitet. Dies geschieht hier in ''Worker 2''.\\
-Die Clients erhalten, nach der Abarbeitung ihrer entsprechenden Anfragen, nach schon bekanntem Verfahren, die jeweiligen Antworten von den Workern.
+Die Clients erhalten nach der Abarbeitung ihrer entsprechenden Anfragen nach schon bekanntem Verfahren die jeweiligen Antworten von den Workern.
 
-\subsection{Störungs Konzept}
+\subsection{Störungskonzept}
 
-Eine der Aufgaben des Projekts war eine Störquelle einzubauen, welche den normalen Betrieb der Worker beeinträchtigen soll. Dieses wird dadurch realisiert, dass ein Störprozess vereinzelt Worker beendet, bevor sie mit ihren Aufgaben fertig sind.\\
+Eine der Aufgaben des Projekts war es, eine Störquelle einzubauen, welche den normalen Betrieb der Worker beeinträchtigen soll. Dieses wird dadurch realisiert, dass ein Störprozess vereinzelt Worker beendet, bevor sie mit ihren Aufgaben fertig sind.\\
 
 \subsubsection{Das Wirken der Störung}
 
-Das folgende Diagramm zeigt wie besagter Prozess den ersten laufenden Worker beendet, denn zweiten allerdings ohne einzugreifen arbeiten lässt.\\
+Das folgende Diagramm zeigt wie besagter Prozess den ersten laufenden Worker beendet, den zweiten allerdings ohne einzugreifen arbeiten lässt.\\
 
 \begin{figure}
 \centering
@@ -52,21 +52,21 @@ Das folgende Diagramm zeigt wie besagter Prozess den ersten laufenden Worker bee
 \label{fig:stoerung}
 \end{figure}
 
-Client und Server verfahren vorerst, nach bekanntem Vorgehen. Nachdem allerdings der neue Worker sein ''ok'' an den Server zurückschickt, informiert der Server, die Störquelle über den neuen Arbeitsprozess. \\
-Dieses Verhalten des Servers ist normalerweise nicht in endgültiger Software enthalten, und ist hier nur erforderlich um Störungen und Fehlverhalten zu simulieren.\\
+Client und Server verfahren vorerst nach bekanntem Vorgehen. Nachdem allerdings der neue Worker sein ''ok'' an den Server zurückschickt, informiert der Server die Störquelle über den neuen Arbeitsprozess. \\
+Dieses Verhalten des Servers ist normalerweise nicht in der endgültigen Software enthalten und ist hier nur erforderlich, um Störungen und Fehlverhalten zu simulieren.\\
 Der Störprozess entscheidet nun, dass dieser Worker von ihm beendet wird (''kill''). In Folge dessen erhält der Server, wegen der Verlinkung mit dem Worker, ein ''exit(error)''. Dies signalisiert dem Bankingserver, dass der Arbeitsprozess sich mit einem Fehler beendete. Wenn der Worker seine Aufgabe noch nicht erledigen konnte, bevor er vom Störprozess beendet wurde, ist die Anfrage des Clients immer noch ausstehend. In diesem Beispiel wird von diesem Fall ausgegangen.\\
-Es ist also erforderlich, dass der gleiche Arbeitsprozess, mit den gleichen Parameter, erneut gestartet wird.
+Es ist also erforderlich, dass der gleiche Arbeitsprozess mit den gleichen Parametern erneut gestartet wird.
 
 \subsubsection{Das Ausgleichen der Störung}
 
 Nachdem die Unterbrechung durch den Störungsprozess verursacht wurde, muss dies erkannt und aufgelöst werden.\\
-Wie anhand von dem Diagramm~\ref{fig:stoerung} erklärt wurde, gibt ein von dem Störungsprozess beendeter Worker ein \textit{exit(error)} an den Server zurück. Dieser erkennt diese Meldung und hat nun die Aufgabe potenziellen Schaden zu erkennen.\\
-Um die Suche nach nicht ausgeführten Anfragen durchzuführen werden die zugehörigen Transaktionslisten durchsucht.
+Wie anhand von dem Diagramm~\ref{fig:stoerung} erklärt wurde, gibt ein von dem Störungsprozess beendeter Worker ein \textit{exit(error)} an den Server zurück. Dieser erkennt diese Meldung und hat nun die Aufgabe, potenziellen Schaden zu erkennen.\\
+Um die Suche nach nicht ausgeführten Anfragen durchzuführen, werden die zugehörigen Transaktionslisten durchsucht.
 
 \paragraph{Transaktionsliste des Servers}
 
-Die Transaktionsliste des Servers enthält sämtliche Transaktionen, welche derzeit durchgeführt werden. Wurde eine Anfrage erfolgreich bearbeitet wird der dazugehörige Eintrag dieser Liste gelöscht.\\
-Der Aufbau eines Tupels der Liste ist folgende:
+Die Transaktionsliste des Servers enthält sämtliche Transaktionen, welche derzeit durchgeführt werden. Wurde eine Anfrage erfolgreich bearbeitet, wird der dazugehörige Eintrag dieser Liste gelöscht.\\
+Der Aufbau eines Tupels der Liste ist folgender:
 
 \begin{lstlisting}
 %
@@ -77,7 +77,7 @@ Der Aufbau eines Tupels der Liste ist folgende:
 \begin{itemize}
 	\item ''TransaktionsID'': Ist eine eindeutige ID, welche eine Transaktion markiert.
 \end{itemize}
-Das darauf folgende Tupel ist dafür die restlichen Informationen zu speichern, welche unter Umständen dafür benötigt werden um Worker erneut zu starten.
+Das darauf folgende Tupel dient dafür, die restlichen Informationen zu speichern, welche unter Umständen dafür benötigt werden, um Worker erneut zu starten.
 \begin{itemize}
 	\item ''Aktion'': Speichert die Aufgabe, welche durchgeführt werden soll.
 	\item ''ClientPID'': Steht für die Prozess ID des Clients, welcher die Anfrage gestellt hat.
@@ -86,7 +86,7 @@ Das darauf folgende Tupel ist dafür die restlichen Informationen zu speichern, 
 
 \paragraph{Transaktionen in der allgemeine Kontenspeicherung}
 
-Im \textit{dets} - Modul für die allgemeine Kontenspeicherung wird jede durchgeführte Transaktion bei den einzelnen Konten gespeichert. Die angehängten Transaktionslisten sind folgendermaßen aufgebaut:
+Im \textit{dets}-Modul für die allgemeine Kontenspeicherung wird jede durchgeführte Transaktion bei den einzelnen Konten gespeichert. Die angehängten Transaktionslisten sind folgendermaßen aufgebaut:
 
 \begin{lstlisting}
 % 
@@ -101,14 +101,14 @@ Im \textit{dets} - Modul für die allgemeine Kontenspeicherung wird jede durchge
 \end{lstlisting}
 
 \begin{itemize}
-	\item ''TransaktionsID'': Diese ID eindeutig markiert einzelne Transaktionen und stimmt mit der TransaktionsID der Transaktionsliste des Servers überein.
+	\item ''TransaktionsID'': Diese ID eindeutig markiert einzelne Transaktionen und stimmt mit der Transaktions-ID der Transaktionsliste des Servers überein.
 	\item ''Aktion'': Speichert die durchgeführte Aktion.
 	\item Tupel ''Zeit'': Speichert den Zeitpunkt in dem die Aktion ausgeführt wurde.
 	\item Tupel ''Notizen'': Speichert zusätzliche Notizen bei einzelnen Transaktionen.
-	\item Tupel ''Wer'': Speichert die Information von welchem Konto die Transaktion ausgelöst wurde. Dies ist vor allem bei Überweisungen wichtig.
+	\item Tupel ''Wer'': Speichert die Information, von welchem Konto die Transaktion ausgelöst wurde. Dies ist vor allem bei Überweisungen wichtig.
 	\item Tupel ''Betrag'': Speichert den Betrag, welcher bei der Transaktion bewegt wurde.
 \end{itemize}
-Sobald der Server die Nachricht eines sich fehlerhaft beendeten Workers erhält, überprüft er, ob die Transaktion welcher der Worker auszuführen hatte, erledigt wurde. Dies geschieht dadurch, dass der Server die Transaktions - ID des Workers in der Transaktionsliste des betreffenden Kontos sucht. Kann er diese finden, wurde die Anfrage vor dem Wirken der Störung durchgeführt. Dies bedeutet, dass die Aufgabe des Workers nicht wiederholt werden muss. Wird die entsprechende Transaktions - ID nicht gefunden, wurde die Anfrage noch nicht bearbeitet. Ein gleicher Worker muss gestartet und die Aufgabe wiederholt werden.
+Sobald der Server die Nachricht eines sich fehlerhaft beendeten Workers erhält, überprüft er, ob die Transaktion, welche der Worker auszuführen hatte, erledigt wurde. Dies geschieht dadurch, dass der Server die Transaktions-ID des Workers in der Transaktionsliste des betreffenden Kontos sucht. Kann er diese finden, wurde die Anfrage vor dem Wirken der Störung durchgeführt. Dies bedeutet, dass die Aufgabe des Workers nicht wiederholt werden muss. Wird die entsprechende Transaktions-ID nicht gefunden, wurde die Anfrage noch nicht bearbeitet. Ein gleicher Worker muss gestartet und die Aufgabe wiederholt werden.
 
 %\include{Konzept/Client}
 %\include{Konzept/Server}
