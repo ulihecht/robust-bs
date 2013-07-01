@@ -1,7 +1,7 @@
-\subsection{worker}
-Im Folgenden wird genauer auf die Implementierung des Worker-Prozesses eingegangen. Es wird die Strukturierung des Kontos erklärt, sowie der Aufbau einer Transaktionsliste und welche Transaktionen existieren. Weiterhin wird Beispielhaft auf externe und interne Funktionen des Workers eingegangen.
+\subsection{Worker}
+Im Folgenden wird genauer auf die Implementierung des Worker-Prozesses eingegangen. Es wird die Strukturierung des Kontos erklärt, sowie der Aufbau einer Transaktionsliste und welche Transaktionen existieren. Weiterhin wird beispielhaft auf externe und interne Funktionen des Workers eingegangen.
 \subsubsection{Allgemeines}
-Das Worker Modul ist ein Prozess in dem die Anfrage des Clients verarbeitet wird. Es wird vom Server für jede Benutzereingabe des Clients aufgerufen. Das Modul wird durch den Server mithilfe der \textit{init()} - Funktion aufgerufen. Um dem Worker anschließend mitteilen zu können, welche Funktion er ausführen soll, bleibt dieser in einem \textit{receive} State in welchem er den Befehl plus Übergabeparameter auf interne Funktionen mappt. Dies ist anhand von folgendem Codebeispiel nachvollziehbar.
+Das Worker-Modul ist ein Prozess, in dem die Anfrage des Clients verarbeitet wird. Es wird vom Server für jede Benutzereingabe des Clients aufgerufen. Das Modul wird durch den Server mithilfe der \texttt{init()}-Funktion aufgerufen. Um dem Worker anschließend mitteilen zu können, welche Funktion er ausführen soll, bleibt dieser in einem \textit{receive}-State, in welchem er den Befehl zusammen mit dem Übergabeparameter an interne Funktionen weiterleitet. Dies ist anhand von folgendem Codebeispiel nachvollziehbar.
 \begin{lstlisting}
  init() -> 
  	receive
@@ -12,7 +12,7 @@ Das Worker Modul ist ein Prozess in dem die Anfrage des Clients verarbeitet wird
  	end.
 \end{lstlisting}
 \subsubsection{Das Konto}
-Das Konto ist das Herzstück des Servers und stellt das Konto des Benutzers dar. Es kann mithilfe des Aufrufs \textit{konto\_anlegen} angelegt und mit diversen weiteren Funktionen kann es editiert werden. So kann ein Sperrvermerk auf das Konto gelegt werden, als auch natürlich Geld eingezahlt und abgehoben werden. Das Konto enthält Informationen über das Vermögen des Besitzers, wie hoch der Dispokredit ist, wie stark dieser verzinst wird, ein Sperrvermerk und weiterhin noch eine Transaktionsliste. In dem Workermodul ist dies folgendermaßen realisiert worden:
+Das Konto ist das Herzstück des Servers und stellt das Konto des Benutzers dar. Es kann mithilfe des Aufrufs \texttt{konto\_anlegen} angelegt und mit diversen weiteren Funktionen editiert werden. So kann ein Sperrvermerk auf das Konto gelegt werden, als auch Geld eingezahlt und abgehoben werden. Das Konto enthält Informationen über das Vermögen des Besitzers, wie hoch der Dispokredit ist, wie stark dieser verzinst wird, einen Sperrvermerk und weiterhin noch eine Transaktionsliste. In dem Workermodul ist dies wie folgt realisiert worden:
 \begin{lstlisting}
  {KONTONUMMER, 
 	{sperrvermerk, false/true},
@@ -42,9 +42,9 @@ DispoZins und MaxDispo & dispokredit\_beantragen \\
 Transaktionsliste & Auf die Transaktionsliste kann nicht von außen zugegriffen werden, da diese bei jeder Manipulation des Kontos automatisch aktualisiert wird .
 \end{tabular}\\
 \end{center}
-Um das aktuelle Vermögen eines Kundenkontos zu bekommen kann die Funktion \textit{kontostand\_abfragen} aufgerufen werden. 
+Um das aktuelle Vermögen eines Kundenkontos zu bekommen, kann die Funktion \textit{kontostand\_abfragen} aufgerufen werden. 
 \subsubsection{Die Transaktionsliste}
-Die \textit{Transaktionsliste} dokumentiert alle Zugriffe, welche mit dem Konto stattfinden. Sei dies nun Vermögen transferieren, oder dass eine Überweißung getätigt wird. Sie ist dem in der realen Welt vorhanden Kontoauszug nachempfunden und hat deswegen auch einige fest definierte Atome für die Typifizierung der einzelnen Einträge.
+Die \textit{Transaktionsliste} dokumentiert alle Zugriffe, welche mit dem Konto stattfinden. Sei dies nun das Transferieren von Vermögen, oder dass eine Überweisung getätigt wird. Sie ist dem in der realen Welt vorhanden Kontoauszug nachempfunden und hat deswegen auch einige fest definierte Atome für die Typifizierung der einzelnen Einträge.
 \begin{itemize}
 \item \textit{erstellung}
 \item \textit{erfragung}
@@ -55,22 +55,22 @@ Die \textit{Transaktionsliste} dokumentiert alle Zugriffe, welche mit dem Konto 
 \item \textit{auszahlung}
 \item \textit{ueberweisung}
 \end{itemize}
-Diese Atome stehen an zweiter Stelle, direkt nach der \textit{Transaktions-ID}. Die \textit{Transaktions-ID} ist in allen Konten einmalig und wird vom Server verwendet um zu überprüfen ob die Transaktion nach einem Fehler erneut ausgeführt werden muss (Siehe: Server). Weiterhin sind in der \textit{Transaktions-ID} Felder vorgesehen, wie das Datum und die Uhrzeit zu der auf das Konto zugegriffen wurde, zusätzliche Notizen, die Person, welche auf das Konto zugegriffen hat und außerdem noch der Betrag um den sich ein Feld änderte. 
+Diese Atome stehen an zweiter Stelle, direkt nach der \textit{Transaktions-ID}. Die \textit{Transaktions-ID} ist in allen Konten einmalig und wird vom Server verwendet um zu überprüfen, ob die Transaktion nach einem Fehler erneut ausgeführt werden muss (siehe: Server). Weiterhin sind in der \textit{Transaktions-ID} Felder vorgesehen, wie das Datum und die Uhrzeit zu der auf das Konto zugegriffen wurde, zusätzliche Notizen, die Person, welche auf das Konto zugegriffen hat und außerdem noch der Betrag um den sich ein Feld änderte. 
 \subsubsection{Worker-Funktionen}
-Im Client wird zwischen 2 verschiedenen Arten von Funktionen unterschieden. Es gibt "Externe Funktionen" und "Interne Funktionen". Die externen Funktionen werden vom Server initialisiert und haben schlagenden Charakter. Interne Funktionen hingegen existieren um Übersichtlichkeit und Struktur in das Programm zu bringen, als auch damit Funktionen nicht mehrfach implementiert werden müssen, wie z. B.: Schreib-/ Lesezugriffe auf die Datenbank.
+Im Client wird zwischen zwei verschiedenen Arten von Funktionen unterschieden. Es gibt "externe Funktionen" und "interne Funktionen". Die externen Funktionen werden vom Server initialisiert und haben schlagenden Charakter. Interne Funktionen hingegen existieren um Übersichtlichkeit und Struktur in das Programm zu bringen, als auch damit Funktionen nicht mehrfach implementiert werden müssen, wie z. B.: Schreib-/ Lesezugriffe auf die Datenbank.
 
 \paragraph{Interne Funktionen}
 Die internen Funktionen sind Methoden, welche von den externen Funktionen benötigt werden. Sie werden von allen externen Funktionen benutzt und können in drei Bereiche unterteilt werden.
-\subparagraph{Error Handling}
- kann nur von der internen Funktion \textit{daten\_lesen} aufgerufen werden, da ein kritischer Fehler, welcher nicht durch den Server abgefangen werden kann, nur dann entsteht wenn die Datenbank nicht geöffnet oder erstellt werden kann.
-\subparagraph{Datenbankinteraktionen} wurden um sicher zu gehen mit dem Modul \textit{dets} realisiert. Es garantiert, dass mehrere Prozesse gleichzeitig aus der Datenbank lesen und schreiben können. Alle externen Funktionen, welche ein Konto manipulieren, rufen in ihrem Quellcode, vielleicht auch über weitere interne Funktionen, die Methoden \textit{daten\_lesen} und \textit{daten\_schreiben} auf. In folgenden Beispielcode wird die Funktion \textit{daten\_lesen} beschrieben.
+\subparagraph{Error-Handling}
+ kann nur von der internen Funktion \texttt{daten\_lesen} aufgerufen werden, da ein kritischer Fehler, welcher nicht durch den Server abgefangen werden kann, nur dann entsteht, wenn die Datenbank nicht geöffnet oder erstellt werden kann.
+\subparagraph{Datenbankinteraktionen} wurden um sicher zu gehen mit dem Modul \textit{dets} realisiert. Es garantiert, dass mehrere Prozesse gleichzeitig aus der Datenbank lesen und schreiben können. Alle externen Funktionen, welche ein Konto manipulieren, rufen in ihrem Quellcode, vielleicht auch über weitere interne Funktionen, die Methoden \textit{daten\_lesen} und \texttt{daten\_schreiben} auf. In folgenden Beispielcode wird die Funktion \texttt{daten\_lesen} beschrieben.
 \begin{lstlisting}
  daten_schreiben(Konto) -> 
  	dets:open_file(konten, [{file, "db_konten"}, {type, set}]),
  	dets:insert(konten, Konto),
  	dets:close(konten).	
 \end{lstlisting}
-\subparagraph{Kontoänderungen} geschehen über \textit{kontoinfo} oder \textit{kontolog}. Ist eine bestimmte Information des Kontos gesucht, kann diese mithilfe der Funktion \textit{kontoinfo} abgefragt werden.
+\subparagraph{Kontoänderungen} geschehen über \texttt{kontoinfo} oder \texttt{kontolog}. Ist eine bestimmte Information des Kontos gesucht, kann diese mithilfe der Funktion \texttt{kontoinfo} abgefragt werden.
 \\
 \begin{center}
 \begin{tabular}{p{3 cm}|p{3 cm}|p{3 cm}|p{5 cm}}
@@ -94,7 +94,7 @@ schreibt in das entsprechende Feld im Konto den übergebenen Wert.\\ \hline
 \end{tabular}\\
 \end{center}
 \paragraph{Externe Funktionen}
-Die externen Funktionen zeichnen sich dadurch aus, dass diese von dem Server aus aufgerufen werden können. Sie spiegeln die Interaktionsmöglichkeit zwischen Client und dem Server wieder. Folgende Tabelle zeigt übersichtlich, welche Funktionen bereits existieren, zusätzlich werden noch Übergabeparameter, Rückgabewerte und eine Kurzbeschreibung angezeigt.
+Die externen Funktionen zeichnen sich dadurch aus, dass diese von dem Server aus aufgerufen werden können. Sie spiegeln die Interaktionsmöglichkeit zwischen Client und dem Server wieder. Folgende Tabelle zeigt übersichtlich, welche Funktionen bereits existieren. Zusätzlich werden noch Übergabeparameter, Rückgabewerte und eine Kurzbeschreibung angezeigt.
 \\
 \begin{center}
 \begin{tabular}{p{3 cm}|p{3 cm}|p{3 cm}|p{5 cm}}
