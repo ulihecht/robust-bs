@@ -1,0 +1,84 @@
+\subsection{Profiling}
+Der zuvor beschriebene exemplarische Anwendungsfall soll nun als Grundlage dienen, die Implementierung mittels eines \textit{Profilers} hinsichtlich der Performanz zu untersuchen. Hierzu stellt die Erlang-Distribution unter anderem die Werkzeuge \textit{fprof} und \textit{cprof} zur Verfügung, die zu diesem Zweck verwendet werden. Während \textit{cprof} nur Funktionsaufrufe zählt, liefert \textit{fprof} ausführlichere Details zum Ablauf, mit dem Nachteil, dass die Ausführungsgeschwindigkeit des Programms gleichzeitig negativ beeinflusst wird. Da der Profiler unvollständige und teilweise abgefälschte Daten liefert, wenn Worker-Prozesse von außen beendet werden, muss die Störungssimulation für die Analysen deaktiviert werden. Dies ist ohnehin notwendig um sinnvolle Werte zu erhalten, da Störungen in der Realität nur selten auftreten.\\
+Die in den folgenden Tabellen angegebenen Zeitwerte ergeben sich aus der durchschnittlichen Ausführungsdauer inklusive aufgerufener Funktionen.
+
+\begin{center}
+	\begin{tabular}{p{1.2cm}|p{5cm}|p{2cm}|p{2cm}}
+		Modul & Funktion & Aufrufe & Zeit \\
+		\hline
+		\hline
+		bw & geld\_auszahlen & 4 & 31,536 \\
+		bw & geld\_einzahlen & 4 & 19,529 \\
+		bw & geld\_ueberweisen & 4 & 47,131 \\
+		bw & historie & 1 & 15,990 \\
+		bw & konto\_entsperren & 1 & 31,093 \\
+		bw & konto\_sperren & 1 & 15,990 \\
+		bw & kontostand\_abfragen & 1 & 15,096 \\
+	\end{tabular}
+\end{center}
+
+% Im Folgenden werden Aufrufe zu Funktionen aus externen Modulen betrachtet, die durch Häufigkeit oder Ausführungsdauer von Bedeutung sind.
+Im Folgenden werden Aufrufe an das \texttt{dets}-Modul betrachtet, da für die persistente Speicherung der größte Zeitanteil benötigt wird. Über der durchgezogenen Linie werden jeweils zusätzlich die aufrufenden Funktionen und die Dauer die für die Aufrufe benötigt wurde aufgelistet.
+
+\begin{table}[H]
+	\centering
+	\caption{Aufrufstatistik für \texttt{dets:open\_file}}
+	\label{tab:prof_open_file}
+	\begin{tabular}{p{1.2cm}|p{5cm}|p{2cm}|p{2cm}}
+		Modul & Funktion & Aufrufe & Zeit \\
+		\hline
+		\hline
+		bw & daten\_lesen & 9 & 10,318 \\
+		bw & daten\_schreiben & 8 & 4,06 \\
+		\hline
+		dets & open\_file & 17 & 7,373
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{Aufrufstatistik für \texttt{dets:close}}
+	\label{tab:prof_close}
+	\begin{tabular}{p{1.2cm}|p{5cm}|p{2cm}|p{2cm}}
+		Modul & Funktion & Aufrufe & Zeit \\
+		\hline
+		\hline
+		bw & daten\_lesen & 9 & 1,821 \\
+		bw & daten\_schreiben & 8 & 3,992 \\
+		\hline
+		dets & close & 17 & 7,373
+	\end{tabular}
+\end{table}
+
+In Tabelle \ref{tab:prof_open_file} wird deutlich, dass die Worker-Funktionen verhältnismäßig lange damit beschäftigt sind, die Datenbank per \texttt{dets:open\_file} zu öffnen. Bei einer nachträglichen Optimierung sollte daher ein \textit{Handle} zur Datenbank an den Worker übergeben werden, statt Diese jedes mal erneut zu öffnen. Weiterhin fällt auf, dass \texttt{open\_file} 17 mal aufgerufen wird, obwohl nur neun Transaktionen in der Fallstudie durchgeführt werden. Der Grund dafür ist, dass sowohl \texttt{daten\_lesen} als auch \texttt{daten\_schreiben} die Datenbank jeweils öffnen und wieder schließen. Eine Optimierung erübrigt sich jedoch durch die vorhergehende. Dennoch fällt mit Kenntnis der Tatsache, dass \texttt{daten\_schreiben} für jede Transaktion nach \texttt{daten\_lesen} aufgerufen wird auf, dass \texttt{open\_file} schneller arbeitet, wenn die Datenbank im selben Prozess bereits zuvor geöffnet und wieder geschlossen wurde.
+
+\begin{table}[H]
+	\centering
+	\caption{Aufrufstatistik für \texttt{dets:insert}}
+	\label{tab:prof_dets_insert}
+	\begin{tabular}{p{1.2cm}|p{5cm}|p{2cm}|p{2cm}}
+		Modul & Funktion & Aufrufe & Zeit \\
+		\hline
+		\hline
+		bs & erzeuge\_transaktion & 9 & 0,018 \\
+		bw & daten\_schreiben & 21 & 6,624 \\
+		\hline
+		dets & insert & 30 & 4,642
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{Aufrufstatistik für \texttt{dets:lookup}}
+	\label{tab:prof_dets_lookup}
+	\begin{tabular}{p{1.2cm}|p{5cm}|p{2cm}|p{2cm}}
+		Modul & Funktion & Aufrufe & Zeit \\
+		\hline
+		\hline
+		bw & daten\_lesen & 9 & 0,047 \\
+		\hline
+		dets & insert & 9 & 0,047
+	\end{tabular}
+\end{table}
+
+Wie in Tabellen \ref{tab:prof_dets_insert} und \ref{tab:prof_dets_lookup} ersichtlich, wird für das Schreiben in die Datenbank erwartungsgemäß mehr Zeit als für das Lesen benötigt.
