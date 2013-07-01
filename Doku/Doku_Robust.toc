@@ -17,8 +17,8 @@
 \contentsline {section}{\numberline {6}Implementierung}{12}{section.6}
 \contentsline {subsection}{\numberline {6.1}Client}{12}{subsection.6.1}
 \contentsline {subsection}{\numberline {6.2}Server}{14}{subsection.6.2}
-\contentsline {subsection}{\numberline {6.3}worker}{17}{subsection.6.3}
-\contentsline {subsubsection}{\numberline {6.3.1}Allgemeines}{17}{subsubsection.6.3.1}
+\contentsline {subsection}{\numberline {6.3}worker}{16}{subsection.6.3}
+\contentsline {subsubsection}{\numberline {6.3.1}Allgemeines}{16}{subsubsection.6.3.1}
 \contentsline {subsubsection}{\numberline {6.3.2}Das Konto}{17}{subsubsection.6.3.2}
 \contentsline {subsubsection}{\numberline {6.3.3}Die Transaktionsliste}{18}{subsubsection.6.3.3}
 \contentsline {subsubsection}{\numberline {6.3.4}Worker-Funktionen}{19}{subsubsection.6.3.4}
@@ -27,3 +27,5 @@
 \contentsline {subparagraph}{Datenbankinteraktionen}{19}{section*.7}
 \contentsline {subparagraph}{Konto\IeC {\"a}nderungen}{19}{section*.8}
 \contentsline {paragraph}{Externe Funktionen}{20}{section*.9}
+\contentsline {section}{\numberline {7}Fazit}{22}{section.7}
+\contentsline {section}{\numberline {8}Literaturverzeichnis}{22}{section.8}
