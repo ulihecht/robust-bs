@@ -1,5 +1,5 @@
 \subsection{Client}
-Das Client Modul ist die eigentliche Schnittstelle der Applikation für den Benutzer. Mittels des Moduls kann ein Nutzer möglichst komfortabel Anfragen an den Banking Server schicken, ohne sich dabei Gedanken machen zu müssen, wie der Server an sich aufgebaut ist und angesprochen werden müsste.\\
+Das Client-Modul ist die eigentliche Schnittstelle der Applikation für den Benutzer. Mittels des Moduls kann ein Nutzer möglichst komfortabel Anfragen an den Banking-Server schicken, ohne sich dabei Gedanken machen zu müssen, wie der Server an sich aufgebaut ist und angesprochen werden müsste.\\
 Um einen Client zu starten, wird die Funktion \textit{start} aufgerufen, welche als einzigen Parameter den Namen, auf den der Client registriert werden soll, entgegennimmt. Alle weiteren Aktionen erfolgen ausschließlich über Nachrichten, die an den registrierten Client geschickt werden. Dies hat den Vorteil, dass innerhalb einer Shell mehrere Clients gleichzeitig benutzt werden können.\\
 Die Funktion des Clients soll durch folgende Aufrufe aus der Shell verdeutlicht werden:
 \begin{lstlisting} 
@@ -47,10 +47,10 @@ Client beenden 			& client ! \textit{stop}
 \end{table}
 $\;$ \\
 Es ist zu beachten, dass die Nachrichten stets an den registrierten Client-Namen geschickt werden müssen. Der in der Tabelle verwendete Client-Name (\textit{client}) dient lediglich der Veranschaulichung.\\
-Funktionen, die Übergabeparameter enthalten, müssen grundsätzlich als Tupel geschickt werden und zwingend alle Argumente enthalten. Wird dem Client eine Nachricht geschickt, deren Kommando er nicht kennt oder deren Argumente unvollständig sind, quittiert er diese mit \textit{''Unbekanntes Kommando''}.\\
+Funktionen, die Übergabeparameter enthalten, müssen grundsätzlich als Tupel geschickt werden und zwingend alle Argumente enthalten. Wird dem Client eine Nachricht geschickt, deren Kommando er nicht kennt, oder deren Argumente unvollständig sind, quittiert er diese mit \textit{''Unbekanntes Kommando''}.\\
 Die Rückgabe des Clients ist entweder positiv oder negativ. Konnte die Anfrage erfolgreich bearbeitet werden, gibt der Client ''\textit{OK: }'' mit den angehangenen Rückgabewerten des Worker-Prozesses zurück. Im negativen Fall gibt der Client ''\textit{Fehler: }'' mit den angehangenen Fehlerinformation des Workers-Prozesses zurück.\\
 Als nicht erfolgreich werden lediglich fehlerhafte Anfragen gewertet, beispielsweise die Anfrage des Kontoguthabens zu einem nicht existierenden Konto. Fehlerhaftes Verhalten eines Worker-Prozesses, welches dazu führt, dass für eine Anfrage ein Worker neu gestartet werden muss, bleibt für den Client verborgen.\\
-Die eigentliche Anfrage an den Server erfolgt durch einen asynchronen Aufruf des Servers, wie folgender Codeausschnitt des Client Moduls zeigt.
+Die eigentliche Anfrage an den Server erfolgt durch einen asynchronen Aufruf des Servers, wie folgender Codeausschnitt des Client-Moduls zeigt.
 \begin{lstlisting} 
  loop() ->
     receive
@@ -63,4 +63,4 @@ Die eigentliche Anfrage an den Server erfolgt durch einen asynchronen Aufruf des
 	   	  ...
     end.
 \end{lstlisting}
-Da es sich bei dem Server um einen generischen Server handelt, erfolgt der Aufruf mittels \\ \textit{gen\_server(Name, Nachricht)}. Der Server läuft auf einem anderen Node als der Client. Deshalb ist es notwendig, als Namen nicht nur den registrierten Namen des Servers anzugeben, sondern auch den Namen des Nodes ('bs@localhost'), auf dem dieser ausgeführt wird. Als Nachricht werden neben der Aktion die durchgeführt werden soll, die dazu nötigen Argumente und die eigene Prozess Id übergeben. Die eigene Prozess Id ist notwendig, um dem Client eine Antwork vom Worker Prozess aus schicken zu können.
+Da es sich bei dem Server um einen generischen Server handelt, erfolgt der Aufruf mittels \\ \textit{gen\_server(Name, Nachricht)}. Der Server läuft auf einem anderen Node als der Client. Deshalb ist es notwendig, als Namen nicht nur den registrierten Namen des Servers anzugeben, sondern auch den Namen des Nodes ('bs@localhost'), auf dem dieser ausgeführt wird. Als Nachricht werden neben der Aktion, die durchgeführt werden soll, die dazu nötigen Argumente und die eigene Prozess-ID übergeben. Die eigene Prozess-ID ist notwendig, um dem Client eine Antwort vom Worker-Prozess aus schicken zu können.
