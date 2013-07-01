@@ -24,6 +24,10 @@
 \definecolor{green}{rgb}{0.0, 0.65, 0.31}
 \usepackage{hyperref}
 \lstset{
+	  basicstyle=\ttfamily,
+	  breaklines=true,
+	  numberstyle=\footnotesize,
+      numbersep=5pt,   
 	  literate={Ö}{{\"O}}1 {Ä}{{\"A}}1 {Ü}{{\"U}}1 {ß}{{\ss}}2 {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1 {µ}{\textmu}1,
       columns=fullflexible,
       language=Erlang,
@@ -31,12 +35,11 @@
       commentstyle={\color{green}},
       keywordstyle=\color{black},
       stringstyle=\color{black},
-      numbers=none,
+    %  numbers=none,
       extendedchars=\true,
       tabsize=4,
       breaklines=true,
       breakatwhitespace=true,
-      frame=none,
       backgroundcolor=\color{code}} 
 
 \title{Banking Server}
@@ -109,7 +112,7 @@ Christopher Althaus \qquad \qquad \qquad \qquad \qquad  \qquad  \qquad  \qquad \
 % Fallstudie (exemplarische Anwendung der Software) 
 % Zusammenfassung und Fazit 
 % Glossar (Erklärungen der Abkürzungen und Fachbegriffe) 
-% Literatur- und Quellenangaben //
+% Literatur- und Quellenangaben 
 % Index 
 % Bedienungsanleitung (User Guide) 
 % Anhang 
@@ -135,8 +138,8 @@ Für die erste Präsentation wurden die Themen verteilt, sodass jeder einen Aufg
 \input{Client}						% Christopher
 \input{Server}						% Christopher
 \input{Worker_Teil_Alex}
-%\input{Worker_Teil_Markus}
 %\input{Profiling}					% Uli
+<<<<<<< HEAD
 		% Alle
 \input{Fazit}
 \section{Literaturverzeichnis}
@@ -150,5 +153,9 @@ Für die Projektarbeit wurde auf die folgenden Quellen zurückgegriffen:
 \item http://20bits.com/article/erlang-a-generic-server-tutorial
 \end{itemize}
 Für alle Internetquellen gilt der 25.Juni 2013 als das letzte Datum des Zugriffs. 
+=======
+%\input{LiteraturQuellenangaben}		% Alle
+\input{Fazit}
+>>>>>>> 6f5cfbe776fb3fcf833ff3a15c8991b096bf6ab6
 %\input{Anhang}
 \end{document}

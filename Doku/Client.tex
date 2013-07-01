@@ -11,23 +11,36 @@ Die Funktion des Clients soll durch folgende Aufrufe aus der Shell verdeutlicht 
  OK: 6
 \end{lstlisting}
 Im ersten Schritt wird ein neuer Client mit dem Namen ''\textit{client1}'' erzeugt. Danach ist es möglich, über den Client Aufträge an den Server zu schicken.\\ 
-So wird in Schritt drei mittels des Befehls ''\textit{konto\_anlegen}'' ein neues Konto angelegt. Als Antwort für die Anfrage bekommt der Client ''\textit{OK: 6}'' zurück. Dies bedeutet, dass die Anfrage korrekt ausgeführt wurde, und ein neues Konto mit der Kontonummer ''\textit{6}'' angelegt wurde.\\
+So wird in Schritt drei mittels des Befehls \textit{konto\_anlegen} ein neues Konto angelegt. Als Antwort für die Anfrage bekommt der Client ''\textit{OK: 6}'' zurück. Dies bedeutet, dass die Anfrage korrekt ausgeführt wurde, und ein neues Konto mit der Kontonummer ''\textit{6}'' angelegt wurde.\\
 Die verschiedenen Befehle, die der Client ausführen kann und deren Syntax, sind in der nachfolgenden Tabelle aufgelistet.\\
 \begin{table}[H]
 \caption{Client Funktionen}
 \begin{center}
 \begin{tabular}[t]{l|l}
 \textbf{Funktion} 	& \textbf{Syntax} \\
+\hline
+\hline
 Konto anlegen 			& client ! \textit{konto\_anlegen}\\
+\hline
 Konto löschen 			& client ! \{\textit{konto\_loeschen}, Kontonummer\}\\
+\hline
 Kontostand abfragen 	& client ! \{\textit{kontostand\_abfragen}, Kontonummer\}\\
+\hline
 Historie ausgeben 		& client ! \{\textit{historie}, Kontonummer\}\\
+\hline
 Geld einzahlen			& client ! \{\textit{geld\_einzahlen}, Kontonummer, Betrag, Verwendungszweck\}\\
+\hline
 Geld auszahlen 			& client ! \{\textit{geld\_auszahlen}, Kontonummer, Betrag\}\\
-Geld überweisen 		& client ! \{\textit{geld\_ueberweisen}, ZielKontonummer, UrsprungsKontonummer, Betrag\}\\
+\hline
+Geld überweisen 		& client ! \{\textit{geld\_ueberweisen}, ZielKontonummer,
+UrsprungsKontonummer, Betrag\}\\
+\hline
 Dispokredit beantragen 	& client ! \{\textit{dispokredit\_beantragen}, Kontonummer\}\\
+\hline
 Konto sperren 			& client ! \{\textit{konto\_sperren}, Kontonummer\}\\
+\hline
 Konto entsperren 		& client ! \{\textit{konto\_entsperren}, Kontonummer\}\\
+\hline
 Client beenden 			& client ! \textit{stop}
 \end{tabular}
 \end{center}
@@ -39,15 +52,15 @@ Die Rückgabe des Clients ist entweder positiv oder negativ. Konnte die Anfrage 
 Als nicht erfolgreich werden lediglich fehlerhafte Anfragen gewertet, beispielsweise die Anfrage des Kontoguthabens zu einem nicht existierenden Konto. Fehlerhaftes Verhalten eines Worker-Prozesses, welches dazu führt, dass für eine Anfrage ein Worker neu gestartet werden muss, bleibt für den Client verborgen.\\
 Die eigentliche Anfrage an den Server erfolgt durch einen asynchronen Aufruf des Servers, wie folgender Codeausschnitt des Client Moduls zeigt.
 \begin{lstlisting} 
-loop() ->
- receive
-      konto_anlegen ->
-         gen_server:cast({bs, 'bs@localhost'}, {konto_anlegen, self()}),
-         loop();
-      {kontostand_abfragen, KontoNr} ->
-         gen_server:cast({bs, 'bs@localhost'}, {kontostand_abfragen, self(), KontoNr}),
-         loop();
-		...
-end.
+ loop() ->
+    receive
+       konto_anlegen ->
+          gen_server:cast({bs, 'bs@localhost'}, {konto_anlegen, self()}),
+          loop();
+       {kontostand_abfragen, KontoNr} ->
+          gen_server:cast({bs, 'bs@localhost'}, {kontostand_abfragen, self(), KontoNr}),
+          loop();
+	   	  ...
+    end.
 \end{lstlisting}
-Da es sich bei dem Server um einen generischen Server handelt, erfolgt der Aufruf mittels \\ ''\textit{gen\_server(Name, Nachricht)}''. Der Server läuft auf einem anderen Node als der Client. Deshalb ist es notwendig, als Namen nicht nur den registrierten Namen des Servers anzugeben, sondern auch den Namen des Nodes ('bs@localhost'), auf dem dieser ausgeführt wird. Als Nachricht werden neben der Aktion die durchgeführt werden soll, die dazu nötigen Argumente und die eigene Prozess Id übergeben. Die eigene Prozess Id ist notwendig, um dem Client eine Antwork vom Worker Prozess aus schicken zu können.
+Da es sich bei dem Server um einen generischen Server handelt, erfolgt der Aufruf mittels \\ \textit{gen\_server(Name, Nachricht)}. Der Server läuft auf einem anderen Node als der Client. Deshalb ist es notwendig, als Namen nicht nur den registrierten Namen des Servers anzugeben, sondern auch den Namen des Nodes ('bs@localhost'), auf dem dieser ausgeführt wird. Als Nachricht werden neben der Aktion die durchgeführt werden soll, die dazu nötigen Argumente und die eigene Prozess Id übergeben. Die eigene Prozess Id ist notwendig, um dem Client eine Antwork vom Worker Prozess aus schicken zu können.

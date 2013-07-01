@@ -28,4 +28,7 @@
 \contentsline {subparagraph}{Konto\IeC {\"a}nderungen}{19}{section*.8}
 \contentsline {paragraph}{Externe Funktionen}{20}{section*.9}
 \contentsline {section}{\numberline {7}Fazit}{22}{section.7}
+<<<<<<< HEAD
 \contentsline {section}{\numberline {8}Literaturverzeichnis}{22}{section.8}
+=======
+>>>>>>> 6f5cfbe776fb3fcf833ff3a15c8991b096bf6ab6
