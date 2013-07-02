@@ -23,8 +23,6 @@ Das Konto ist das Herzstück des Servers und stellt das Konto des Benutzers dar.
  }
 \end{lstlisting}
 Folgende Tabelle zeigt alle Funktionen, mit denen das Konto manipuliert werden kann.\\
-\begin{table}[H]
-\caption{Funktionen zur Kontomanipulation}
 \begin{center}
 \begin{tabular}{p{5 cm}|p{9 cm}}
 Item & Funktion \\
@@ -44,10 +42,9 @@ DispoZins und MaxDispo & dispokredit\_beantragen \\
 Transaktionsliste & Auf die Transaktionsliste kann nicht von außen zugegriffen werden, da diese bei jeder Manipulation des Kontos automatisch aktualisiert wird .
 \end{tabular}\\
 \end{center}
-\end{table}
 Um das aktuelle Vermögen eines Kundenkontos zu bekommen, kann die Funktion \textit{kontostand\_abfragen} aufgerufen werden. 
 \subsubsection{Die Transaktionsliste}
-Die \textit{Transaktionsliste} dokumentiert alle Zugriffe, welche mit dem Konto stattfinden. Sei dies nun das Transferieren von Vermögen, oder dass eine Überweisung getätigt wird. Sie ist dem in der realen Welt vorhanden Kontoauszug nachempfunden und hat deswegen auch einige fest definierte Atome für die Typifizierung der einzelnen Einträge.
+Die \textit{Transaktionsliste} dokumentiert alle Zugriffe, welche mit dem Konto stattfinden. Sei dies nun das Transferieren von Vermögen, oder dass eine Überweisung getätigt wird, es wird jedes mal ein neuer Eintrag in der Transaktionsliste erstellt. Sie ist dem in der realen Welt vorhanden Kontoauszug nachempfunden und hat deswegen zum beschreiben der einzelnen Transaktionen auch fest definierte Atome für die Typifizierung der einzelnen Einträge.
 \begin{itemize}
 \item \textit{erstellung}
 \item \textit{erfragung}
@@ -58,7 +55,7 @@ Die \textit{Transaktionsliste} dokumentiert alle Zugriffe, welche mit dem Konto 
 \item \textit{auszahlung}
 \item \textit{ueberweisung}
 \end{itemize}
-Diese Atome stehen an zweiter Stelle, direkt nach der \textit{Transaktions-ID}. Die \textit{Transaktions-ID} ist in allen Konten einmalig und wird vom Server verwendet um zu überprüfen, ob die Transaktion nach einem Fehler erneut ausgeführt werden muss (siehe: Server). Weiterhin sind in der \textit{Transaktions-ID} Felder vorgesehen, wie das Datum und die Uhrzeit zu der auf das Konto zugegriffen wurde, zusätzliche Notizen, die Person, welche auf das Konto zugegriffen hat und außerdem noch der Betrag um den sich ein Feld änderte. 
+Diese Atome stehen an zweiter Stelle, direkt nach der \textit{Transaktions-ID}. Die \textit{Transaktions-ID} ist in allen Konten einmalig und wird vom Server verwendet um zu überprüfen, ob die Transaktion nach einem Fehler erneut ausgeführt werden muss (siehe: Server). Weiterhin sind in der \textit{Transaktionsliste} Felder vorgesehen, wie das Datum und die Uhrzeit zu der auf das Konto zugegriffen wurde, zusätzliche Notizen, die Person, welche auf das Konto zugegriffen hat und außerdem noch der Betrag um den sich ein Feld änderte. 
 \subsubsection{Worker-Funktionen}
 Im Client wird zwischen zwei verschiedenen Arten von Funktionen unterschieden. Es gibt "externe Funktionen" und "interne Funktionen". Die externen Funktionen werden vom Server initialisiert und haben schlagenden Charakter. Interne Funktionen hingegen existieren um Übersichtlichkeit und Struktur in das Programm zu bringen, als auch damit Funktionen nicht mehrfach implementiert werden müssen, wie z. B.: Schreib-/ Lesezugriffe auf die Datenbank.
 
@@ -75,8 +72,6 @@ Die internen Funktionen sind Methoden, welche von den externen Funktionen benöt
 \end{lstlisting}
 \subparagraph{Kontoänderungen} geschehen über \texttt{kontoinfo} oder \texttt{kontolog}. Ist eine bestimmte Information des Kontos gesucht, kann diese mithilfe der Funktion \texttt{kontoinfo} abgefragt werden.
 \\
-\begin{table}[H]
-\caption{Interne Funktionen des Workers}
 \begin{center}
 \begin{tabular}{p{3 cm}|p{3 cm}|p{3 cm}|p{5 cm}}
 Funktion & Übergabeparameter & Rückgabewert & Kurzbeschreibung \\
@@ -85,25 +80,22 @@ Funktion & Übergabeparameter & Rückgabewert & Kurzbeschreibung \\
 kontoinfo & 
 Feld; Konto & 
 Inhalt des Feldes & 
-Extrahiert den Wert des gesuchten Feldes und gibt diesen zurück.\\ \hline
+extrahiert den Wert des gesuchten Feldes und gibt diesen zurück.\\ \hline
 
 kontolog & 
 Operation; {Notizen, Kontonummer, Betrag}; Konto & 
 Aktualisiertes Konto & 
-Schreibt Typifizierung (Siehe Transaktionsliste) zusammen mit den weiteren Parametern in das Konto.\\ \hline
+schreibt Typifizierung (Siehe Transaktionsliste) zusammen mit den weiteren Parametern in das Konto.\\ \hline
 
 kontochange & 
 Feld; Wert; Konto & 
 Aktualisiertes Konto & 
-Schreibt in das entsprechende Feld im Konto den übergebenen Wert.\\ \hline
+schreibt in das entsprechende Feld im Konto den übergebenen Wert.\\ \hline
 \end{tabular}\\
 \end{center}
-\end{table}
 \paragraph{Externe Funktionen}
 Die externen Funktionen zeichnen sich dadurch aus, dass diese von dem Server aus aufgerufen werden können. Sie spiegeln die Interaktionsmöglichkeit zwischen Client und dem Server wieder. Folgende Tabelle zeigt übersichtlich, welche Funktionen bereits existieren. Zusätzlich werden noch Übergabeparameter, Rückgabewerte und eine Kurzbeschreibung angezeigt.
 \\
-\begin{table}
-\caption{Externe Funktionen des Workers}
 \begin{center}
 \begin{tabular}{p{3 cm}|p{3 cm}|p{3 cm}|p{5 cm}}
 Funktion & Übergabeparameter & Rückgabewert & Kurzbeschreibung \\
@@ -112,32 +104,32 @@ Funktion & Übergabeparameter & Rückgabewert & Kurzbeschreibung \\
 konto\_anlegen & 
 PID des Clients & 
 \{ok, Kontonummer\} & 
-Legt ein neues Konto in der Datenbank an. Existiert die Datenbank nicht, wird eine neue angelegt.\\ \hline
+legt ein neues Konto in der Datenbank an. Existiert die Datenbank nicht, wird eine neue angelegt.\\ \hline
 
 kontostand\_abfragen & 
 PID des Clients; Kontonummer & 
 \{ok, Kontostand\} & 
-Liest das aktuelle Vermögen mithilfe der Kontonummer aus dem angegebenen Konto.\\ \hline
+liest das aktuelle Vermögen mithilfe der Kontonummer aus dem angegebenen Konto.\\ \hline
 
 history & 
 PID des Clients; Kontonummer & 
 \{ok, [Transaktionsliste, Kontostand\} & 
-Gibt alle Zugriffe, welche mit dem Konto durchgeführt wurden, zusammen mit dem aktuellen Kontostand zurück.\\ \hline
+gibt alle Zugriffe, welche mit dem Konto durchgeführt wurden, zusammen mit dem aktuellen Kontostand zurück.\\ \hline
 
 konto\_sperren & 
 PID des Clients; Kontonummer & 
 \{ok, 'Konto wurde gesperrt'\} & 
-Setzt den Sperrvermerk im Konto auf \textit{true}\\ \hline
+setzt den Sperrvermerk im Konto auf \textit{true}\\ \hline
 
 konto\_entsperren & 
 PID des Clients; Kontonummer & 
 \{ok, 'Konto wurde entsperrt'\} & 
-Setzt den Sperrvermerk im Konto auf \textit{false}\\ \hline
+setzt den Sperrvermerk im Konto auf \textit{false}\\ \hline
 
 geld\_einzahlen & 
 PID des Clients; Kontonummer; Verwendungszweck; Betrag & 
 \{ok, Vermoegen\}; \{nok, 'Konto gesperrt'\} & 
-Zahlt auf das in der Kontonummer angegebene Konto den Betrag ein, und fügt in der Transaktionsliste als Notiz den Verwendungszweck hinzu.\\ \hline
+zahlt auf das in der Kontonummer angegebene Konto den Betrag ein, und fügt in der Transaktionsliste als Notiz den Verwendungszweck hinzu.\\ \hline
 
 konto\_loeschen & 
 PID des Clients; Kontonummer & 
@@ -161,4 +153,3 @@ Es wird ein Dispokredit von 10\% des Vermögens gewährt und ein DispoZins auf 1
 
 \end{tabular}\\
 \end{center}
-\end{table}
