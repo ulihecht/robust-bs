@@ -2,6 +2,8 @@
 Der zuvor beschriebene exemplarische Anwendungsfall soll nun als Grundlage dienen, die Implementierung mittels eines \textit{Profilers} hinsichtlich der Performanz zu untersuchen. Hierzu stellt die Erlang-Distribution unter anderem die Werkzeuge \textit{fprof} und \textit{cprof} zur Verfügung, die zu diesem Zweck verwendet werden. Während \textit{cprof} nur Funktionsaufrufe zählt, liefert \textit{fprof} ausführlichere Details zum Ablauf, mit dem Nachteil, dass die Ausführungsgeschwindigkeit des Programms gleichzeitig negativ beeinflusst wird. Da der Profiler unvollständige und teilweise abgefälschte Daten liefert, wenn Worker-Prozesse von außen beendet werden, muss die Störungssimulation für die Analysen deaktiviert werden. Dies ist ohnehin notwendig um sinnvolle Werte zu erhalten, da Störungen in der Realität nur selten auftreten.\\
 Die in den folgenden Tabellen angegebenen Zeitwerte ergeben sich aus der durchschnittlichen Ausführungsdauer inklusive aufgerufener Funktionen.
 
+\begin{table}[H]
+\caption{Aufrufstatistik der Worker-Funktionen}
 \begin{center}
 	\begin{tabular}{p{1.2cm}|p{5cm}|p{2cm}|p{2cm}}
 		Modul & Funktion & Aufrufe & Zeit \\
@@ -16,7 +18,7 @@ Die in den folgenden Tabellen angegebenen Zeitwerte ergeben sich aus der durchsc
 		bw & kontostand\_abfragen & 1 & 15,096 \\
 	\end{tabular}
 \end{center}
-
+\end{table}
 % Im Folgenden werden Aufrufe zu Funktionen aus externen Modulen betrachtet, die durch Häufigkeit oder Ausführungsdauer von Bedeutung sind.
 Im Folgenden werden Aufrufe an das \texttt{dets}-Modul betrachtet, da für die persistente Speicherung der größte Zeitanteil benötigt wird. Über der durchgezogenen Linie werden jeweils zusätzlich die aufrufenden Funktionen und die Dauer, die für die Aufrufe benötigt wurde, aufgelistet.
 
